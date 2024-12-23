@@ -38,7 +38,15 @@ def init_sheet():
                     }
     temp_df = pd.DataFrame(columns=['Date','Food','Rent','Traverse','Subscriptions','Misc','Fun','Note'])
     return temp_df.astype(convert_dict)
-    
+
+
+def find_key(list_str,value):
+    try:
+        return list_str.index(value)
+    except:
+        return len(list_str)-1
+
+
 def clean(input_df):
     input_df["Date"] = pd.to_datetime(input_df['Date'],format='%d/%m/%Y')
     input_df["Note"] = input_df["Note"].replace(np.nan, '', regex=True)

@@ -1,15 +1,7 @@
 import streamlit as st
 from datetime import datetime
-import popup
 import lib.common as common
-import popup.insert
-
-def find_key(list_str,value):
-    try:
-        return list_str.index(value)
-    except:
-        return len(list_str)-1
-
+import lib.headers as header
 
 @st.dialog("Insert Data")
 def insert(conn,df,option):
@@ -46,7 +38,7 @@ def insert(conn,df,option):
 
 
 conn,worksheet_names = common.get_sheets()
-
+header.admin_header()
 
 if 'sheet_key' not in st.session_state:
     st.session_state['sheet_key'] =datetime.today().strftime('%B-%Y')
@@ -64,7 +56,7 @@ sheet = st.session_state['sheet']
 with col1:
     option = st.selectbox(label="Sheet Select",
                         options = worksheet_names,
-                        index=find_key(worksheet_names,st.session_state['sheet_key']),
+                        index=common.find_key(worksheet_names,st.session_state['sheet_key']),
                         label_visibility="collapsed"
                     )
     if option:
