@@ -3,3 +3,4 @@ streamlit-extras
 st-gsheets-connection
 streamlit-image-comparison
 pandas
+plotly

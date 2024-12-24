@@ -39,7 +39,7 @@ with col1:
         st.session_state['sheet'] = sheet
     
 with col2:
-    update_button = st.button("Save",use_container_width=True,type="primary",icon=":material/sync:")
+    update_button = st.button("Save",use_container_width=True,type="primary",icon=":material/save_as:")
     
 convert_dict = {    'Date': st.column_config.DatetimeColumn(
                             format='DD/MM/YYYY',
