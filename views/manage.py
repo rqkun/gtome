@@ -12,16 +12,25 @@ def find_key(list_str,value):
 def not_saved():
     st.warning('Changes you made have not been saved!', icon="⚠️")
 
-conn,worksheet_names = common.get_sheets()
+
+
+
+header.add_header()
+
+try:
+    conn,worksheet_names = common.get_sheets()
+except ConnectionError as err:
+        st.error("Connection error: "+"-".join(err.args),icon=":material/error:")
 
 if 'sheet_key' not in st.session_state:
     st.session_state['sheet_key'] =datetime.today().strftime('%B-%Y')
 
 if 'sheet' not in st.session_state:
-    st.session_state['sheet'] = common.clean(conn.read(worksheet=st.session_state['sheet_key']))
+    try:
+        st.session_state['sheet'] = common.clean(conn.read(worksheet=st.session_state['sheet_key']))
+    except ConnectionError as err:
+        st.error("Connection error: "+"-".join(err.args),icon=":material/error:")
     
-
-header.add_header()
 
 col1,col2 = st.columns([6,1])
 
@@ -43,7 +52,7 @@ with col2:
     
 convert_dict = {    'Date': st.column_config.DatetimeColumn(
                             format='DD/MM/YYYY',
-                            min_value=datetime.strptime("1-"+option,'%d/%B/%Y'),
+                            min_value=datetime.strptime("1-"+option,'%d-%B-%Y'),
                             max_value=datetime.today()
                         ),
                         'Food': st.column_config.NumberColumn(
