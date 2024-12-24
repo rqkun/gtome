@@ -43,8 +43,8 @@ with col2:
     
 convert_dict = {    'Date': st.column_config.DatetimeColumn(
                             format='DD/MM/YYYY',
-                            min_value=datetime.strptime("1-"+option,'%d-%B-%Y'),
-                            max_value=datetime.strptime("30-"+option,'%d-%B-%Y')
+                            min_value=datetime.strptime("1-"+option,'%d/%B/%Y'),
+                            max_value=datetime.today()
                         ),
                         'Food': st.column_config.NumberColumn(
                             min_value=0, default=0,required=True
