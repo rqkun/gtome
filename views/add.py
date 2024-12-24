@@ -14,27 +14,28 @@ def insert(conn,df,option):
                                 default=4
                             )
     notes = st.text_input("Notes",placeholder="Input note here...")
-    
     st.write("Document Date:")
     col1,col2 = st.columns([5,2])
     with col1:
         date = st.date_input("Document Date", "today", format="DD/MM/YYYY",label_visibility="collapsed")
     with col2:
         submit_bttn = st.button('Submit',use_container_width=True,icon=":material/done_outline:",type="primary")
-       
-    if submit_bttn:
-        
-        initial_data[option_map[type_of_expense]] = amount
-        initial_data["Date"] = date.strftime("%d/%m/%Y")
-        initial_data["Note"] = notes
-        df.loc[len(df)] = initial_data
-        df = df.sort_values(by=['Date'])
-        conn.update(
-            worksheet=option,
-            data=df,
-        )
-        st.cache_data.clear()
-        st.rerun()
+    if type_of_expense:
+        if submit_bttn:
+            
+            initial_data[option_map[type_of_expense]] = amount
+            initial_data["Date"] = date.strftime("%d/%m/%Y")
+            initial_data["Note"] = notes
+            df.loc[len(df)] = initial_data
+            df = df.sort_values(by=['Date'])
+            conn.update(
+                worksheet=option,
+                data=df,
+            )
+            st.cache_data.clear()
+            st.rerun()
+    else:
+        st.error("Please select a type of expense.",icon=":material/error:")
 
 
 conn,worksheet_names = common.get_sheets()
