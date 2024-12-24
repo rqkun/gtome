@@ -22,13 +22,13 @@ def add_change_theme():
 
 def add_header():
     with st.header(""):
-        col1, col2,_,col3,col4 = st.columns([1,1,4,2,1])
+        col1, col2,_,col3,col4 = st.columns([1,1,4,1,2])
         if col2.button(":material/home:",type="secondary",use_container_width=True):
                 st.switch_page("views/home.py")
-        if col4.button(":material/exit_to_app:",type="secondary",use_container_width=True):
+        if col3.button(":material/exit_to_app:",type="secondary",use_container_width=True):
                     auth.logout()
 
-        with col3:
+        with col4:
             with st.popover("Menu",use_container_width=True, icon=":material/menu:"):
                 st.page_link("views/add.py", label="Insert", icon=":material/add_task:",use_container_width=True)
                 st.page_link("views/view.py", label="Dashboard", icon=":material/empty_dashboard:",use_container_width=True)
