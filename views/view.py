@@ -1,7 +1,15 @@
 import streamlit as st
 from datetime import datetime
+from lib.classes import DataStructure
 import lib.common as common
 import lib.headers as header
+import plotly.express as px
+
+def plotly_process(df):
+    categories = DataStructure.get_categories_numeric()
+    totals = df[categories].sum()
+    fig = px.pie(values=totals, names=categories)
+    return fig
 
 conn,worksheet_names = common.get_sheets()
 
@@ -14,7 +22,7 @@ if 'sheet' not in st.session_state:
     st.session_state['sheet'] = common.clean(conn.read(worksheet=st.session_state['sheet_key']))
     
 
-col1,col2 = st.columns([5,2])
+col1,col2 = st.columns([5,1])
 
 sheet = st.session_state['sheet']
 
@@ -32,11 +40,26 @@ with col1:
     
 
 with col2:
-    refresh_button = st.button("Refresh",use_container_width=True, icon=":material/sync:",type="primary")
+    refresh_button = st.button("Sync",use_container_width=True, icon=":material/sync:",type="primary")
+
+if len(sheet) >0:
+    tab1,tab2,tab3 = st.tabs(["Area :material/area_chart:", "Bar :material/insert_chart:", "Pie :material/pie_chart:"])
+    tab1.area_chart(
+        sheet,
+        x="Date",
+        y=DataStructure.get_categories_numeric(),
+        use_container_width= True
+    )
+    tab2.bar_chart(
+        sheet,
+        x="Date",
+        y=DataStructure.get_categories_numeric(),
+        use_container_width= True
+    )
+    tab3.plotly_chart(plotly_process(sheet),use_container_width=True)
     
-
-
-st.dataframe(sheet,use_container_width=True,height=35*len(sheet)+38,hide_index=True)
+else: 
+    st.warning("Sheet currently empty.",icon=":material/error:")
 
 if refresh_button: 
     st.cache_data.clear()
