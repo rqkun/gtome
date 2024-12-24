@@ -31,7 +31,10 @@ def clean(input_df):
 
 @st.cache_resource  
 def connect_to_gsheet():
-    return st.connection("gsheets", type=GSheetsConnection)
+    try:
+        return st.connection("gsheets", type=GSheetsConnection)
+    except:
+        raise ConnectionError('GoogleSheet',"Server-Error")
 
 @st.cache_resource
 def get_sheets():
