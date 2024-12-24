@@ -38,7 +38,7 @@ def insert(conn,df,option):
 
 
 conn,worksheet_names = common.get_sheets()
-header.admin_header()
+header.add_header()
 
 if 'sheet_key' not in st.session_state:
     st.session_state['sheet_key'] =datetime.today().strftime('%B-%Y')

@@ -21,7 +21,7 @@ if 'sheet' not in st.session_state:
     st.session_state['sheet'] = common.clean(conn.read(worksheet=st.session_state['sheet_key']))
     
 
-header.admin_header()
+header.add_header()
 
 col1,col2 = st.columns([6,1])
 
@@ -66,7 +66,7 @@ convert_dict = {    'Date': st.column_config.DatetimeColumn(
 
 tmp_df = st.data_editor(st.session_state['sheet'],
                         use_container_width=True,
-                        height=35*len(st.session_state['sheet'])+38,
+                        height=35*len(st.session_state['sheet'])+36*2,
                         hide_index=True,
                         column_config=convert_dict,
                         on_change=not_saved,
