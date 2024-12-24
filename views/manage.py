@@ -47,19 +47,19 @@ convert_dict = {    'Date': st.column_config.DatetimeColumn(
                             max_value=datetime.strptime("30-"+option,'%d-%B-%Y')
                         ),
                         'Food': st.column_config.NumberColumn(
-                            min_value=0,
+                            min_value=0, default=0,required=True
                         ),
                         'Rent':  st.column_config.NumberColumn(
-                            min_value=0,
+                            min_value=0, default=0,required=True
                         ),
                         'Traverse':  st.column_config.NumberColumn(
-                            min_value=0,
+                            min_value=0, default=0,required=True
                         ),
                         'Subscriptions':  st.column_config.NumberColumn(
-                            min_value=0,
+                            min_value=0, default=0,required=True
                         ),
                         'Misc':  st.column_config.NumberColumn(
-                            min_value=0,
+                            min_value=0, default=0,required=True
                         ),
                         'Note':  st.column_config.TextColumn()
                         }

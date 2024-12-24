@@ -1,6 +1,9 @@
 
 import streamlit as st
-import lib.authentication as auth
+import lib.headers as header
+
+header.add_header()
+
 st.markdown(
     """
     ## About
@@ -23,6 +26,3 @@ with col2:
 with col3:
     if st.button("Manage", key="edit_direct",type="secondary",icon=":material/lists:",use_container_width=True):
         st.switch_page("views/manage.py")
-with col2:
-    if st.button("Logout","", use_container_width=True,type="secondary", icon=":material/exit_to_app:"):
-        auth.logout()

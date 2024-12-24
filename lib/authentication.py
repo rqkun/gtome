@@ -1,11 +1,14 @@
 import streamlit as st
+import lib.headers as header
 
 def login():
-
-    
     with st.container(border=True):
         st.header("Authentication")
-        account = st.text_input(":material/person: Username")
+        col1,col2 = st.columns([9,1],vertical_alignment="bottom")
+        with col1:
+            account = st.text_input(":material/person: Username")
+        with col2:
+            header.add_change_theme()
         col1,col2 = st.columns([5,1],vertical_alignment="bottom")
         with col1:
             password = st.text_input(":material/lock: Password",type="password")
