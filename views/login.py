@@ -18,7 +18,7 @@ def reset_password(email):
             auth_notification_dialog.success(st.session_state.auth_success)
             del st.session_state.auth_success
         elif 'auth_warning' in st.session_state:
-            auth_notification_dialog.warning(st.session_state.auth_warning)
+            auth_notification_dialog.error(st.session_state.auth_warning)
             del st.session_state.auth_warning
             
         
@@ -59,5 +59,5 @@ if 'user_info' not in st.session_state:
         auth_notification.success(st.session_state.auth_success)
         del st.session_state.auth_success
     elif 'auth_warning' in st.session_state:
-        auth_notification.warning(st.session_state.auth_warning)
+        auth_notification.error(st.session_state.auth_warning)
         del st.session_state.auth_warning

@@ -3,6 +3,7 @@ from datetime import datetime
 import lib.common as common
 import lib.headers as header
 import pandas as pd
+from classes.messages import MessageConstants
 @st.dialog("Insert Data")
 def insert(conn,df,option):
     try:
@@ -27,11 +28,11 @@ def insert(conn,df,option):
         if type_of_expense:
             pass
         else:
-            raise ValueError('Type-of-Expense','Unselected')
+            raise ValueError(MessageConstants.VALIDATION_EXSPENSE_TYPE,MessageConstants.VALIDATION_ERROR_MISSING)
         if datetime.strptime(date.strftime("%d/%m/%Y"),"%d/%m/%Y")  > datetime.strptime("1-"+option,'%d-%B-%Y'):
             pass
         else:
-            raise ValueError('Date','Not-In-Current-Sheet')
+            raise ValueError(MessageConstants.VALIDATION_DATE,MessageConstants.VALIDATION_ERROR_OOB)
         
         if submit_bttn:
             initial_data[option_map[type_of_expense]] = amount
@@ -47,14 +48,14 @@ def insert(conn,df,option):
             st.cache_data.clear()
             st.rerun()
     except ValueError as err:
-        st.error("Invalid input: "+"-".join(err.args),icon=":material/error:")
+        st.error(MessageConstants.get_validation_errors(err.args),icon=":material/error:")
         
 header.add_header()
 
 try:
     conn,worksheet_names = common.get_sheets()
 except ConnectionError as err:
-        st.error("Connection error: "+"-".join(err.args),icon=":material/error:")
+        st.error(MessageConstants.get_connecition_errors(err.args),icon=":material/error:")
 
 
 if 'sheet_key' not in st.session_state:
@@ -64,7 +65,7 @@ if 'sheet' not in st.session_state:
     try:
         st.session_state['sheet'] = common.clean(conn.read(worksheet=st.session_state['sheet_key']))
     except ConnectionError as err:
-        st.error("Connection error: "+"-".join(err.args),icon=":material/error:")
+        st.error(MessageConstants.get_connecition_errors(err.args),icon=":material/error:")
     
 
 col1,col2 = st.columns([6,1])

@@ -1,6 +1,6 @@
 import streamlit as st
 from datetime import datetime
-from lib.classes import DataStructure
+from classes.structure import DataStructure
 import lib.common as common
 import lib.headers as header
 import plotly.express as px
