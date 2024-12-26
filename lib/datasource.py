@@ -3,10 +3,11 @@ from streamlit_gsheets import GSheetsConnection
 from datetime import datetime
 import pandas as pd
 import numpy as np
+from classes.icons import AppIcons
 from classes.structure import DataStructure
-from classes.messages import MessageConstants
+from classes.messages import AppMessages
 
-def set_up():
+def set_up_data():
     return DataStructure.get_option_map(),DataStructure.get_initial_data()
 
 def init_sheet():
@@ -15,11 +16,28 @@ def init_sheet():
     return temp_df.astype(DataStructure.get_convert_dict())
 
 
+def read_from(conn,option):
+    try:
+        return clean(conn.read(worksheet=option))
+    except ConnectionError as err:
+        st.error(AppMessages.get_connecition_errors(err.args),icon=AppIcons.ERROR)
+
 def find_key(list_str,value):
     try:
         return list_str.index(value)
     except:
         return len(list_str)-1
+
+def update_from(conn,option,update_df):
+    try:
+        if update_df is None:
+            update_df = st.session_state['sheet']
+        conn.update(
+            worksheet=option,
+            data=update_df
+        )
+    except ConnectionError as err:
+        st.error(AppMessages.get_connecition_errors(err.args),icon=AppIcons.ERROR)
 
 
 def clean(input_df):
@@ -30,22 +48,19 @@ def clean(input_df):
     input_df[DataStructure.get_categories_numeric()] = input_df[DataStructure.get_categories_numeric()].fillna(0)
     return input_df.reset_index(drop=True)
 
-def read_from_conn(conn,sheet_name):
-    try:
-        return clean(conn.read(sheet_name))
-    except:
-        raise ConnectionError('GoogleSheet',MessageConstants.GSHEET_CONNECTION_ERROR)
-
 @st.cache_resource  
 def connect_to_gsheet():
     try:
         return st.connection("gsheets", type=GSheetsConnection)
     except:
-        raise ConnectionError('GoogleSheet',MessageConstants.GSHEET_CONNECTION_ERROR)
+        raise ConnectionError('GoogleSheet',AppMessages.GSHEET_CONNECTION_ERROR)
 
 @st.cache_resource
 def get_sheets():
-    conn = connect_to_gsheet()
+    try:
+        conn = connect_to_gsheet()
+    except:
+        raise ConnectionError(AppMessages.GSHEET_CONNECTION_ERROR)
     worksheet_names = []
     for sheet in conn.client._open_spreadsheet():
         worksheet_names.append(sheet.title)

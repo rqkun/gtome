@@ -1,4 +1,4 @@
-class MessageConstants:
+class AppMessages:
     # Class to store constant messages
     MAIL_NOT_VERIFY = 'Account is not verify. Please check your email for verification link.'
     INVALID_LOGIN_CREDENTIALS = 'Invalid email or password.'
@@ -15,6 +15,7 @@ class MessageConstants:
     VALIDATION_EXSPENSE_TYPE = 'EXSPENSE_TYPE_INPUT'
     VALIDATION_DATE = 'DATE_INPUT'
     VALIDATION_ERROR_OOB = 'OUT_OF_BOUND'
+
     
     
     @staticmethod

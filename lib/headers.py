@@ -1,5 +1,6 @@
 import streamlit as st
 import lib.authentication as auth
+from classes.icons import AppIcons
   
 def ChangeTheme():
   previous_theme = st.session_state.themes["current_theme"]
@@ -28,11 +29,11 @@ def add_header():
         col3.button(":material/exit_to_app:",type="secondary",use_container_width=True,on_click=auth.sign_out)
 
         with col4:
-            with st.popover("Menu",use_container_width=True, icon=":material/menu:"):
-                st.page_link("views/add.py", label="Insert", icon=":material/add_task:",use_container_width=True)
-                st.page_link("views/view.py", label="Dashboard", icon=":material/empty_dashboard:",use_container_width=True)
-                st.page_link("views/manage.py", label="Manage", icon=":material/lists:",use_container_width=True)
-                st.page_link("https://github.com/rqkun/gtome/issues", label="Report", icon=":material/bug_report:",use_container_width=True)
+            with st.popover("Menu",use_container_width=True, icon=AppIcons.MENU):
+                st.page_link("views/add.py", label="Insert", icon=AppIcons.INSERT,use_container_width=True)
+                st.page_link("views/view.py", label="Dashboard", icon=AppIcons.DASHBOARD,use_container_width=True)
+                st.page_link("views/manage.py", label="Manage", icon=AppIcons.MANAGE,use_container_width=True)
+                st.page_link("https://github.com/rqkun/gtome/issues", label="Report", icon=AppIcons.BUG_REPORT,use_container_width=True)
         with col1:
             # Create a toggle button
             add_change_theme()
