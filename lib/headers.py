@@ -24,9 +24,8 @@ def add_header():
     with st.header(""):
         col1, col2,_,col3,col4 = st.columns([1,1,4,1,2])
         if col2.button(":material/home:",type="secondary",use_container_width=True):
-                st.switch_page("views/home.py")
-        if col3.button(":material/exit_to_app:",type="secondary",use_container_width=True):
-                    auth.logout()
+          st.switch_page("views/home.py")
+        col3.button(":material/exit_to_app:",type="secondary",use_container_width=True,on_click=auth.sign_out)
 
         with col4:
             with st.popover("Menu",use_container_width=True, icon=":material/menu:"):
