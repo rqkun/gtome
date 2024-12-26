@@ -1,5 +1,6 @@
 import streamlit as st
 from datetime import datetime
+from classes.messages import MessageConstants
 from classes.structure import DataStructure
 import lib.common as common
 import lib.headers as header
@@ -14,27 +15,18 @@ def plotly_process(df):
 
 header.add_header()
 
-try:
-    conn,worksheet_names = common.get_sheets()
-except ConnectionError as err:
-    st.error("Connection error: "+"-".join(err.args),icon=":material/error:")
-
 if 'sheet_key' not in st.session_state:
     st.session_state['sheet_key'] =datetime.today().strftime('%B-%Y')
-
-if 'sheet' not in st.session_state:
-    try:
+try:
+    conn,worksheet_names = common.get_sheets()
+    if 'sheet' not in st.session_state:
         st.session_state['sheet'] = common.clean(conn.read(worksheet=st.session_state['sheet_key']))
-    except ConnectionError as err:
-        st.error("Connection error: "+"-".join(err.args),icon=":material/error:")
-    
-
-col1,col2 = st.columns([5,1])
+except ConnectionError as err:
+    st.error(MessageConstants.get_connecition_errors(err.args),icon=":material/error:")
 
 sheet = st.session_state['sheet']
 
-
-
+col1,col2 = st.columns([5,1])
 with col1:
     option = st.selectbox(label="Sheet Select",
                         options = worksheet_names,
