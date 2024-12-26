@@ -4,3 +4,5 @@ st-gsheets-connection
 streamlit-image-comparison
 pandas
 plotly
+requests==2.31.0
+extra-streamlit-components

@@ -1,11 +1,7 @@
 import streamlit as st
-import lib.authentication as auth
 
-if "login" not in st.session_state:
+if 'user_info' not in st.session_state:
     st.session_state.login = False
-
-def login():
-    auth.login()
 
 ms = st.session_state
 if "themes" not in ms: 
@@ -24,12 +20,13 @@ home_page = st.Page("views/home.py", title="Home", icon=":material/home:")
 connection_page = st.Page("views/add.py", title="Add", icon=":material/add_circle:")
 edit_page = st.Page("views/manage.py", title="Manage", icon=":material/edit:")
 view_page = st.Page("views/view.py", title="View", icon=":material/search:")
+login_page = st.Page("views/login.py", title="Login", icon=":material/account_circle:")
 
-login_pages = [home_page, connection_page,edit_page,view_page]
+authenticated_pages = [home_page, connection_page,edit_page,view_page]
 
 if st.session_state.login == True:
-    pg = st.navigation(login_pages,position="hidden")
+    pg = st.navigation(authenticated_pages,position="hidden")
 else:
-    pg = st.navigation([st.Page(login)],position="hidden")
+    pg = st.navigation([login_page],position="hidden")
 
 pg.run()
