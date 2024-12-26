@@ -1,5 +1,5 @@
 import streamlit as st
-from datetime import datetime
+from datetime import datetime, time
 import lib.common as common
 import lib.headers as header
 
@@ -12,7 +12,8 @@ def find_key(list_str,value):
 def not_saved():
     st.warning('Changes you made have not been saved!', icon="⚠️")
 
-
+def numeric_config():
+    return st.column_config.NumberColumn(min_value=0, default=0,required=False)
 
 
 header.add_header()
@@ -50,26 +51,16 @@ with col1:
 with col2:
     update_button = st.button("Save",use_container_width=True,type="primary",icon=":material/save_as:")
     
-convert_dict = {    'Date': st.column_config.DatetimeColumn(
+convert_dict = {'Date': st.column_config.DatetimeColumn(
                             format='DD/MM/YYYY',
                             min_value=datetime.strptime("1-"+option,'%d-%B-%Y'),
-                            max_value=datetime.today()
+                            max_value=datetime.combine(datetime.now(), time.max),
                         ),
-                        'Food': st.column_config.NumberColumn(
-                            min_value=0, default=0,required=True
-                        ),
-                        'Rent':  st.column_config.NumberColumn(
-                            min_value=0, default=0,required=True
-                        ),
-                        'Traverse':  st.column_config.NumberColumn(
-                            min_value=0, default=0,required=True
-                        ),
-                        'Subscriptions':  st.column_config.NumberColumn(
-                            min_value=0, default=0,required=True
-                        ),
-                        'Misc':  st.column_config.NumberColumn(
-                            min_value=0, default=0,required=True
-                        ),
+                        'Food': numeric_config(),
+                        'Rent': numeric_config(),
+                        'Traverse': numeric_config(),
+                        'Subscriptions': numeric_config(),
+                        'Misc': numeric_config(),
                         'Note':  st.column_config.TextColumn()
                         }
 
@@ -81,13 +72,12 @@ tmp_df = st.data_editor(st.session_state['sheet'],
                         on_change=not_saved,
                         num_rows='dynamic')
 
-st.session_state['sheet'] = tmp_df
+st.session_state['sheet'] = common.clean(tmp_df)
 
 if update_button: 
     conn.update(
         worksheet=option,
         data=st.session_state['sheet']
-        
     )
     print(st.session_state['sheet'])
     st.cache_data.clear()

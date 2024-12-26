@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 import json
 import re
+from classes.messages import MessageConstants
 ## -------------------------------------------------------------------------------------------------
 ## Firebase Auth API -------------------------------------------------------------------------------
 ## -------------------------------------------------------------------------------------------------
@@ -75,7 +76,7 @@ def sign_in(email:str, password:str) -> None:
         # If email is not verified, send verification email and do not sign in
         if not user_info["emailVerified"]:
             send_email_verification(id_token)
-            st.session_state.auth_warning = 'Check your email to verify your account'
+            st.session_state.auth_warning = MessageConstants.MAIL_NOT_VERIFY
 
         # Save user info to session state and rerun
         else:
@@ -86,20 +87,20 @@ def sign_in(email:str, password:str) -> None:
     except requests.exceptions.HTTPError as error:
         error_message = json.loads(error.args[1])['error']['message']
         if error_message in {"INVALID_EMAIL","INVALID_PASSWORD","MISSING_PASSWORD","INVALID_LOGIN_CREDENTIALS"}:
-            st.session_state.auth_warning = 'Error: Use a valid email and password'
+            st.session_state.auth_warning = MessageConstants.INVALID_LOGIN_CREDENTIALS
         else:
             st.session_state.auth_warning = error_message
 
     except Exception as error:
         print(error)
-        st.session_state.auth_warning = 'Error: Please try again later'
+        st.session_state.auth_warning = MessageConstants.INTERNAL_SERVER_ERROR + "".join(error.args)
 
 
 def password_warning_builder(str):
     requirements_part = re.search(r'\[(.*?)\]', str).group(1)
     requirements_list = [req.strip() for req in requirements_part.split(',')]
     formatted_requirements = ', '.join([req.replace('Password must contain', '') for req in requirements_list])
-    return "Warning: Password must contain: " + formatted_requirements + "."
+    return "Password must contain: " + formatted_requirements + "."
 
 
 def create_account(email:str, password:str) -> None:
@@ -109,14 +110,14 @@ def create_account(email:str, password:str) -> None:
 
         # Create account and send email verification
         send_email_verification(id_token)
-        st.session_state.auth_success = 'Check your inbox to verify your email'
+        st.session_state.auth_success = MessageConstants.VERIFY_EMAIL_SENT
     
     except requests.exceptions.HTTPError as error:
         error_message = json.loads(error.args[1])['error']['message']
         if error_message == "EMAIL_EXISTS":
-            st.session_state.auth_warning = 'Error: Email belongs to existing account'
+            st.session_state.auth_warning = MessageConstants.EMAIL_EXIST
         elif error_message in {"INVALID_EMAIL","INVALID_PASSWORD","MISSING_PASSWORD","MISSING_EMAIL"}:
-            st.session_state.auth_warning = 'Error: Use a valid email and password'
+            st.session_state.auth_warning = MessageConstants.INVALID_LOGIN_CREDENTIALS
         elif "PASSWORD_DOES_NOT_MEET_REQUIREMENTS" in error_message:
             st.session_state.auth_warning = password_warning_builder(error_message)
         else:
@@ -124,13 +125,13 @@ def create_account(email:str, password:str) -> None:
     
     except Exception as error:
         print(error)
-        st.session_state.auth_warning = 'Error: Please try again later'
+        st.session_state.auth_warning = MessageConstants.INTERNAL_SERVER_ERROR + "".join(error.args)
 
 
 def reset_password(email:str) -> None:
     try:
         send_password_reset_email(email)
-        st.session_state.auth_success = 'Password reset link sent to your email'
+        st.session_state.auth_success = MessageConstants.RESET_EMAIL_SENT
     
     except requests.exceptions.HTTPError as error:
         error_message = json.loads(error.args[1])['error']['message']
@@ -139,13 +140,13 @@ def reset_password(email:str) -> None:
         else:
             st.session_state.auth_warning = error_message
     
-    except Exception:
-        st.session_state.auth_warning = 'Error: Please try again later'
+    except Exception as error:
+        st.session_state.auth_warning = MessageConstants.INTERNAL_SERVER_ERROR + "".join(error.args)
 
 
 def sign_out() -> None:
     st.session_state.clear()
-    st.session_state.auth_success = 'You have successfully signed out'
+    st.session_state.auth_success = MessageConstants.SIGN_OUT
 
 
 def delete_account(password:str) -> None:
@@ -156,11 +157,11 @@ def delete_account(password:str) -> None:
         # Attempt to delete account
         delete_user_account(id_token)
         st.session_state.clear()
-        st.session_state.auth_success = 'You have successfully deleted your account'
+        st.session_state.auth_success = MessageConstants.ACCOUNT_DELETED
 
     except requests.exceptions.HTTPError as error:
         error_message = json.loads(error.args[1])['error']['message']
         print(error_message)
 
     except Exception as error:
-        print(error)
+        st.session_state.auth_warning = MessageConstants.INTERNAL_SERVER_ERROR + "".join(error.args)
