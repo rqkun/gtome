@@ -1,8 +1,7 @@
-streamlit
-streamlit-extras
-st-gsheets-connection
-streamlit-image-comparison
-pandas
-plotly
+streamlit==1.41.1
+streamlit-extras==0.5.0
+st-gsheets-connection==0.1.0
+pandas==2.2.3
+plotly==5.24.1
 requests==2.31.0
-extra-streamlit-components
+extra-streamlit-components==0.1.71
