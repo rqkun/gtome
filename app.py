@@ -1,5 +1,7 @@
 import streamlit as st
 
+from classes.icons import AppIcons
+
 if 'user_info' not in st.session_state:
     st.session_state.login = False
 
@@ -15,11 +17,11 @@ if "themes" not in ms:
                               "button_face": ":material/light_mode:"},
                     }
 
-st.set_page_config(page_title="GTOME", page_icon=":material/edit_square:")
-home_page = st.Page("views/home.py", title="Home", icon=":material/home:")
-connection_page = st.Page("views/add.py", title="Add", icon=":material/add_circle:")
-edit_page = st.Page("views/manage.py", title="Manage", icon=":material/edit:")
-view_page = st.Page("views/view.py", title="View", icon=":material/search:")
+st.set_page_config(page_title="GTOME", page_icon=AppIcons.BUG_REPORT_PAGE)
+home_page = st.Page("views/home.py", title="Home", icon=AppIcons.HOME_PAGE)
+connection_page = st.Page("views/add.py", title="Add", icon=AppIcons.INSERT_PAGE)
+edit_page = st.Page("views/manage.py", title="Manage", icon=AppIcons.MANAGE_PAGE)
+view_page = st.Page("views/dashboard.py", title="Dashboard", icon=AppIcons.DASHBOARD_PAGE)
 login_page = st.Page("views/login.py", title="Login", icon=":material/account_circle:")
 
 authenticated_pages = [home_page, connection_page,edit_page,view_page]

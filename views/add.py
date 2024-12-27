@@ -76,7 +76,7 @@ if col2.button("Sync",use_container_width=True, icon=AppIcons.SYNC,type="primary
     st.cache_data.clear()
     st.cache_resource.clear()
     st.rerun()
-if col3.button("Insert",use_container_width=True, icon=AppIcons.INSERT,type="primary"): 
+if col3.button("Insert",use_container_width=True, icon=AppIcons.INSERT_PAGE,type="primary"): 
     insert(conn,sheet,option)
 if option:
     sheet = datasource.read_from(conn,option)
