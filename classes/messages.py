@@ -11,6 +11,7 @@ class AppMessages:
     ACCOUNT_DELETED = 'You have successfully deleted your account.'
     GSHEET_CONNECTION_ERROR = 'GoogleSheetAPI connection error.'
     WARNING_CHANGES_NOT_SAVED = 'Changes you made have not been saved.'
+    WARNING_SHEET_EMPTY = 'Sheet is empty.'
     VALIDATION_ERROR_MISSING = 'EMPTY_OR_MISSING'
     VALIDATION_EXSPENSE_TYPE = 'EXSPENSE_TYPE_INPUT'
     VALIDATION_DATE = 'DATE_INPUT'

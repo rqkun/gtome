@@ -1,7 +1,10 @@
 class AppIcons:
+    #Notification
     ERROR = ":material/error:"
-    HOME = ":material/home:"
     WARNING = ":material/warning:"
+    SUCCESS =":material/check_circle:"
+    #Menu
+    HOME = ":material/home:"
     MENU = ":material/menu:"
     INSERT = ":material/add_task:"
     DASHBOARD = ":material/empty_dashboard:"

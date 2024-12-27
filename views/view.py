@@ -58,7 +58,7 @@ if len(sheet) >0:
     tab3.plotly_chart(plotly_process(sheet),use_container_width=True)
     
 else: 
-    st.warning(AppMessages.WARNING_CHANGES_NOT_SAVED,icon=AppIcons.ERROR)
+    st.warning(AppMessages.WARNING_SHEET_EMPTY,icon=AppIcons.ERROR)
 
 if refresh_button:
     placeholder.empty()
