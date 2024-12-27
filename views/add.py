@@ -29,7 +29,7 @@ def insert(conn,df,option):
         if type_of_expense:
             pass
         else:
-            raise ValueError(AppMessages.VALIDATION_EXSPENSE_TYPE,AppMessages.VALIDATION_ERROR_MISSING)
+            raise ValueError(AppMessages.VALIDATION_EXPENSE_TYPE,AppMessages.VALIDATION_ERROR_MISSING)
         if datetime.strptime(date.strftime("%d/%m/%Y"),"%d/%m/%Y")  > datetime.strptime("1-"+option,'%d-%B-%Y'):
             pass
         else:

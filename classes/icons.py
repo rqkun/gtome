@@ -1,4 +1,5 @@
-class AppIcons:
+class AppIcons():
+    MAIN_APP = ":material/book_4_spark:"
     #Notification
     ERROR = ":material/error:"
     WARNING = ":material/warning:"

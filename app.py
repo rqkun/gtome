@@ -17,7 +17,7 @@ if "themes" not in ms:
                               "button_face": ":material/light_mode:"},
                     }
 
-st.set_page_config(page_title="GTOME", page_icon=AppIcons.BUG_REPORT_PAGE)
+st.set_page_config(page_title="GTOME", page_icon=AppIcons.MAIN_APP)
 home_page = st.Page("views/home.py", title="Home", icon=AppIcons.HOME_PAGE)
 connection_page = st.Page("views/add.py", title="Add", icon=AppIcons.INSERT_PAGE)
 edit_page = st.Page("views/manage.py", title="Manage", icon=AppIcons.MANAGE_PAGE)

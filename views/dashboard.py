@@ -6,13 +6,38 @@ from classes.structure import DataStructure
 import lib.datasource as datasource
 import lib.headers as header
 import plotly.express as px
+from millify import millify
 
 def plotly_process(df):
     categories = DataStructure.get_categories_numeric()
     totals = df[categories].sum()
-    fig = px.pie(values=totals, names=categories)
+    total_sum = totals.sum()
+    percentages = (totals / total_sum) * 100
+
+    # Group categories with less than 5% into "Other"
+    grouped_totals = totals[percentages >= 2]
+    other_total = totals[percentages < 2].sum()
+
+    if other_total > 0:
+        grouped_totals['Other'] = other_total
+        
+    fig = px.pie(values=grouped_totals, names=grouped_totals.index)
     return fig
 
+def calc_sum(df):
+    categories = DataStructure.get_categories_numeric()
+    totals = df[categories].sum()
+    return millify(totals.sum(),precision=3)
+
+def calc_max_spending(df):
+    categories = DataStructure.get_categories_numeric()
+    tmp = df[categories].max()
+    return millify(tmp.max(),precision=3)
+
+def calc_highest_sum(df):
+    categories = DataStructure.get_categories_numeric()
+    totals = df[categories].sum()
+    return millify(totals.max(),precision=3), totals.idxmax()
 
 header.add_header()
 
@@ -42,20 +67,28 @@ if option:
     st.session_state['sheet'] = sheet
     
 if len(sheet) >0:
-    tab1,tab2,tab3 = placeholder.tabs(["Area :material/area_chart:", "Bar :material/insert_chart:", "Pie :material/pie_chart:"])
-    tab1.area_chart(
+    
+    metrics,area_chart,bar_plot,pie_plot = placeholder.tabs(["Metrics :material/monitoring:","Area :material/area_chart:", "Bar :material/insert_chart:", "Pie :material/pie_chart:"])
+    spending,max_spent,largest_cate = metrics.columns(3)
+    spending.metric("Total Spending",calc_sum(sheet) +" VND", delta=0, delta_color="normal", help=None, label_visibility="visible", border=True)
+    max_spent.metric("Highest Spending",calc_max_spending(sheet) +" VND", delta=0, delta_color="normal", help=None, label_visibility="visible", border=True)
+    category_sum, category = calc_highest_sum(sheet)
+    largest_cate.metric(category, category_sum+" VND", delta=0, delta_color="normal", help=None, label_visibility="visible", border=True)
+    
+    
+    area_chart.area_chart(
         sheet,
         x="Date",
         y=DataStructure.get_categories_numeric(),
         use_container_width= True
     )
-    tab2.bar_chart(
+    bar_plot.bar_chart(
         sheet,
         x="Date",
         y=DataStructure.get_categories_numeric(),
         use_container_width= True
     )
-    tab3.plotly_chart(plotly_process(sheet),use_container_width=True)
+    pie_plot.plotly_chart(plotly_process(sheet),use_container_width=True)
     
 else: 
     st.warning(AppMessages.WARNING_SHEET_EMPTY,icon=AppIcons.ERROR)
