@@ -12,6 +12,7 @@ class AppIcons():
     MANAGE_PAGE = ":material/lists:"
     BUG_REPORT_PAGE = ":material/bug_report:"
     LOGIN_PAGE = ":material/account_circle:"
+    REPO_PAGE = ":material/bookmark:"
     #Button
     SEND_EMAIL = ":material/send:"
     MAIL = ":material/mail:"
@@ -19,3 +20,7 @@ class AppIcons():
     LOG_OUT = ":material/exit_to_app:"
     SAVE = ":material/save_as:"
     SYNC = ":material/sync:"
+    METRICS = ":material/monitoring:"
+    AREA_CHART = ":material/area_chart:"
+    BAR_CHART = ":material/insert_chart:"
+    PIE_CHART = ":material/pie_chart:"

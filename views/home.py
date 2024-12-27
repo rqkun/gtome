@@ -4,7 +4,7 @@ import lib.headers as header
 from classes.icons import AppIcons
 header.add_header()
 
-st.header("About")
+st.markdown("# About")
 st.markdown("""
     <div style="text-align: justify;">
     A user-friendly Streamlit app designed to streamline your financial management. \
@@ -15,7 +15,7 @@ st.markdown("""
 
 st.markdown(
     """
-    ### Description
+    #### Functions
     """
 )
 st.write("Below are the cards explaining what each of the functions are.")
@@ -40,18 +40,15 @@ with st.expander("See explanation"):
         with st.container(border=True,key="home_desc_4"):
             st.link_button("Report",url="https://github.com/rqkun/gtome/issues",type="tertiary",icon=AppIcons.BUG_REPORT_PAGE,use_container_width=True)
             st.write("Report bugs in our github repo's issue page.")
+    with col1:
+        with st.container(border=True,key="home_desc_5"):
+            st.link_button("Github",url="https://github.com/rqkun/gtome/",type="tertiary",icon=AppIcons.REPO_PAGE,use_container_width=True)
+            st.write("Source code of the project is found here.")
     st.markdown(
     """
     ###### Utilities:
     - [:material/dark_mode: / :material/light_mode:] - Toggle light/dark mode.
     - [:material/exit_to_app: Logout] - Logout.
     - [:material/menu: Menu] - Navigation menu.
-    """
-)
-
-st.markdown(
-    """
-    ### Contact:
-    - 👾 Github: ([rqkun](https://github.com/rqkun))
     """
 )

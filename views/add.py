@@ -65,6 +65,7 @@ sheet = st.session_state['sheet']
 
 col1,col2,col3 = st.columns([3,1,1])
 placeholder = st.empty()
+expander = placeholder.expander("Expand for Data Grid",False)
 option = col1.selectbox(label="Sheet Select",
                     options = worksheet_names,
                     index=datasource.find_key(worksheet_names,st.session_state['sheet_key']),
@@ -82,7 +83,7 @@ if option:
     sheet = datasource.read_from(conn,option)
     st.session_state['sheet'] = sheet
 
-placeholder.dataframe(sheet,use_container_width=True,height=35*len(sheet)+38,hide_index=True) 
+expander.dataframe(sheet,use_container_width=True,height=35*len(sheet)+38,hide_index=True) 
 
 
 

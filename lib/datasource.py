@@ -6,7 +6,7 @@ import numpy as np
 from classes.icons import AppIcons
 from classes.structure import DataStructure
 from classes.messages import AppMessages
-from dateutil.relativedelta import relativedelta
+
 def set_up_data():
     return DataStructure.get_option_map(),DataStructure.get_initial_data()
 
@@ -74,8 +74,10 @@ def get_delta(data):
     else: 
         last_metric = DataStructure.get_initial_statistics()
         
-    
-    return data["Total"] - last_metric["Total"], data["Highest"] - last_metric["Highest"], last_metric["Highest_Category"], data["Highest_Category_Value"]- last_metric["Highest_Category_Value"]
+    return data["Total"] - last_metric["Total"], \
+            data["Highest"] - last_metric["Highest"], \
+                                last_metric["Highest_Category"], \
+            data["Highest_Category_Value"]- last_metric["Highest_Category_Value"]
 
 @st.cache_resource  
 def connect_to_gsheet():
@@ -93,7 +95,7 @@ def get_detail_sheets():
             worksheet_names.append(sheet.title)
 
     today = datetime.today().strftime('%B-%Y')
-    if worksheet_names.count(today) ==0:
+    if today not in worksheet_names:
         conn.create(
             worksheet=today,
             data=init_sheet(),

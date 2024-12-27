@@ -21,7 +21,7 @@ def plotly_process(df):
     if other_total > 0:
         grouped_totals['Other'] = other_total
         
-    fig = px.pie(values=grouped_totals, names=grouped_totals.index)
+    fig = px.pie(values=grouped_totals, names=grouped_totals.index, height=250)
     return fig
 
 header.add_header()
@@ -57,7 +57,7 @@ if option:
 if len(sheet) >0:
     analysis_sheet = datasource.get_statistic_sheet()
     metrics_src = datasource.get_metrics(option)
-    metrics,area_chart,bar_plot,pie_plot = placeholder.tabs(["Metrics :material/monitoring:","Area :material/area_chart:", "Bar :material/insert_chart:", "Pie :material/pie_chart:"])
+    metrics,area_chart,bar_plot,pie_plot = placeholder.tabs([AppIcons.METRICS+" Metrics",AppIcons.AREA_CHART+" Area", AppIcons.BAR_CHART+" Bar", AppIcons.PIE_CHART+" Pie"])
     spending,max_spent,largest_cate = metrics.columns(3)
     spend_delta,max_spent_delta, largest_old, largest_cate_delta = datasource.get_delta(metrics_src)
     
@@ -70,13 +70,17 @@ if len(sheet) >0:
         sheet,
         x="Date",
         y=DataStructure.get_categories_numeric(),
-        use_container_width= True
+        use_container_width= True,
+        height=250
     )
+    
     bar_plot.bar_chart(
         sheet,
         x="Date",
         y=DataStructure.get_categories_numeric(),
-        use_container_width= True
+        use_container_width= True,
+        stack=True
+        ,height=250
     )
     pie_plot.plotly_chart(plotly_process(sheet),use_container_width=True)
     
