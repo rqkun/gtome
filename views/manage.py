@@ -23,7 +23,7 @@ header.add_header()
 if 'sheet_key' not in st.session_state:
     st.session_state['sheet_key'] =datetime.today().strftime('%B-%Y')
 try:
-    conn,worksheet_names = datasource.get_sheets()
+    conn,worksheet_names = datasource.get_detail_sheets()
     if 'sheet' not in st.session_state:
         st.session_state['sheet'] = datasource.clean(conn.read(worksheet=st.session_state['sheet_key']))
 except ConnectionError as err:

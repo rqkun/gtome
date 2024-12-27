@@ -26,7 +26,7 @@ def insert(conn,df,option):
         with col2:
             submit_bttn = st.button('Submit',use_container_width=True,icon=AppIcons.SAVE,type="primary")
         
-        if type_of_expense:
+        if type_of_expense is not None:
             pass
         else:
             raise ValueError(AppMessages.VALIDATION_EXPENSE_TYPE,AppMessages.VALIDATION_ERROR_MISSING)
@@ -55,7 +55,7 @@ header.add_header()
 if 'sheet_key' not in st.session_state:
     st.session_state['sheet_key'] =datetime.today().strftime('%B-%Y')
 try:
-    conn,worksheet_names = datasource.get_sheets()
+    conn,worksheet_names = datasource.get_detail_sheets()
     if 'sheet' not in st.session_state:
         st.session_state['sheet'] = datasource.clean(conn.read(worksheet=st.session_state['sheet_key']))
 except ConnectionError as err:

@@ -24,27 +24,12 @@ def plotly_process(df):
     fig = px.pie(values=grouped_totals, names=grouped_totals.index)
     return fig
 
-def calc_sum(df):
-    categories = DataStructure.get_categories_numeric()
-    totals = df[categories].sum()
-    return millify(totals.sum(),precision=3)
-
-def calc_max_spending(df):
-    categories = DataStructure.get_categories_numeric()
-    tmp = df[categories].max()
-    return millify(tmp.max(),precision=3)
-
-def calc_highest_sum(df):
-    categories = DataStructure.get_categories_numeric()
-    totals = df[categories].sum()
-    return millify(totals.max(),precision=3), totals.idxmax()
-
 header.add_header()
 
 if 'sheet_key' not in st.session_state:
     st.session_state['sheet_key'] =datetime.today().strftime('%B-%Y')
 try:
-    conn,worksheet_names = datasource.get_sheets()
+    conn,worksheet_names = datasource.get_detail_sheets()
     if 'sheet' not in st.session_state:
         st.session_state['sheet'] = datasource.clean(conn.read(worksheet=st.session_state['sheet_key']))
 except ConnectionError as err:
@@ -65,15 +50,20 @@ placeholder = st.empty()
 if option:
     sheet = datasource.read_from(conn,option)
     st.session_state['sheet'] = sheet
-    
+
+
+
+
 if len(sheet) >0:
-    
+    analysis_sheet = datasource.get_statistic_sheet()
+    metrics_src = datasource.get_metrics(option)
     metrics,area_chart,bar_plot,pie_plot = placeholder.tabs(["Metrics :material/monitoring:","Area :material/area_chart:", "Bar :material/insert_chart:", "Pie :material/pie_chart:"])
     spending,max_spent,largest_cate = metrics.columns(3)
-    spending.metric("Total Spending",calc_sum(sheet) +" VND", delta=0, delta_color="normal", help=None, label_visibility="visible", border=True)
-    max_spent.metric("Highest Spending",calc_max_spending(sheet) +" VND", delta=0, delta_color="normal", help=None, label_visibility="visible", border=True)
-    category_sum, category = calc_highest_sum(sheet)
-    largest_cate.metric(category, category_sum+" VND", delta=0, delta_color="normal", help=None, label_visibility="visible", border=True)
+    spend_delta,max_spent_delta, largest_old, largest_cate_delta = datasource.get_delta(metrics_src)
+    
+    spending.metric("Total Spending",millify(metrics_src["Total"],precision=3) , delta=millify(spend_delta,precision=3), delta_color="inverse", help=None, label_visibility="visible", border=True)
+    max_spent.metric("Highest Spending",millify(metrics_src["Highest"],precision=3) , delta=millify(max_spent_delta,precision=3), delta_color="inverse", help=None, label_visibility="visible", border=True)
+    largest_cate.metric(metrics_src["Highest_Category"], millify(metrics_src["Highest_Category_Value"],precision=3), delta=millify(largest_cate_delta,precision=3), delta_color="inverse", help=None, label_visibility="visible", border=True)
     
     
     area_chart.area_chart(

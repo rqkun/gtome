@@ -4,6 +4,19 @@ class DataStructure:
     @staticmethod
     def get_categories():
         return ['Date', 'Food', 'Rent', 'Traverse', 'Subscriptions', 'Misc', 'Fun', 'Note']
+    
+    @staticmethod
+    def get_statistic_categories():
+        return ['Sheet', 'Total', 'Highest', 'Highest_Category', 'Highest_Category_Value']
+    @staticmethod
+    def get_statistic_dict():
+        return {
+            'Sheet': str,
+            'Total': int,
+            'Highest': int,
+            'Highest_Category': str,
+            'Highest_Category_Value': int
+        }
     @staticmethod
     def get_categories_numeric():
         return ['Food', 'Rent', 'Traverse', 'Subscriptions', 'Misc', 'Fun']
@@ -31,7 +44,15 @@ class DataStructure:
             "Fun": 0,
             "Note": ""
         }
-
+    @staticmethod
+    def get_initial_statistics(sheet="",total=0,highest=0,highest_category="",highest_category_value=0):
+        return {
+            "Sheet": sheet,
+            "Total": total,
+            "Highest": highest,
+            "Highest_Category": highest_category,
+            "Highest_Category_Value": highest_category_value
+        }
     @staticmethod
     def get_convert_dict():
         return {
