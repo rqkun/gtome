@@ -1,15 +1,23 @@
-import streamlit as st
+"""The Insert Page for Data Ingestion."""
+
 from datetime import datetime
+import pandas as pd
+import streamlit as st
 import lib.datasource as datasource
 import lib.headers as header
-import pandas as pd
 from classes.messages import AppMessages
 from classes.icons import AppIcons
+
 @st.dialog("Insert Data")
-def insert(conn,df,option):
+def insert(df):
+    """
+        Create a insert dialog form
+    """
     try:
         option_map, initial_data = datasource.set_up_data()
-        amount = st.number_input("Amount",min_value=0,step=1000,help="Amount should be in VND",placeholder="50000")
+        amount = st.number_input("Amount",min_value=0,
+                                 step=1000,help="Amount should be in VND",
+                                 placeholder="50000")
         type_of_expense = st.pills("Type of Expense",
                                     options=option_map.keys(),
                                     format_func=lambda option: option_map[option],
@@ -18,23 +26,30 @@ def insert(conn,df,option):
                                 )
         notes = st.text_input("Notes",placeholder="Input note here...")
         st.write("Document Date:")
-        col1,col2 = st.columns([5,2])
-        with col1:
-            date = st.date_input("Document Date", "today", format="DD/MM/YYYY",label_visibility="collapsed",
-                                min_value=datetime.strptime("1-"+option,'%d-%B-%Y'),
-                                max_value=datetime.today())
-        with col2:
-            submit_bttn = st.button('Submit',use_container_width=True,icon=AppIcons.SAVE,type="primary")
-        
+        left_insert,right_insert = st.columns([5,2])
+        date = left_insert.date_input("Document Date",
+                                      "today",
+                                      format="DD/MM/YYYY",
+                                      label_visibility="collapsed",
+                                      min_value=datetime.strptime("1-"+option,'%d-%B-%Y'),
+                                      max_value=datetime.today())
+        submit_bttn = right_insert.button('Submit',
+                                          use_container_width=True,
+                                          icon=AppIcons.SAVE,
+                                          type="primary")
+
         if type_of_expense is not None:
             pass
         else:
-            raise ValueError(AppMessages.VALIDATION_EXPENSE_TYPE,AppMessages.VALIDATION_ERROR_MISSING)
-        if datetime.strptime(date.strftime("%d/%m/%Y"),"%d/%m/%Y")  > datetime.strptime("1-"+option,'%d-%B-%Y'):
+            raise ValueError(AppMessages.VALIDATION_EXPENSE_TYPE,
+                             AppMessages.VALIDATION_ERROR_MISSING)
+        if datetime.strptime(date.strftime("%d/%m/%Y"),"%d/%m/%Y") \
+                            > datetime.strptime("1-"+option,'%d-%B-%Y'):
             pass
         else:
-            raise ValueError(AppMessages.VALIDATION_DATE,AppMessages.VALIDATION_ERROR_OOB)
-        
+            raise ValueError(AppMessages.VALIDATION_DATE,
+                             AppMessages.VALIDATION_ERROR_OOB)
+
         if submit_bttn:
             initial_data[option_map[type_of_expense]] = amount
             initial_data["Date"] = date.strftime("%d/%m/%Y")
@@ -47,17 +62,17 @@ def insert(conn,df,option):
             st.rerun()
     except ValueError as err:
         st.error(AppMessages.get_validation_errors(err.args),icon=AppIcons.ERROR)
-        
+
+
 header.add_header()
-
-
-
 if 'sheet_key' not in st.session_state:
     st.session_state['sheet_key'] =datetime.today().strftime('%B-%Y')
 try:
     conn,worksheet_names = datasource.get_detail_sheets()
     if 'sheet' not in st.session_state:
-        st.session_state['sheet'] = datasource.clean(conn.read(worksheet=st.session_state['sheet_key']))
+        st.session_state['sheet'] = datasource.clean(conn.read(
+                worksheet=st.session_state['sheet_key']
+            ))
 except ConnectionError as err:
     st.error(AppMessages.get_connecition_errors(err.args),icon=AppIcons.ERROR)
 
@@ -72,21 +87,15 @@ option = col1.selectbox(label="Sheet Select",
                     label_visibility="collapsed"
                 )
 
-if col2.button("Sync",use_container_width=True, icon=AppIcons.SYNC,type="primary"): 
+if col2.button("Sync",use_container_width=True, icon=AppIcons.SYNC,type="primary"):
     placeholder.empty()
     st.cache_data.clear()
     st.cache_resource.clear()
     st.rerun()
-if col3.button("Insert",use_container_width=True, icon=AppIcons.INSERT_PAGE,type="primary"): 
-    insert(conn,sheet,option)
+if col3.button("Insert",use_container_width=True, icon=AppIcons.INSERT_PAGE,type="primary"):
+    insert(sheet)
 if option:
     sheet = datasource.read_from(conn,option)
     st.session_state['sheet'] = sheet
 
-expander.dataframe(sheet,use_container_width=True,height=35*len(sheet)+38,hide_index=True) 
-
-
-
-
-
-
+expander.dataframe(sheet,use_container_width=True,height=35*len(sheet)+38,hide_index=True)

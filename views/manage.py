@@ -1,20 +1,25 @@
-import streamlit as st
+""" Management page for the data grid. """
+
 from datetime import datetime, time
+import streamlit as st
 from classes.icons import AppIcons
 from classes.messages import AppMessages
 import lib.datasource as datasource
 import lib.headers as header
 
-def find_key(list_str,value):
+def find_key(list_str, value):
+    """ Finding latest key. """
     try:
         return list_str.index(value)
-    except:
-        return len(list_str)-1
+    except ValueError:
+        return len(list_str) - 1
 
 def not_saved():
+    """ Show warning when not saved. """
     st.warning('Changes you made have not been saved!', icon=AppIcons.WARNING)
 
 def numeric_config():
+    """ Common column config. """
     return st.column_config.NumberColumn(min_value=0, default=0,required=False)
 
 
@@ -25,7 +30,9 @@ if 'sheet_key' not in st.session_state:
 try:
     conn,worksheet_names = datasource.get_detail_sheets()
     if 'sheet' not in st.session_state:
-        st.session_state['sheet'] = datasource.clean(conn.read(worksheet=st.session_state['sheet_key']))
+        st.session_state['sheet'] = datasource.clean(
+            conn.read(worksheet=st.session_state['sheet_key'])
+            )
 except ConnectionError as err:
     st.error(AppMessages.get_connecition_errors(err.args),icon=AppIcons.ERROR)
 
@@ -39,12 +46,12 @@ option = col1.selectbox(label="Sheet Select",
                         label_visibility="collapsed"
                         )
 
-if col2.button("Sync",use_container_width=True, icon=AppIcons.SYNC,type="primary"): 
+if col2.button("Sync",use_container_width=True, icon=AppIcons.SYNC,type="primary"):
     placeholder.empty()
     st.cache_data.clear()
     st.cache_resource.clear()
     st.rerun()
-    
+
 update_button = col3.button("Save",use_container_width=True,type="primary",icon=AppIcons.SAVE)
 convert_dict = {'Date': st.column_config.DatetimeColumn(
                             format='DD/MM/YYYY',
@@ -72,7 +79,7 @@ tmp_df = placeholder.data_editor(st.session_state['sheet'],
 
 st.session_state['sheet'] = datasource.clean(tmp_df)
 
-if update_button: 
+if update_button:
     datasource.update_from(conn,option,None)
     print(st.session_state['sheet'])
     placeholder.empty()

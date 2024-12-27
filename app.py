@@ -1,15 +1,14 @@
+"""The main streamlit app that invoke other pages."""
 import streamlit as st
-
 from classes.icons import AppIcons
 
 if 'user_info' not in st.session_state:
     st.session_state.login = False
 
 ms = st.session_state
-if "themes" not in ms: 
-  ms.themes = {"current_theme": "dark",
+if "themes" not in ms:
+    ms.themes = {"current_theme": "dark",
                     "refreshed": True,
-                    
                     "light": {"theme.base": "dark",
                               "button_face": ":material/dark_mode:"},
 
@@ -26,7 +25,7 @@ login_page = st.Page("views/login.py", title="Login", icon=":material/account_ci
 
 authenticated_pages = [home_page, connection_page,edit_page,view_page]
 
-if st.session_state.login == True:
+if st.session_state.login is True:
     pg = st.navigation(authenticated_pages,position="hidden")
 else:
     pg = st.navigation([login_page],position="hidden")

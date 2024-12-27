@@ -1,13 +1,15 @@
-import streamlit as st
-import requests
+""" Firebase API Authentication. """
 import json
 import re
+import streamlit as st
+import requests
 from classes.messages import AppMessages
 ## -------------------------------------------------------------------------------------------------
 ## Firebase Auth API -------------------------------------------------------------------------------
 ## -------------------------------------------------------------------------------------------------
 
 def sign_in_with_email_and_password(email, password):
+    """ Fire"""
     request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key={0}".format(st.secrets.firebase.api_key)
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"email": email, "password": password, "returnSecureToken": True})
