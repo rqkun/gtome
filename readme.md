@@ -1,3 +1,5 @@
+[![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/pylint-dev/pylint)
+
 # GTOME Streamlit App
 
 Welcome to the GTOME Streamlit App! This user-friendly application is designed to streamline your GTOME by seamlessly importing data from Google Sheets. With this app, you can track expenses, manage budgets, and generate insightful financial reports effortlessly.
