@@ -39,6 +39,24 @@ Welcome to the GTOME Streamlit App! This user-friendly application is designed t
     - Go to [here](https://firebase.google.com/) and create an authentication app and add your API_KEY to `.streamlit/secrets.toml` file.
     - Open your firebase console and go to Authentication > Sign-in methods and the Email/Password provider.
 
+5. Your secret should look like this:
+    ```
+    [connections.gsheets]
+    spreadsheet = "<googlesheet_url>"
+    type = "service_account"
+    project_id = ""
+    private_key_id= ""
+    private_key=""
+    client_email= ""
+    client_id= ""
+    auth_uri= ""
+    token_uri = ""
+    auth_provider_x509_cert_url= ""
+    client_x509_cert_url =""
+
+    [firebase]
+    api_key = ''
+    ```
 ### Running the App
 
 1. Start the Streamlit app:
