@@ -20,8 +20,8 @@ def plotly_process(df):
     percentages = (totals / total_sum) * 100
 
     # Group categories with less than 5% into "Other"
-    grouped_totals = totals[percentages >= 2]
-    other_total = totals[percentages < 2].sum()
+    grouped_totals = totals[percentages >= 5]
+    other_total = totals[percentages < 5].sum()
 
     if other_total > 0:
         grouped_totals['Other'] = other_total
