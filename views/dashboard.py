@@ -9,10 +9,12 @@ from classes.messages import AppMessages
 from classes.structure import DataStructure
 import lib.datasource as Datasource
 import lib.headers as header
+import plotly.graph_objects as go
+import pandas as pd 
+import numpy as np
+import calendar
 
-
-
-def plotly_process(df):
+def plotly_pie_process(df):
     """ Return a pie plot the type of expensies distribution. """
     categories = DataStructure.get_categories_numeric()
     totals = df[categories].sum()
@@ -26,7 +28,62 @@ def plotly_process(df):
     if other_total > 0:
         grouped_totals['Other'] = other_total
 
-    fig = px.pie(values=grouped_totals, names=grouped_totals.index, height=250)
+    fig = px.pie(values=grouped_totals, names=grouped_totals.index, height=260)
+    return fig
+
+def plotly_calendar_process(df):
+    """ Return a pie plot the type of expensies distribution. """
+    # Add columns for year, month, day, and week
+    df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
+    # Sum the spending across all categories
+    df['Total_Spending'] = df[['Food', 'Rent', 'Traverse', 'Subscriptions', 'Misc', 'Fun']].sum(axis=1)
+    # Add columns for day of the week and week of the month
+    df['day'] = df['Date'].dt.day
+    df['weekday'] = df['Date'].dt.weekday
+    df['week'] = (df['Date'].dt.day - 1) // 7
+
+    # Generate a complete range for the month including the previous and next month days to fill the weeks
+    start_date = df['Date'].min() - pd.DateOffset(days=df['Date'].min().weekday())
+    end_date = df['Date'].max() + pd.DateOffset(days=6 - df['Date'].max().weekday())
+    complete_dates = pd.date_range(start=start_date, end=end_date)
+
+    # Create a DataFrame for the complete range
+    complete_df = pd.DataFrame({'Date': complete_dates})
+    complete_df['Total_Spending'] = 0  # Initialize with 0 spending
+
+    # Merge with the actual spending data
+    complete_df = pd.merge(complete_df, df[['Date', 'Total_Spending']], on='Date', how='left', suffixes=('', '_actual'))
+    complete_df['Total_Spending'] = complete_df['Total_Spending_actual'].combine_first(complete_df['Total_Spending'])
+
+    # Add columns for day of the week and week of the month
+    complete_df['day'] = complete_df['Date'].dt.day
+    complete_df['weekday'] = complete_df['Date'].dt.weekday
+    complete_df['week'] = ((complete_df['Date'] - start_date).dt.days) // 7
+
+    # Create a matrix for the heatmap
+    heatmap_data = np.zeros((complete_df['week'].max() + 1, 7))  # Number of weeks, 7 days
+    for _, row in complete_df.iterrows():
+        heatmap_data[row['week'], row['weekday']] = row['Total_Spending']
+
+    custom_colorscale = [
+        [0, '#f54242'],
+        [1, '#820909']
+    ]
+
+    # Create the heatmap
+    fig = go.Figure(data=go.Heatmap(
+        z=heatmap_data,
+        x=list(calendar.day_abbr),
+        y=[f"Week {i+1}" for i in range(heatmap_data.shape[0])],
+        colorscale=custom_colorscale,
+        colorbar=dict(title="Spending"),
+    ))
+
+    fig.update_layout(
+        xaxis_title="Day of Week",
+        yaxis_title="Week of Month",height=260
+    )
+
     return fig
 
 header.add_header()
@@ -64,15 +121,16 @@ if option:
 if len(sheet) >0:
     Datasource.get_statistic_sheet()
     metrics_src = Datasource.get_metrics(option)
-    metrics,area_chart,bar_plot,pie_plot = placeholder.tabs(
+    metrics,calendar_chart,line_chart,bar_plot,pie_plot = placeholder.tabs(
         [AppIcons.METRICS+" Metrics",
-         AppIcons.AREA_CHART+" Area",
+         AppIcons.HEAT_MAP+ " Spending Map",
+         AppIcons.LINE_CHART+" Line",
          AppIcons.BAR_CHART+" Bar",
          AppIcons.PIE_CHART+" Pie"])
     spending,max_spent,largest_cate = metrics.columns(3)
     spend_delta,max_spent_delta, largest_old, largest_cate_delta = Datasource.get_delta(metrics_src)
 
-    spending.metric("Total Spending",
+    spending.metric("Total Spending (VND)",
                     millify(metrics_src["Total"],precision=3),
                     delta=millify(spend_delta,precision=3),
                     delta_color="inverse",
@@ -80,7 +138,7 @@ if len(sheet) >0:
                     label_visibility="visible",
                     border=True)
 
-    max_spent.metric("Highest Spending",
+    max_spent.metric("Highest Spending (VND)",
                      millify(metrics_src["Highest"],precision=3),
                      delta=millify(max_spent_delta,precision=3),
                      delta_color="inverse",
@@ -88,15 +146,18 @@ if len(sheet) >0:
                      label_visibility="visible",
                      border=True)
 
-    largest_cate.metric(metrics_src["Highest_Category"],
+    largest_cate.metric(metrics_src["Highest_Category"] +"  (VND)",
                         millify(metrics_src["Highest_Category_Value"],precision=3),
                         delta=millify(largest_cate_delta,precision=3),
                         delta_color="inverse",
                         help=None,
                         label_visibility="visible",
                         border=True)
-
-    area_chart.area_chart(
+    calendar_chart.plotly_chart(
+        plotly_calendar_process(sheet),use_container_width=True
+    )
+    
+    line_chart.line_chart(
         sheet,
         x="Date",
         y=DataStructure.get_categories_numeric(),
@@ -109,10 +170,11 @@ if len(sheet) >0:
         x="Date",
         y=DataStructure.get_categories_numeric(),
         use_container_width= True,
-        stack=True
-        ,height=250
+        stack=True,
+        height=250
     )
-    pie_plot.plotly_chart(plotly_process(sheet),use_container_width=True)
+    
+    pie_plot.plotly_chart(plotly_pie_process(sheet),use_container_width=True)
 
 else:
     st.warning(AppMessages.WARNING_SHEET_EMPTY,icon=AppIcons.ERROR)

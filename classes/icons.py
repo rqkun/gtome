@@ -21,6 +21,7 @@ class AppIcons():
     SAVE = ":material/save_as:"
     SYNC = ":material/sync:"
     METRICS = ":material/monitoring:"
-    AREA_CHART = ":material/area_chart:"
+    LINE_CHART = ":material/area_chart:"
     BAR_CHART = ":material/insert_chart:"
     PIE_CHART = ":material/pie_chart:"
+    HEAT_MAP = ":material/key_visualizer:"
