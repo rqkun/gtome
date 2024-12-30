@@ -81,7 +81,6 @@ st.session_state['sheet'] = datasource.clean(tmp_df)
 
 if update_button:
     datasource.update_from(conn,option,None)
-    print(st.session_state['sheet'])
     placeholder.empty()
     st.cache_data.clear()
     st.rerun()
