@@ -20,7 +20,7 @@ class AppMessages:
     
     
     @staticmethod
-    def get_connecition_errors(args):
+    def get_connection_errors(args):
         return "Connection error: "+"-".join(args)
     @staticmethod
     def get_validation_errors(args):

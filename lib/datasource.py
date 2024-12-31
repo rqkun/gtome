@@ -1,6 +1,7 @@
 """ Datasource management"""
 
-from datetime import datetime
+import calendar
+from datetime import datetime, timedelta
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 import pandas as pd
@@ -26,6 +27,7 @@ def init_statistic():
 
 def read_from(conn,option):
     """ Read Sheet. """
+    conn = connect_to_gsheet()
     try:
         return clean(conn.read(worksheet=option))
     except Exception as e:
@@ -38,22 +40,48 @@ def find_key(list_str, value):
     except ValueError:
         return len(list_str) - 1
 
-def update_from(conn,option,update_df):
+def add_from(df):
     """ Update Sheet. """
+    conn = connect_to_gsheet()
     try:
-        if update_df is None:
-            update_df = st.session_state['sheet']
         conn.update(
-            worksheet=option,
-            data=update_df
+            worksheet="Expenses",
+            data=df
         )
     except ConnectionError as err:
-        st.error(AppMessages.get_connecition_errors(err.args),icon=AppIcons.ERROR)
+        st.error(AppMessages.get_connection_errors(err.args),icon=AppIcons.ERROR)
 
+def update_from(updated_df,old_df,sheet):
+    """ Update Sheet that include another dataframe. """
+    conn = connect_to_gsheet()
+    try:
+        sheet = sheet[~sheet.apply(tuple,1).isin(old_df.apply(tuple,1))]
+
+        save = pd.concat([sheet, updated_df], ignore_index= True)
+        save = clean(save)
+        conn.update(
+            worksheet="Expenses",
+            data=save
+        )
+        
+    except ConnectionError as err:
+        st.error(AppMessages.get_connection_errors(err.args),icon=AppIcons.ERROR)
+
+
+def filter(df,span):
+    start_date = span[0]
+    end_date = span[1]
+    filtered_df = df
+    filtered_df["Date"] = pd.to_datetime(filtered_df['Date'],format='%d/%m/%Y')
+    if start_date == end_date:
+        filtered_df = filtered_df[(filtered_df['Date'].dt.date == start_date)]
+    else:
+        filtered_df = filtered_df[(filtered_df['Date'].dt.date >= start_date) & (filtered_df['Date'].dt.date <= end_date)]
+    return clean(filtered_df)
 
 def clean(input_df):
     """ Clean the dataframe """
-    input_df["Date"] = pd.to_datetime(input_df['Date'],format='%d/%m/%Y')
+    # input_df["Date"] = pd.to_datetime(input_df['Date'],format='%d/%m/%Y')
     input_df = input_df.sort_values(by="Date")
     input_df["Date"] = input_df["Date"].replace(
         np.nan,datetime.today().strftime("%d/%m/%Y"),regex=True)
@@ -63,35 +91,39 @@ def clean(input_df):
         input_df[DataStructure.get_categories_numeric()].fillna(0)
     return input_df.reset_index(drop=True)
 
-def get_metrics(sheet):
+def get_metrics(df,start,end):
     """ Get metrics from Sheet. """
-    conn = connect_to_gsheet()
-    temp = conn.read(worksheet=sheet)
+    
+    df = filter(df,(start.date(),end.date()))
+    
     categories = DataStructure.get_categories_numeric()
-    totals = temp[categories].fillna(0).sum()
-    data = DataStructure.get_initial_statistics(sheet,
+    totals = df[categories].fillna(0).sum()
+    data = DataStructure.get_initial_statistics("sheet",
                                                 total= totals.sum(),
-                                                highest=temp[categories].max(skipna=True)\
+                                                highest=df[categories].max(skipna=True)\
                                                                         .fillna(0)\
                                                                         .max(),
                                                 highest_category=totals.idxmax(),
                                                 highest_category_value=totals.max())
     return data
 
-def get_delta(data):
+def get_delta(new_metric, df):
     """ Get delta from old sheet """
-    conn = connect_to_gsheet()
-    stats = conn.read(worksheet="Statistics")
-    index = stats.index[stats['Sheet'] == data['Sheet']].tolist()[0]
-    if index > 0:
-        last_metric = stats.iloc[index - 1]
-    else:
-        last_metric = DataStructure.get_initial_statistics()
-
-    return data["Total"] - last_metric["Total"], \
-            data["Highest"] - last_metric["Highest"], \
+    today = datetime.now()
+    # Calculate the first day of the current month
+    start_date_this_month = today.replace(day=1)
+    # Calculate the last day of the previous month
+    end_date_last_month = start_date_this_month - timedelta(days=1)
+    # Calculate the first day of the previous month
+    start_date_last_month = end_date_last_month.replace(day=1)
+    
+    last_metric = get_metrics(df,start_date_last_month,end_date_last_month)
+    
+    return new_metric["Total"] - last_metric["Total"], \
+            new_metric["Highest"] - last_metric["Highest"], \
                                 last_metric["Highest_Category"], \
-            data["Highest_Category_Value"]- last_metric["Highest_Category_Value"]
+            new_metric["Highest_Category_Value"]- last_metric["Highest_Category_Value"]
+
 @st.cache_resource
 def connect_to_gsheet():
     """ Connection """
@@ -100,47 +132,19 @@ def connect_to_gsheet():
     except Exception as e:
         raise ConnectionError('GoogleSheet', AppMessages.GSHEET_CONNECTION_ERROR) from e
 
-@st.cache_resource
+@st.cache_data
 def get_detail_sheets():
     """ Get all or create a new Sheet. """
     conn = connect_to_gsheet()
+    
     worksheet_names = []
-    for sheet in conn.client._open_spreadsheet():
-        if sheet.title != "Statistics":
-            worksheet_names.append(sheet.title)
-
-    today = datetime.today().strftime('%B-%Y')
-    if today not in worksheet_names:
-        conn.create(
-            worksheet=today,
-            data=init_sheet(),
-        )
-
-    return conn, worksheet_names
-
-
-@st.cache_resource
-def get_statistic_sheet():
-    """ Get/Create a Statistic Sheet. """
-    conn = connect_to_gsheet()
-    worksheet_names = []
-    for sheet in conn.client._open_spreadsheet():
+    for sheet in conn.client._open_spreadsheet(): # type:ignore
         worksheet_names.append(sheet.title)
 
-    data = init_statistic()
-    for title in worksheet_names:
-        if title != "Statistics":
-            init_data = get_metrics(title)
-            data.loc[len(data)] = init_data
-
-    if "Statistics" not in worksheet_names:
-        conn.create(
-            worksheet="Statistics",
-            data=data,
-        )
+    if "Expenses" not in worksheet_names:
+        return clean(conn.create(
+            worksheet="Expenses",
+            data=init_sheet(),
+        ))
     else:
-        conn.update(
-            worksheet="Statistics",
-            data=data,
-        )
-    
+        return clean(conn.read(worksheet="Expenses"))

@@ -66,8 +66,8 @@ def plotly_calendar_process(df):
         heatmap_data[row['week'], row['weekday']] = row['Total_Spending']
 
     custom_colorscale = [
-        [0, '#f54242'],
-        [1, '#820909']
+        [0, '#ffffff'],
+        [1, '#f54242']
     ]
 
     # Create the heatmap
@@ -88,99 +88,102 @@ def plotly_calendar_process(df):
 
 header.add_header()
 
-if 'sheet_key' not in st.session_state:
-    st.session_state['sheet_key'] =datetime.today().strftime('%B-%Y')
 try:
-    conn,worksheet_names = Datasource.get_detail_sheets()
-    if 'sheet' not in st.session_state:
-        st.session_state['sheet'] = Datasource.clean(
-            conn.read(worksheet=st.session_state['sheet_key'])
-            )
+    sheet = Datasource.get_detail_sheets()
 except ConnectionError as err:
-    st.error(AppMessages.get_connecition_errors(err.args),icon=AppIcons.ERROR)
+    st.error(AppMessages.get_connection_errors(err.args),icon=AppIcons.ERROR)
 
-sheet = st.session_state['sheet']
+col1,col2 = st.columns([3,2],vertical_alignment="bottom")
 
-col1,col2 = st.columns([3,2])
-option = col1.selectbox(label="Sheet Select",
-                    options = worksheet_names,
-                    index=Datasource.find_key(worksheet_names,st.session_state['sheet_key']),
-                    label_visibility="collapsed"
-                )
+today = datetime.now()
+start_date = today.replace(day=1)
+last_day = calendar.monthrange(today.year, today.month)[1]
+end_date = today.replace(day=last_day)
+oldest_record = pd.to_datetime(sheet['Date'],format="%d/%m/%Y").min().date()
+selected_span = col1.date_input(
+    "Select your expense span",
+    (start_date, end_date),
+    format="DD/MM/YYYY",
+    min_value=oldest_record,
+    help="The oldest date is: " + oldest_record.strftime("%d/%m/%Y")
+    
+)
+
 refresh_button = col2.button("Sync",use_container_width=True, icon=AppIcons.SYNC,type="primary")
 placeholder = st.empty()
 
 
-if option:
-    sheet = Datasource.read_from(conn,option)
-    st.session_state['sheet'] = sheet
-
-
-
-
-if len(sheet) >0:
-    Datasource.get_statistic_sheet()
-    metrics_src = Datasource.get_metrics(option)
-    metrics,calendar_chart,line_chart,bar_plot,pie_plot = placeholder.tabs(
-        [AppIcons.METRICS+" Metrics",
-         AppIcons.HEAT_MAP+ " Spending Map",
-         AppIcons.LINE_CHART+" Line",
-         AppIcons.BAR_CHART+" Bar",
-         AppIcons.PIE_CHART+" Pie"])
-    spending,max_spent,largest_cate = metrics.columns(3)
-    spend_delta,max_spent_delta, largest_old, largest_cate_delta = Datasource.get_delta(metrics_src)
-
-    spending.metric("Total Spending (VND)",
-                    millify(metrics_src["Total"],precision=3),
-                    delta=millify(spend_delta,precision=3),
-                    delta_color="inverse",
-                    help=None,
-                    label_visibility="visible",
-                    border=True)
-
-    max_spent.metric("Highest Spending (VND)",
-                     millify(metrics_src["Highest"],precision=3),
-                     delta=millify(max_spent_delta,precision=3),
-                     delta_color="inverse",
-                     help=None,
-                     label_visibility="visible",
-                     border=True)
-
-    largest_cate.metric(metrics_src["Highest_Category"] +"  (VND)",
-                        millify(metrics_src["Highest_Category_Value"],precision=3),
-                        delta=millify(largest_cate_delta,precision=3),
+if len(selected_span) < 2:
+    st.warning("Please choose a start/end date.", icon=AppIcons.WARNING)
+elif selected_span[0] < oldest_record:
+    st.warning("Please choose a valid date.", icon=AppIcons.WARNING)
+else: 
+    data = Datasource.filter(sheet,selected_span)
+    if len(data) >0:
+        
+        metrics_src = Datasource.get_metrics(sheet,start_date,end_date)
+        
+        metrics,calendar_chart,line_chart,bar_plot,pie_plot = placeholder.tabs(
+            [AppIcons.METRICS+" Metrics",
+            AppIcons.HEAT_MAP+ " Spending Map",
+            AppIcons.LINE_CHART+" Line",
+            AppIcons.BAR_CHART+" Bar",
+            AppIcons.PIE_CHART+" Pie"])
+        metrics.write("Current month metrics compare to last month.")
+        spending,max_spent,largest_cate = metrics.columns(3)
+        total_spent, highest_single, highest_category, highest_category_value   = Datasource.get_delta(metrics_src, sheet)
+        
+        spending.metric("Total Spending (VND)",
+                        millify(metrics_src["Total"],precision=3),
+                        delta=millify(total_spent,precision=3),
                         delta_color="inverse",
                         help=None,
                         label_visibility="visible",
                         border=True)
-    calendar_chart.plotly_chart(
-        plotly_calendar_process(sheet),use_container_width=True
-    )
-    
-    line_chart.line_chart(
-        sheet,
-        x="Date",
-        y=DataStructure.get_categories_numeric(),
-        use_container_width= True,
-        height=250
-    )
 
-    bar_plot.bar_chart(
-        sheet,
-        x="Date",
-        y=DataStructure.get_categories_numeric(),
-        use_container_width= True,
-        stack=True,
-        height=250
-    )
-    
-    pie_plot.plotly_chart(plotly_pie_process(sheet),use_container_width=True)
+        max_spent.metric("Highest Spending (VND)",
+                        millify(metrics_src["Highest"],precision=3),
+                        delta=millify(highest_single,precision=3),
+                        delta_color="inverse",
+                        help=None,
+                        label_visibility="visible",
+                        border=True)
 
-else:
-    st.warning(AppMessages.WARNING_SHEET_EMPTY,icon=AppIcons.ERROR)
+        largest_cate.metric(metrics_src["Highest_Category"] +" (VND)",
+                            millify(metrics_src["Highest_Category_Value"],precision=3),
+                            delta=millify(highest_category_value,precision=3),
+                            delta_color="inverse",
+                            help=None,
+                            label_visibility="visible",
+                            border=True)
+        calendar_chart.plotly_chart(
+            plotly_calendar_process(data),use_container_width=True
+        )
+        
+        line_chart.line_chart(
+            data,
+            x="Date",
+            y=DataStructure.get_categories_numeric(),
+            use_container_width= True,
+            height=250
+        )
 
-if refresh_button:
-    placeholder.empty()
-    st.cache_data.clear()
-    st.cache_resource.clear()
-    st.rerun()
+        bar_plot.bar_chart(
+            data,
+            x="Date",
+            y=DataStructure.get_categories_numeric(),
+            use_container_width= True,
+            stack=True,
+            height=250
+        )
+        
+        pie_plot.plotly_chart(plotly_pie_process(data),use_container_width=True)
+
+    else:
+        st.warning(AppMessages.WARNING_SHEET_EMPTY,icon=AppIcons.ERROR)
+
+    if refresh_button:
+        placeholder.empty()
+        st.cache_data.clear()
+        st.cache_resource.clear()
+        st.rerun()

@@ -36,6 +36,7 @@ with st.expander("See explanation"):
                          icon=AppIcons.DASHBOARD_PAGE,
                          use_container_width=True):
                 st.switch_page("views/dashboard.py")
+                pass
             st.write("Metrics, charts from your expenses reports.")
     with col3:
         with st.container(border=True,key="home_desc_3"):
@@ -44,6 +45,7 @@ with st.expander("See explanation"):
                          icon=AppIcons.MANAGE_PAGE,
                          use_container_width=True):
                 st.switch_page("views/manage.py")
+                pass
             st.write("Add/edit/delete multiple entries in reports.")
     with col4:
         with st.container(border=True,key="home_desc_4"):

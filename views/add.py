@@ -1,8 +1,10 @@
 """The Insert Page for Data Ingestion."""
 
+import calendar
 from datetime import datetime
 import pandas as pd
 import streamlit as st
+from classes.structure import DataStructure
 import lib.datasource as datasource
 import lib.headers as header
 from classes.messages import AppMessages
@@ -31,7 +33,6 @@ def insert(df):
                                       "today",
                                       format="DD/MM/YYYY",
                                       label_visibility="collapsed",
-                                      min_value=datetime.strptime("1-"+option,'%d-%B-%Y'),
                                       max_value=datetime.today())
         submit_bttn = right_insert.button('Submit',
                                           use_container_width=True,
@@ -43,12 +44,6 @@ def insert(df):
         else:
             raise ValueError(AppMessages.VALIDATION_EXPENSE_TYPE,
                              AppMessages.VALIDATION_ERROR_MISSING)
-        if datetime.strptime(date.strftime("%d/%m/%Y"),"%d/%m/%Y") \
-                            > datetime.strptime("1-"+option,'%d-%B-%Y'):
-            pass
-        else:
-            raise ValueError(AppMessages.VALIDATION_DATE,
-                             AppMessages.VALIDATION_ERROR_OOB)
 
         if submit_bttn:
             initial_data[option_map[type_of_expense]] = amount
@@ -57,7 +52,7 @@ def insert(df):
             df.loc[len(df)] = initial_data
             df['Date'] = pd.to_datetime(df['Date'], format="%d/%m/%Y")
             df = df.sort_values(by=['Date'])
-            datasource.update_from(conn,option,df)
+            datasource.add_from(df)
             st.cache_data.clear()
             st.rerun()
     except ValueError as err:
@@ -65,27 +60,27 @@ def insert(df):
 
 
 header.add_header()
-if 'sheet_key' not in st.session_state:
-    st.session_state['sheet_key'] =datetime.today().strftime('%B-%Y')
+
 try:
-    conn,worksheet_names = datasource.get_detail_sheets()
-    if 'sheet' not in st.session_state:
-        st.session_state['sheet'] = datasource.clean(conn.read(
-                worksheet=st.session_state['sheet_key']
-            ))
+    worksheet = datasource.get_detail_sheets()
 except ConnectionError as err:
-    st.error(AppMessages.get_connecition_errors(err.args),icon=AppIcons.ERROR)
-
-sheet = st.session_state['sheet']
-
-col1,col2,col3 = st.columns([3,1,1])
+    st.error(AppMessages.get_connection_errors(err.args),icon=AppIcons.ERROR)
+    
+col1,col2,col3 = st.columns([3,1,1],vertical_alignment="bottom")
 placeholder = st.empty()
 expander = placeholder.expander("Expand for Data Grid",False)
-option = col1.selectbox(label="Sheet Select",
-                    options = worksheet_names,
-                    index=datasource.find_key(worksheet_names,st.session_state['sheet_key']),
-                    label_visibility="collapsed"
-                )
+
+today = datetime.now()
+start_date = today.replace(day=1)
+last_day = calendar.monthrange(today.year, today.month)[1]
+end_date = today.replace(day=last_day)
+
+selected_span = col1.date_input(
+    "Select your expense span",
+    (start_date, end_date),
+    format="DD/MM/YYYY",
+)
+
 
 if col2.button("Sync",use_container_width=True, icon=AppIcons.SYNC,type="primary"):
     placeholder.empty()
@@ -93,9 +88,13 @@ if col2.button("Sync",use_container_width=True, icon=AppIcons.SYNC,type="primary
     st.cache_resource.clear()
     st.rerun()
 if col3.button("Insert",use_container_width=True, icon=AppIcons.INSERT_PAGE,type="primary"):
-    insert(sheet)
-if option:
-    sheet = datasource.read_from(conn,option)
-    st.session_state['sheet'] = sheet
+    insert(worksheet)
+    pass
 
-expander.dataframe(sheet,use_container_width=True,height=35*len(sheet)+38,hide_index=True)
+if len(selected_span) == 2:
+    data = datasource.filter(worksheet,selected_span)
+    data['Date'] = data['Date'].dt.strftime("%d/%m/%Y")
+    expander.data_editor(data,use_container_width=True,height=35*len(data)+38,hide_index=True)
+else: 
+    data = datasource.filter(worksheet,(selected_span[0],selected_span[0]))
+    expander.data_editor(data,use_container_width=True,height=35*len(data)+38,hide_index=True,column_config=DataStructure.get_column_configs())

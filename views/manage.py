@@ -1,9 +1,11 @@
 """ Management page for the data grid. """
 
+import calendar
 from datetime import datetime, time
 import streamlit as st
 from classes.icons import AppIcons
 from classes.messages import AppMessages
+from classes.structure import DataStructure
 import lib.datasource as datasource
 import lib.headers as header
 
@@ -25,26 +27,25 @@ def numeric_config():
 
 header.add_header()
 
-if 'sheet_key' not in st.session_state:
-    st.session_state['sheet_key'] =datetime.today().strftime('%B-%Y')
 try:
-    conn,worksheet_names = datasource.get_detail_sheets()
-    if 'sheet' not in st.session_state:
-        st.session_state['sheet'] = datasource.clean(
-            conn.read(worksheet=st.session_state['sheet_key'])
-            )
+    sheet = datasource.get_detail_sheets()
 except ConnectionError as err:
-    st.error(AppMessages.get_connecition_errors(err.args),icon=AppIcons.ERROR)
+    st.error(AppMessages.get_connection_errors(err.args),icon=AppIcons.ERROR)
 
-sheet = st.session_state['sheet']
-
-col1,col2,col3 = st.columns([3,1,1])
+col1,col2,col3 = st.columns([3,1,1],vertical_alignment="bottom")
 placeholder = st.empty()
-option = col1.selectbox(label="Sheet Select",
-                        options = worksheet_names,
-                        index=find_key(worksheet_names,st.session_state['sheet_key']),
-                        label_visibility="collapsed"
-                        )
+
+today = datetime.now()
+start_date = today.replace(day=1)
+last_day = calendar.monthrange(today.year, today.month)[1]
+end_date = today.replace(day=last_day)
+
+selected_span = col1.date_input(
+    "Select your expense span",
+    (start_date, end_date),
+    format="DD/MM/YYYY",
+)
+
 
 if col2.button("Sync",use_container_width=True, icon=AppIcons.SYNC,type="primary"):
     placeholder.empty()
@@ -53,34 +54,23 @@ if col2.button("Sync",use_container_width=True, icon=AppIcons.SYNC,type="primary
     st.rerun()
 
 update_button = col3.button("Save",use_container_width=True,type="primary",icon=AppIcons.SAVE)
-convert_dict = {'Date': st.column_config.DatetimeColumn(
-                            format='DD/MM/YYYY',
-                            min_value=datetime.strptime("1-"+option,'%d-%B-%Y'),
-                            max_value=datetime.combine(datetime.now(), time.max),
-                        ),
-                        'Food': numeric_config(),
-                        'Rent': numeric_config(),
-                        'Traverse': numeric_config(),
-                        'Subscriptions': numeric_config(),
-                        'Misc': numeric_config(),
-                        'Note':  st.column_config.TextColumn()
-                        }
-if option:
-    sheet = datasource.read_from(conn,option)
-    st.session_state['sheet'] = sheet
 
-tmp_df = placeholder.data_editor(st.session_state['sheet'],
-                        use_container_width=True,
-                        height=35*len(st.session_state['sheet'])+36*2,
-                        hide_index=True,
-                        column_config=convert_dict,
-                        on_change=not_saved,
-                        num_rows='dynamic')
 
-st.session_state['sheet'] = datasource.clean(tmp_df)
-
-if update_button:
-    datasource.update_from(conn,option,None)
-    placeholder.empty()
-    st.cache_data.clear()
-    st.rerun()
+if len(selected_span) < 2:
+    st.warning("Please choose a start/end date.", icon=AppIcons.WARNING)
+else: 
+    data = datasource.filter(sheet,selected_span)
+    
+    tmp_df = placeholder.data_editor(data,
+                            use_container_width=True,
+                            height=35*len(data)+36*2,
+                            hide_index=True,
+                            column_config=DataStructure.get_column_configs(),
+                            on_change=not_saved,
+                            num_rows='dynamic')
+    
+    if update_button:
+        datasource.update_from(tmp_df,data,sheet)
+        placeholder.empty()
+        st.cache_data.clear()
+        st.rerun()

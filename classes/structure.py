@@ -1,9 +1,25 @@
-from datetime import datetime
+from datetime import datetime, time
+import streamlit as st
 
 class DataStructure:
     @staticmethod
     def get_categories():
         return ['Date', 'Food', 'Rent', 'Traverse', 'Subscriptions', 'Misc', 'Fun', 'Note']
+    
+    @staticmethod
+    def get_column_configs():
+        numeric_config = st.column_config.NumberColumn(min_value=0, default=0,required=False)
+        return {'Date': st.column_config.DatetimeColumn(
+                    format='DD/MM/YYYY',
+                    max_value=datetime.combine(datetime.now(), time.max),
+                ),
+                'Food': numeric_config,
+                'Rent': numeric_config,
+                'Traverse': numeric_config,
+                'Subscriptions': numeric_config,
+                'Misc': numeric_config,
+                'Note':  st.column_config.TextColumn()
+                }
     
     @staticmethod
     def get_statistic_categories():
