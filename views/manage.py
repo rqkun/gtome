@@ -1,7 +1,7 @@
 """ Management page for the data grid. """
 
 import calendar
-from datetime import datetime, time
+from datetime import datetime
 import streamlit as st
 from classes.icons import AppIcons
 from classes.messages import AppMessages
@@ -9,21 +9,9 @@ from classes.structure import DataStructure
 import lib.datasource as datasource
 import lib.headers as header
 
-def find_key(list_str, value):
-    """ Finding latest key. """
-    try:
-        return list_str.index(value)
-    except ValueError:
-        return len(list_str) - 1
-
 def not_saved():
     """ Show warning when not saved. """
     st.warning('Changes you made have not been saved!', icon=AppIcons.WARNING)
-
-def numeric_config():
-    """ Common column config. """
-    return st.column_config.NumberColumn(min_value=0, default=0,required=False)
-
 
 header.add_header()
 

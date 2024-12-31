@@ -4,7 +4,6 @@ import calendar
 from datetime import datetime
 import pandas as pd
 import streamlit as st
-from classes.structure import DataStructure
 import lib.datasource as datasource
 import lib.headers as header
 from classes.messages import AppMessages
@@ -87,14 +86,14 @@ if col2.button("Sync",use_container_width=True, icon=AppIcons.SYNC,type="primary
     st.cache_data.clear()
     st.cache_resource.clear()
     st.rerun()
-if col3.button("Insert",use_container_width=True, icon=AppIcons.INSERT_PAGE,type="primary"):
-    insert(worksheet)
-    pass
+    
+insert_bttn =  col3.button("Insert",use_container_width=True, icon=AppIcons.INSERT_PAGE,type="primary")
 
-if len(selected_span) == 2:
-    data = datasource.filter(worksheet,selected_span)
-    data['Date'] = data['Date'].dt.strftime("%d/%m/%Y")
-    expander.data_editor(data,use_container_width=True,height=35*len(data)+38,hide_index=True)
+if len(selected_span) < 2:
+    st.warning("Please choose a start/end date.", icon=AppIcons.WARNING)
 else: 
-    data = datasource.filter(worksheet,(selected_span[0],selected_span[0]))
-    expander.data_editor(data,use_container_width=True,height=35*len(data)+38,hide_index=True,column_config=DataStructure.get_column_configs())
+    data = datasource.filter(worksheet,selected_span)
+
+    if insert_bttn:
+        insert(worksheet)
+    expander.dataframe(data,use_container_width=True,height=35*len(data)+38,hide_index=True)
