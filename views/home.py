@@ -2,8 +2,8 @@
 import streamlit as st
 import lib.headers as header
 from classes.icons import AppIcons
-header.add_header()
 
+header.add_header()
 st.markdown("# About")
 st.markdown("""
     <div style="text-align: justify;">

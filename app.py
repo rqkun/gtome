@@ -1,6 +1,8 @@
 """The main streamlit app that invoke other pages."""
 import streamlit as st
 from classes.icons import AppIcons
+from lib.datasource import get_user_sheet
+
 
 if 'user_info' not in st.session_state:
     st.session_state.login = False
@@ -26,6 +28,7 @@ login_page = st.Page("views/login.py", title="Login", icon=AppIcons.LOG_IN)
 authenticated_pages = [home_page, connection_page,edit_page,view_page]
 
 if st.session_state.login is True:
+    st.session_state.sheet_url = get_user_sheet(st.session_state.user_info['email'])
     pg = st.navigation(authenticated_pages,position="hidden")
 else:
     pg = st.navigation([login_page],position="hidden")

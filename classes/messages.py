@@ -10,6 +10,7 @@ class AppMessages:
     SIGN_OUT = 'You have successfully signed out.'
     ACCOUNT_DELETED = 'You have successfully deleted your account.'
     GSHEET_CONNECTION_ERROR = 'GoogleSheetAPI connection error.'
+    SUPABASE_CONNECTION_ERROR = 'SupabaseAPI connection error.'
     WARNING_CHANGES_NOT_SAVED = 'Changes you made have not been saved.'
     WARNING_SHEET_EMPTY = 'Sheet is empty.'
     VALIDATION_ERROR_MISSING = 'EMPTY_OR_MISSING'

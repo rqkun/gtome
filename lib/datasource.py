@@ -2,10 +2,12 @@
 
 import calendar
 from datetime import datetime, timedelta
+import gspread
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 import pandas as pd
 import numpy as np
+from supabase import create_client
 from classes.icons import AppIcons
 from classes.structure import DataStructure
 from classes.messages import AppMessages
@@ -29,7 +31,7 @@ def read_from(conn,option):
     """ Read Sheet. """
     conn = connect_to_gsheet()
     try:
-        return clean(conn.read(worksheet=option))
+        return clean(conn.read(spreadsheet=st.session_state.sheet_url,worksheet=option))
     except Exception as e:
         raise ConnectionError('GoogleSheet', AppMessages.GSHEET_CONNECTION_ERROR) from e
 
@@ -45,6 +47,7 @@ def add_from(df):
     conn = connect_to_gsheet()
     try:
         conn.update(
+            spreadsheet=st.session_state.sheet_url,
             worksheet="Expenses",
             data=df
         )
@@ -60,6 +63,7 @@ def update_from(updated_df,old_df,sheet):
         save = pd.concat([sheet, updated_df], ignore_index= True)
         save = clean(save)
         conn.update(
+            spreadsheet=st.session_state.sheet_url,
             worksheet="Expenses",
             data=save
         )
@@ -137,14 +141,38 @@ def get_detail_sheets():
     """ Get all or create a new Sheet. """
     conn = connect_to_gsheet()
     
-    worksheet_names = []
-    for sheet in conn.client._open_spreadsheet(): # type:ignore
-        worksheet_names.append(sheet.title)
+    # worksheet_names = []
+    # for sheet in conn.client._open_spreadsheet(): # type:ignore
+    #     worksheet_names.append(sheet.title)
 
-    if "Expenses" not in worksheet_names:
-        return clean(conn.create(
+    try:
+        return clean(conn.read(
+            spreadsheet = st.session_state.sheet_url,
             worksheet="Expenses",
-            data=init_sheet(),
         ))
-    else:
-        return clean(conn.read(worksheet="Expenses"))
+    except gspread.exceptions.WorksheetNotFound:
+        pass
+
+#-----------
+#   Supabase
+#-----------
+
+@st.cache_resource
+def connect_to_supabase():
+    """ Connection """
+    url = st.secrets.supabase.url
+    key = st.secrets.supabase.key
+    try:
+        return create_client(url, key)
+    except Exception as e:
+        raise ConnectionError('Supabase', AppMessages.SUPABASE_CONNECTION_ERROR) from e
+
+@st.cache_data
+def get_user_sheet(email):
+    """ Get all user sheets. """
+    conn = connect_to_supabase()
+    data = conn.table("user_sheet").select("*").like_all_of("email",email).execute().data
+    if len(data) == 0:
+        return ""
+    else: 
+        return data[0]['sheet']
