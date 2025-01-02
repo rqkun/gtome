@@ -5,4 +5,5 @@ plotly==5.24.1
 requests==2.31.0
 millify
 supabase
+httpx_oauth
 google-auth
