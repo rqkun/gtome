@@ -75,7 +75,7 @@ coverage/
 !e2e_playwright/.streamlit/
 lib/streamlit/static
 streamlit-storage
-.streamlit/certificates/*
+certificates/*
 # Data Files
 **/uber-raw-data-sep14.csv
 
