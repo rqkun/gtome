@@ -4,12 +4,32 @@ import re
 import streamlit as st
 import requests
 from classes.messages import AppMessages
+
+import google_auth_oauthlib.flow
+from googleapiclient.discovery import build
+import streamlit as st
+
+from lib import custom_components
+
 ## -------------------------------------------------------------------------------------------------
 ## Firebase Auth API -------------------------------------------------------------------------------
 ## -------------------------------------------------------------------------------------------------
 
+def sign_in_with_external(id_token):
+    request_ref = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key={0}".format(st.secrets.firebase.api_key)
+    headers = {"content-type": "application/json; charset=UTF-8"}
+    data = json.dumps({
+        'postBody': f'id_token={id_token}&providerId=google.com',
+        'requestUri': st.secrets.google_oauth2.redirect_url,
+        'returnIdpCredential': True,
+        'returnSecureToken': True
+    })
+    request_object = requests.post(request_ref, headers=headers, data=data)
+    raise_detailed_error(request_object)
+    return request_object.json()
+
+
 def sign_in_with_email_and_password(email, password):
-    """ Fire"""
     request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key={0}".format(st.secrets.firebase.api_key)
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"email": email, "password": password, "returnSecureToken": True})
@@ -57,6 +77,16 @@ def delete_user_account(id_token):
     raise_detailed_error(request_object)
     return request_object.json()
 
+def signout_api(instanceId,uid):
+    request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signOutUser?key={0}".format(st.secrets.firebase.api_key)
+    headers = {"content-type": "application/json; charset=UTF-8"}
+    data = json.dumps({"instanceId": instanceId,
+                       "localId":uid
+                       })
+    request_object = requests.post(request_ref, headers=headers, data=data)
+    raise_detailed_error(request_object)
+    return request_object.json()
+
 def raise_detailed_error(request_object):
     try:
         request_object.raise_for_status()
@@ -94,8 +124,69 @@ def sign_in(email:str, password:str) -> None:
             st.session_state.auth_warning = error_message
 
     except Exception as error:
-        print(error)
         st.session_state.auth_warning = AppMessages.INTERNAL_SERVER_ERROR + "".join(error.args)
+
+
+## -------------------------------------------------------------------------------------------------
+## OAuth2 API --------------------------------------------------------------------------------------
+## -------------------------------------------------------------------------------------------------
+
+def google_authentication(component):
+    try:
+        auth_code = st.query_params.get("code")
+        CLIENT_CONFIG = {'web': {
+            'client_id': st.secrets.google_oauth2.client_id,
+            'project_id': st.secrets.google_oauth2.project_id,
+            'auth_uri': st.secrets.google_oauth2.auth_uri,
+            'token_uri': st.secrets.google_oauth2.token_uri,
+            'auth_provider_x509_cert_url': st.secrets.google_oauth2.auth_provider_x509_cert_url,
+            'client_secret': st.secrets.google_oauth2.secret,
+            'redirect_uris': st.secrets.google_oauth2.redirect_url,
+            'javascript_origins': st.secrets.google_oauth2.javascript_origins
+        }}
+        flow = google_auth_oauthlib.flow.Flow.from_client_config(
+            CLIENT_CONFIG, # replace with you json credentials from your google auth app
+            scopes=["https://www.googleapis.com/auth/userinfo.email", "openid"],
+            redirect_uri=st.secrets.google_oauth2.redirect_url,
+        )
+        if auth_code:
+            custom_components.google_sign_in_button(component,url="")
+            flow.fetch_token(code=auth_code)
+            credentials = flow.credentials
+            user_info_service = build(
+                serviceName="oauth2",
+                version="v2",
+                credentials=credentials,
+            )
+            
+            user_info = user_info_service.userinfo().get().execute()
+            assert user_info.get("email"), "Email not found in infos"
+            response = sign_in_with_external(credentials.id_token)
+            
+            if 'error' in response:
+                raise requests.exceptions.HTTPError(f"Error authenticating with Firebase: {response['error']['message']}")
+            
+            st.session_state["google_auth_code"] = auth_code
+            st.session_state.user_info = user_info
+            st.session_state.login = True
+            st.query_params.clear()
+            st.rerun()
+        else:
+            st.query_params.clear()
+            authorization_url, state = flow.authorization_url(
+                access_type="offline",
+                include_granted_scopes="true",
+            )
+            custom_components.google_sign_in_button(component,url=authorization_url)
+            
+    except requests.exceptions.HTTPError as error:
+        error_message = json.loads(error.args[1])['error']['message']
+        st.session_state.auth_warning = error_message
+
+    except Exception as error:
+        st.session_state.auth_warning = AppMessages.INTERNAL_SERVER_ERROR + "".join(error.args)
+
+
 
 
 def password_warning_builder(str):
