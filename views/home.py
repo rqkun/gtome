@@ -8,7 +8,7 @@ st.markdown("# About")
 st.markdown("""
     <div style="text-align: justify;">
     A user-friendly Streamlit app designed to streamline your financial management. \
-    By seamlessly importing data from Google Sheets, it allows you to track expenses, manage budgets, and generate insightful financial reports. \
+    By seamlessly store data to Google Sheets, it allows you to track expenses, manage budgets, and generate insightful financial reports. \
     With intuitive visualizations, the app helps you stay on top of your finances effortlessly.
     </div>
     """,unsafe_allow_html=True)
@@ -65,7 +65,6 @@ with st.expander("See explanation"):
     st.markdown(
     """
     ###### Utilities:
-    - [:material/dark_mode: / :material/light_mode:] - Toggle light/dark mode.
     - [:material/exit_to_app: Logout] - Logout.
     - [:material/menu: Menu] - Navigation menu.
     """

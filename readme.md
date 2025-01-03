@@ -1,12 +1,12 @@
 [![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/pylint-dev/pylint)
-
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://rqkun-gtome.streamlit.app/)
 # GTOME Streamlit App
 
 Welcome to the GTOME Streamlit App! This user-friendly application is designed to streamline your GTOME by seamlessly importing data from Google Sheets. With this app, you can track expenses, manage budgets, and generate insightful financial reports effortlessly.
-
+Checkout the website [here](https://rqkun-gtome.streamlit.app/)
 ## Features
 
-- **Google Sheets Integration**: Easily import your financial data from Google Sheets.
+- **Google Sheets Integration**: Easily store your financial data from Google Sheets.
 - **Expense Tracking**: Keep track of your expenses with ease.
 - **Data Grid**: Set and manage budgets using data grids.
 - **Intuitive Visualizations**: Visualize your financial data with charts and graphs for better understanding.
@@ -92,7 +92,7 @@ Welcome to the GTOME Streamlit App! This user-friendly application is designed t
 
 ## Usage
 
-1. **Import Data**: Use the app to import your financial data from Google Sheets.
+1. **Import Data**: Use the app to store your financial data to Google Sheets.
 2. **Track Expenses**: Add, edit, and delete expense entries to keep your records up to date.
 3. **Visualize Data**: View your financial data through various charts and graphs for better insights.
 
