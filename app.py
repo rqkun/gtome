@@ -7,16 +7,16 @@ from lib.datasource import get_user_sheet, set_user_sheet, test_supabase_connect
 if 'user_info' not in st.session_state:
     st.session_state.login = False
 
-ms = st.session_state
-if "themes" not in ms:
-    ms.themes = {"current_theme": "dark",
-                    "refreshed": True,
-                    "light": {"theme.base": "dark",
-                              "button_face": ":material/dark_mode:"},
+# ms = st.session_state
+# if "themes" not in ms:
+#     ms.themes = {"current_theme": "dark",
+#                     "refreshed": True,
+#                     "light": {"theme.base": "dark",
+#                               "button_face": ":material/dark_mode:"},
 
-                    "dark":  {"theme.base": "light",
-                              "button_face": ":material/light_mode:"},
-                    }
+#                     "dark":  {"theme.base": "light",
+#                               "button_face": ":material/light_mode:"},
+#                     }
 
 st.set_page_config(page_title="GTOME", page_icon=AppIcons.MAIN_APP)
 home_page = st.Page("views/home.py", title="Home", icon=AppIcons.HOME_PAGE)

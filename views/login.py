@@ -84,12 +84,12 @@ def sign_in():
 
 if 'user_info' not in st.session_state:
     _,col2,_ = st.columns([1,2,1])
-    _,left,right = col2.columns([1,5,1])
-    left.markdown("""<div style="text-align: center;
+    # _,left,right = col2.columns([1,5,1])
+    col2.markdown("""<div style="text-align: center;
                         font-size: 50px; font-weight: bold;">GTOME
                     </div>""",unsafe_allow_html=True)
-    with right:
-        header.add_change_theme()
+    # with right:
+    #     header.add_change_theme()
     col2.write("")
     placeholder = col2.container()
     col2.divider()
