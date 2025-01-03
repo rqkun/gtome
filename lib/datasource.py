@@ -137,7 +137,6 @@ def test_connect_to_sheet(link):
     except gspread.exceptions.SpreadsheetNotFound:
         return False
 
-@st.cache_data
 def get_detail_sheets():
     """ Get all or create a new Sheet. """
     conn = connect_to_gsheet()
@@ -169,7 +168,6 @@ def connect_to_supabase():
     key = st.secrets.supabase.key
     return create_client(url, key)
 
-@st.cache_data
 def get_user_sheet(email):
     """ Get all user sheets. """
     conn = connect_to_supabase()
