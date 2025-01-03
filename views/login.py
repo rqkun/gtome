@@ -92,17 +92,14 @@ if 'user_info' not in st.session_state:
         header.add_change_theme()
     col2.write("")
     placeholder = col2.container()
-
     col2.divider()
     col2.button("Create account",use_container_width=True,on_click=sign_up,type='secondary')
     col2.button("Forget Password",use_container_width=True,on_click=reset_password)
-    
     col2.write("Already have an account ?")
     col2.button("Sign In",use_container_width=True,on_click=sign_in,type="primary")
-    
-    with placeholder, st.spinner("Signing in..."):
+
+    with col2, st.spinner("Signing in..."):
         auth.google_authentication(placeholder)
-    #
-    
+
         
 

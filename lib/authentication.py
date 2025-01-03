@@ -151,6 +151,7 @@ def google_authentication(component):
         )
         if auth_code:
             custom_components.google_sign_in_button(component,url="")
+            
             flow.fetch_token(code=auth_code)
             credentials = flow.credentials
             user_info_service = build(
@@ -239,8 +240,8 @@ def reset_password(email:str) -> None:
 
 def sign_out() -> None:
     st.session_state.clear()
-    st.session_state.auth_success = AppMessages.SIGN_OUT
-
+    st.cache_data.clear()
+    st.cache_resource.clear()
 
 def delete_account(password:str) -> None:
     try:
@@ -254,7 +255,6 @@ def delete_account(password:str) -> None:
 
     except requests.exceptions.HTTPError as error:
         error_message = json.loads(error.args[1])['error']['message']
-        print(error_message)
-
+        st.session_state.auth_warning = error_message
     except Exception as error:
         st.session_state.auth_warning = AppMessages.INTERNAL_SERVER_ERROR + "".join(error.args)

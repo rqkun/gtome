@@ -64,3 +64,19 @@ def add_header():
         with col1:
             # Create a toggle button
             add_change_theme()
+
+def add_error_header():
+    """ Add setup header function. """
+    with st.header(""):
+        col1, _,_,_,col4 = st.columns([1,1,4,1,1])
+        if col4.button(AppIcons.SYNC,
+                    type="secondary",
+                    use_container_width=True,help="Reload the app."
+                    ):
+            st.cache_data.clear()
+            st.cache_resource.clear()
+            st.session_state.clear()
+            st.rerun()
+        with col1:
+            # Create a toggle button
+            add_change_theme()

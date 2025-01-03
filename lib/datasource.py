@@ -3,6 +3,7 @@
 import calendar
 from datetime import datetime, timedelta
 import gspread
+import postgrest
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 import pandas as pd
@@ -11,7 +12,7 @@ from supabase import create_client
 from classes.icons import AppIcons
 from classes.structure import DataStructure
 from classes.messages import AppMessages
-
+import ast
 def set_up_data():
     """ Data Structure """
     return DataStructure.get_option_map(),DataStructure.get_initial_data()
@@ -21,38 +22,28 @@ def init_sheet():
     temp_df = pd.DataFrame(columns=DataStructure.get_categories())
     return temp_df.astype(DataStructure.get_convert_dict())
 
-def init_statistic():
-    """ Init Statistic Sheet. """
-    temp_df = pd.DataFrame(columns=DataStructure.get_statistic_categories())
-    return temp_df.astype(DataStructure.get_statistic_dict())
-
-
-def read_from(conn,option):
-    """ Read Sheet. """
-    conn = connect_to_gsheet()
-    try:
-        return clean(conn.read(spreadsheet=st.session_state.sheet_url,worksheet=option))
-    except Exception as e:
-        raise ConnectionError('GoogleSheet', AppMessages.GSHEET_CONNECTION_ERROR) from e
-
-def find_key(list_str, value):
-    """ Finding latest key. """
-    try:
-        return list_str.index(value)
-    except ValueError:
-        return len(list_str) - 1
-
 def add_from(df):
     """ Update Sheet. """
     conn = connect_to_gsheet()
     try:
         conn.update(
-            spreadsheet=st.session_state.sheet_url,
-            worksheet="Expenses",
+            worksheet=st.session_state.sheet_name,
             data=df
         )
     except ConnectionError as err:
         st.error(AppMessages.get_connection_errors(err.args),icon=AppIcons.ERROR)
+
+def create_from(df):
+    """ Create Sheet. """
+    conn = connect_to_gsheet()
+    try:
+        return conn.create(
+            worksheet=st.session_state.sheet_name,
+            data=df
+        )
+    except ConnectionError as err:
+        st.error(AppMessages.get_connection_errors(err.args),icon=AppIcons.ERROR)
+
 
 def update_from(updated_df,old_df,sheet):
     """ Update Sheet that include another dataframe. """
@@ -63,8 +54,7 @@ def update_from(updated_df,old_df,sheet):
         save = pd.concat([sheet, updated_df], ignore_index= True)
         save = clean(save)
         conn.update(
-            spreadsheet=st.session_state.sheet_url,
-            worksheet="Expenses",
+            worksheet=st.session_state.sheet_name,
             data=save
         )
         
@@ -136,43 +126,92 @@ def connect_to_gsheet():
     except Exception as e:
         raise ConnectionError('GoogleSheet', AppMessages.GSHEET_CONNECTION_ERROR) from e
 
+def test_connect_to_sheet(link):
+    """ Connection """
+    try:
+        conn = st.connection("gsheets", type=GSheetsConnection)
+        conn.read(
+            worksheet = link,
+        )
+        return True
+    except gspread.exceptions.SpreadsheetNotFound:
+        return False
+
 @st.cache_data
 def get_detail_sheets():
     """ Get all or create a new Sheet. """
     conn = connect_to_gsheet()
-    
-    # worksheet_names = []
-    # for sheet in conn.client._open_spreadsheet(): # type:ignore
-    #     worksheet_names.append(sheet.title)
-
     try:
         return clean(conn.read(
-            spreadsheet = st.session_state.sheet_url,
-            worksheet="Expenses",
+            worksheet=st.session_state.sheet_name,
         ))
     except gspread.exceptions.WorksheetNotFound:
-        pass
+        df = init_sheet()
+        return create_from(df)
 
-#-----------
+#----------------------
 #   Supabase
-#-----------
+#----------------------
+
+def test_supabase_connection():
+    """ Connection """
+    conn = connect_to_supabase()
+    try:
+        conn.table("user_sheet").select("*").execute().data
+    except postgrest.exceptions.APIError as e:
+        tmp = ast.literal_eval(e.args[0])
+        raise ConnectionError("{0}: {1}".format(tmp['message'], tmp['hint']))
 
 @st.cache_resource
 def connect_to_supabase():
     """ Connection """
     url = st.secrets.supabase.url
     key = st.secrets.supabase.key
-    try:
-        return create_client(url, key)
-    except Exception as e:
-        raise ConnectionError('Supabase', AppMessages.SUPABASE_CONNECTION_ERROR) from e
+    return create_client(url, key)
 
 @st.cache_data
 def get_user_sheet(email):
     """ Get all user sheets. """
     conn = connect_to_supabase()
-    data = conn.table("user_sheet").select("*").like_all_of("email",email).execute().data
-    if len(data) == 0:
-        return ""
+    try:
+        data = conn.table("user_sheet").select("*").like_all_of("email",email).execute().data
+        if len(data) == 0:
+            return ""
+        else: 
+            return data[0]['sheet']
+    except postgrest.exceptions.APIError as e:
+        tmp = ast.literal_eval(e.args[0])
+        raise ConnectionError("{0}: {1}".format(tmp['message'], tmp['hint']))
+
+def set_user_sheet(email):
+    """ Set user sheet or insert new user sheet"""
+    sheet = check_exist(email)
+    conn = connect_to_supabase()
+    if sheet is None:
+        response = (
+            conn.table("user_sheet")
+            .insert({"email": email})
+            .execute()
+        )
     else: 
-        return data[0]['sheet']
+        response = (
+            conn.table("user_sheet")
+            .select("*")
+            .eq("email", email)
+            .execute()
+        )
+    return response.data[0]['sheet']
+
+def check_exist(user):
+    """ Check supabase user db."""
+    conn = connect_to_supabase()
+    response = (
+            conn.table("user_sheet")
+            .select("*")
+            .eq("email",user)
+            .execute()
+        )
+    if len(response.data) > 0:
+        return response.data[0]['sheet']
+    else:
+        return None

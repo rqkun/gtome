@@ -99,10 +99,12 @@ today = datetime.now()
 start_date = today.replace(day=1)
 last_day = calendar.monthrange(today.year, today.month)[1]
 end_date = today.replace(day=last_day)
-if len(sheet) >0:
+
+if sheet is not None and len(sheet) >0:
     oldest_record = pd.to_datetime(sheet['Date'],format="%d/%m/%Y").min().date()
 else:
-    oldest_record = today.date()
+    oldest_record = start_date.date()
+
 selected_span = col1.date_input(
     "Select your expense span",
     (start_date, end_date),
@@ -156,7 +158,7 @@ else:
                             millify(metrics_src["Highest_Category_Value"],precision=3),
                             delta=millify(highest_category_value,precision=3),
                             delta_color="inverse",
-                            help=None,
+                            help="Old: "+highest_category,
                             label_visibility="visible",
                             border=True)
         calendar_chart.plotly_chart(
