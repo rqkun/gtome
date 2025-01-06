@@ -44,18 +44,10 @@ def add_header():
 
         with col4:
             with st.popover("Menu",use_container_width=True, icon=AppIcons.MENU_PAGE):
-                st.page_link("views/add.py",
-                             label="Insert",
-                             icon=AppIcons.INSERT_PAGE,
-                             use_container_width=True)
-
+                
                 st.page_link("views/dashboard.py",
                              label="Dashboard",
                              icon=AppIcons.DASHBOARD_PAGE,
-                             use_container_width=True)
-                st.page_link("views/manage.py",
-                             label="Manage",
-                             icon=AppIcons.MANAGE_PAGE,
                              use_container_width=True)
                 st.page_link("https://github.com/rqkun/gtome/issues",
                              label="Report",

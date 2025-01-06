@@ -13,6 +13,7 @@ class AppIcons():
     BUG_REPORT_PAGE = ":material/bug_report:"
     LOGIN_PAGE = ":material/account_circle:"
     REPO_PAGE = ":material/bookmark:"
+    DATA_FRAME = ":material/description:"
     #Button
     SEND_EMAIL = ":material/send:"
     MAIL = ":material/mail:"
