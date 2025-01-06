@@ -17,7 +17,6 @@ from lib import custom_components
 
 def sign_in_with_external(id_token):
     """ Sending GoogleAPI signInWithIdp API for signing in with Google. """
-    print(st.secrets.connections.google_api.endpoint)
     request_ref = st.secrets.connections.google_api.endpoint + "/verifyAssertion?key={0}".format(st.secrets.connections.google_api.api_key)
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({
