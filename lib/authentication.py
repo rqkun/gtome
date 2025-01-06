@@ -16,6 +16,7 @@ from lib import custom_components
 ## -------------------------------------------------------------------------------------------------
 
 def sign_in_with_external(id_token):
+    """ Sending GoogleAPI signInWithIdp API for signing in with Google. """
     request_ref = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key={0}".format(st.secrets.firebase.api_key)
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({
@@ -30,6 +31,7 @@ def sign_in_with_external(id_token):
 
 
 def sign_in_with_email_and_password(email, password):
+    """ Sending GoogleAPI verifyPassword API for signing in with Email, Password. """
     request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key={0}".format(st.secrets.firebase.api_key)
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"email": email, "password": password, "returnSecureToken": True})
@@ -38,6 +40,7 @@ def sign_in_with_email_and_password(email, password):
     return request_object.json()
 
 def get_account_info(id_token):
+    """ Sending GoogleAPI getAccountInfo API for account info. """
     request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/getAccountInfo?key={0}".format(st.secrets.firebase.api_key)
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"idToken": id_token})
@@ -46,6 +49,7 @@ def get_account_info(id_token):
     return request_object.json()
 
 def send_email_verification(id_token):
+    """ Sending GoogleAPI getAccountInfo API for sending email verification. """
     request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/getOobConfirmationCode?key={0}".format(st.secrets.firebase.api_key)
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"requestType": "VERIFY_EMAIL", "idToken": id_token})
@@ -54,6 +58,7 @@ def send_email_verification(id_token):
     return request_object.json()
 
 def send_password_reset_email(email):
+    """ Sending GoogleAPI getAccountInfo API for sending reset password email. """
     request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/getOobConfirmationCode?key={0}".format(st.secrets.firebase.api_key)
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"requestType": "PASSWORD_RESET", "email": email})
@@ -62,6 +67,7 @@ def send_password_reset_email(email):
     return request_object.json()
 
 def create_user_with_email_and_password(email, password):
+    """ Sending GoogleAPI getAccountInfo API for creating user. """
     request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key={0}".format(st.secrets.firebase.api_key)
     headers = {"content-type": "application/json; charset=UTF-8" }
     data = json.dumps({"email": email, "password": password, "returnSecureToken": True})
@@ -70,6 +76,7 @@ def create_user_with_email_and_password(email, password):
     return request_object.json()
 
 def delete_user_account(id_token):
+    """ Sending GoogleAPI getAccountInfo API for deleting user. """
     request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/deleteAccount?key={0}".format(st.secrets.firebase.api_key)
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"idToken": id_token})
@@ -77,17 +84,8 @@ def delete_user_account(id_token):
     raise_detailed_error(request_object)
     return request_object.json()
 
-def signout_api(instanceId,uid):
-    request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signOutUser?key={0}".format(st.secrets.firebase.api_key)
-    headers = {"content-type": "application/json; charset=UTF-8"}
-    data = json.dumps({"instanceId": instanceId,
-                       "localId":uid
-                       })
-    request_object = requests.post(request_ref, headers=headers, data=data)
-    raise_detailed_error(request_object)
-    return request_object.json()
-
 def raise_detailed_error(request_object):
+    """ Get details on http errors. """
     try:
         request_object.raise_for_status()
     except requests.exceptions.HTTPError as error:
@@ -98,6 +96,7 @@ def raise_detailed_error(request_object):
 ## -------------------------------------------------------------------------------------------------
 
 def sign_in(email:str, password:str) -> None:
+    """ Sign in with email & password. """
     try:
         # Attempt to sign in with email and password
         id_token = sign_in_with_email_and_password(email,password)['idToken']
@@ -132,6 +131,7 @@ def sign_in(email:str, password:str) -> None:
 ## -------------------------------------------------------------------------------------------------
 
 def google_authentication(component):
+    """ Sign in with OAuth (Google). """
     try:
         auth_code = st.query_params.get("code")
         CLIENT_CONFIG = {'web': {
@@ -191,6 +191,7 @@ def google_authentication(component):
 
 
 def password_warning_builder(str):
+    """ Password requirement parser. """
     requirements_part = re.search(r'\[(.*?)\]', str).group(1)
     requirements_list = [req.strip() for req in requirements_part.split(',')]
     formatted_requirements = ', '.join([req.replace('Password must contain', '') for req in requirements_list])
@@ -198,6 +199,7 @@ def password_warning_builder(str):
 
 
 def create_account(email:str, password:str) -> None:
+    """ Create account with email & password. """
     try:
         # Create account (and save id_token)
         id_token = create_user_with_email_and_password(email,password)['idToken']
@@ -223,6 +225,7 @@ def create_account(email:str, password:str) -> None:
 
 
 def reset_password(email:str) -> None:
+    """ Send reset password email. """
     try:
         send_password_reset_email(email)
         st.session_state.auth_success = AppMessages.RESET_EMAIL_SENT
@@ -239,11 +242,13 @@ def reset_password(email:str) -> None:
 
 
 def sign_out() -> None:
+    """ Clear everything and signout. """
     st.session_state.clear()
     st.cache_data.clear()
     st.cache_resource.clear()
 
 def delete_account(password:str) -> None:
+    """ Delete account button. """
     try:
         # Confirm email and password by signing in (and save id_token)
         id_token = sign_in_with_email_and_password(st.session_state.user_info['email'],password)['idToken']

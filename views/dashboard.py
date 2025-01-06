@@ -118,10 +118,8 @@ refresh_button = col2.button("Sync",use_container_width=True, icon=AppIcons.SYNC
 placeholder = st.empty()
 
 
-if len(selected_span) < 2:
-    st.warning("Please choose a start/end date.", icon=AppIcons.WARNING)
-elif selected_span[0] < oldest_record:
-    st.warning("Please choose a valid date.", icon=AppIcons.WARNING)
+if len(selected_span) < 2 or selected_span[0] < oldest_record:
+    st.warning(AppMessages.INVALID_DATE, icon=AppIcons.WARNING)
 else: 
     data = Datasource.filter(sheet,selected_span)
     if len(data) >0:

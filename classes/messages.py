@@ -13,12 +13,10 @@ class AppMessages:
     SUPABASE_CONNECTION_ERROR = 'SupabaseAPI connection error.'
     WARNING_CHANGES_NOT_SAVED = 'Changes you made have not been saved.'
     WARNING_SHEET_EMPTY = 'Sheet is empty.'
-    VALIDATION_ERROR_MISSING = 'EMPTY_OR_MISSING'
-    VALIDATION_EXPENSE_TYPE = 'EXPENSE_TYPE_INPUT'
-    VALIDATION_DATE = 'DATE_INPUT'
-    VALIDATION_ERROR_OOB = 'OUT_OF_BOUND'
-
-    
+    INVALID_DATE = 'Please choose a start/end date.'
+    INVALID_EXPENSE_TYPE = 'Please choose an expense type.'
+    SENDING_RESET_EMAIL = 'Sending password reset email'
+    SENDING_SIGNUP_EMAIL = 'Sending confirmation email'
     
     @staticmethod
     def get_connection_errors(args):

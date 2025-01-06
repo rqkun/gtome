@@ -63,6 +63,7 @@ def update_from(updated_df,old_df,sheet):
 
 
 def filter(df,span):
+    """ Return data from dataframe that is in a span of time. """
     start_date = span[0]
     end_date = span[1]
     filtered_df = df

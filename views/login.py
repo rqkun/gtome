@@ -2,10 +2,12 @@
 
 import asyncio
 import streamlit as st
+from classes.messages import AppMessages
 import lib.authentication as auth
-import lib.headers as header
 from classes.icons import AppIcons
+
 def get_auth_client():
+    """ Initalize an google authentication client. """
     authorization_url = asyncio.run(
         auth.get_authorization_url(client=auth.get_google_auth_client(), redirect_url=st.secrets.google_oauth2.redirect_url)
     )
@@ -25,13 +27,13 @@ def reset_password():
                                         )
     auth_notification_dialog = reset_form.empty()
     if send_btn:
-        with auth_notification_dialog, st.spinner('Sending password reset link'):
+        with auth_notification_dialog, st.spinner(AppMessages.SENDING_RESET_EMAIL):
             auth.reset_password(reset_email)
         if 'auth_success' in st.session_state:
-            auth_notification_dialog.success(st.session_state.auth_success)
+            auth_notification_dialog.success(st.session_state.auth_success, icon= AppIcons.SUCCESS)
             del st.session_state.auth_success
         elif 'auth_warning' in st.session_state:
-            auth_notification_dialog.error(st.session_state.auth_warning)
+            auth_notification_dialog.error(st.session_state.auth_warning, icon= AppIcons.ERROR)
             del st.session_state.auth_warning
 
 @st.dialog("Create your account")
@@ -48,13 +50,13 @@ def sign_up():
                                     type='primary',
                                     icon=AppIcons.SEND_EMAIL
                                     ):
-        with register_notification, st.spinner('Creating account'):
+        with register_notification, st.spinner(AppMessages.SENDING_SIGNUP_EMAIL):
             auth.create_account(email,password)
         if 'auth_success' in st.session_state:
-            register_notification.success(st.session_state.auth_success)
+            register_notification.success(st.session_state.auth_success, icon= AppIcons.SUCCESS)
             del st.session_state.auth_success
         elif 'auth_warning' in st.session_state:
-            register_notification.error(st.session_state.auth_warning)
+            register_notification.error(st.session_state.auth_warning, icon= AppIcons.ERROR)
             del st.session_state.auth_warning
     st.write("")
 
@@ -75,10 +77,10 @@ def sign_in():
         with login_notfication, st.spinner('Signing in'):
             auth.sign_in(email,password)
         if 'auth_success' in st.session_state:
-            login_notfication.success(st.session_state.auth_success)
+            login_notfication.success(st.session_state.auth_success, icon= AppIcons.SUCCESS)
             del st.session_state.auth_success
         elif 'auth_warning' in st.session_state:
-            login_notfication.error(st.session_state.auth_warning)
+            login_notfication.error(st.session_state.auth_warning, icon= AppIcons.ERROR)
             del st.session_state.auth_warning
     st.write("")
 

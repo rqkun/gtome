@@ -11,7 +11,7 @@ import lib.headers as header
 
 def not_saved():
     """ Show warning when not saved. """
-    st.warning('Changes you made have not been saved!', icon=AppIcons.WARNING)
+    st.warning(AppMessages.WARNING_CHANGES_NOT_SAVED, icon=AppIcons.WARNING)
 
 header.add_header()
 
@@ -45,7 +45,7 @@ update_button = col3.button("Save",use_container_width=True,type="primary",icon=
 
 
 if len(selected_span) < 2:
-    st.warning("Please choose a start/end date.", icon=AppIcons.WARNING)
+    st.warning(AppMessages.INVALID_DATE, icon=AppIcons.WARNING)
 else: 
     data = datasource.filter(sheet,selected_span)
     

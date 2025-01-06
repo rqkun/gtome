@@ -41,8 +41,7 @@ def insert(df):
         if type_of_expense is not None:
             pass
         else:
-            raise ValueError(AppMessages.VALIDATION_EXPENSE_TYPE,
-                             AppMessages.VALIDATION_ERROR_MISSING)
+            raise ValueError(AppMessages.INVALID_EXPENSE_TYPE)
 
         if submit_bttn:
             initial_data[option_map[type_of_expense]] = amount
@@ -90,7 +89,7 @@ if col2.button("Sync",use_container_width=True, icon=AppIcons.SYNC,type="primary
 insert_bttn =  col3.button("Insert",use_container_width=True, icon=AppIcons.INSERT_PAGE,type="primary")
 
 if len(selected_span) < 2:
-    st.warning("Please choose a start/end date.", icon=AppIcons.WARNING)
+    st.warning(AppMessages.INVALID_DATE, icon=AppIcons.WARNING)
 else: 
     data = datasource.filter(worksheet,selected_span)
 
