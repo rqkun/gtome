@@ -123,14 +123,14 @@ def get_delta(new_metric, df):
 def connect_to_gsheet():
     """ Connection """
     try:
-        return st.connection("gsheets", type=GSheetsConnection)
+        return st.connection("google_api", type=GSheetsConnection)
     except Exception as e:
         raise ConnectionError('GoogleSheet', AppMessages.GSHEET_CONNECTION_ERROR) from e
 
 def test_connect_to_sheet(link):
     """ Connection """
     try:
-        conn = st.connection("gsheets", type=GSheetsConnection)
+        conn = st.connection("google_api", type=GSheetsConnection)
         conn.read(
             worksheet = link,
         )

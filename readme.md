@@ -32,21 +32,19 @@ Checkout the website [here](https://rqkun-gtome.streamlit.app/)
     pip install -r requirements.txt
     ```
 
-3. Set up Google Sheets API credentials:
+3. Set up Google API credentials:
     - Follow the instructions [here](https://github.com/streamlit/gsheets-connection?tab=readme-ov-file#service-account--crud-example) to create your credentials and save it to your `.streamlit/secrets.toml` file.
-
-4. Set up Google Firebase API credentials:
     - Go to [here](https://console.cloud.google.com/) and create an authentication Client and copy your credentials and save it to your `.streamlit/secrets.toml` file.
     - Go to [here](https://firebase.google.com/) and create an authentication app and add your API_KEY to `.streamlit/secrets.toml` file.
     - Open your firebase console and go to Authentication > Sign-in methods and add the Email/Password provider.
     - Open your firebase console and go to Authentication > Sign-in methods and add the Google provider, fill the `client_id` and `secret` field.
 
-5. Set up Supabase credentials:
+4. Set up Supabase credentials:
     - Follow the instructions [here](https://docs.streamlit.io/develop/tutorials/databases/supabase) to create your credentials and save it to your `.streamlit/secrets.toml` file.
 
-6. (Optional) if the app is hosted on the Streamlit Community Cloud then set the `target` field in `.streamlit/secrets.toml` to `"_blank"`.
+5. (Optional) If the app is hosted on the Streamlit Community Cloud then set the `target` field in `.streamlit/secrets.toml` to `"_blank"`.
 
-7. Your secret should look like this:
+6. Your secret should look like this:
     ```
     [connections.gsheets]
     spreadsheet = "<googlesheet_url>"
@@ -56,23 +54,17 @@ Checkout the website [here](https://rqkun-gtome.streamlit.app/)
     private_key=""
     client_email= ""
     client_id= ""
-    auth_uri= ""
-    token_uri = ""
-    auth_provider_x509_cert_url= ""
-    client_x509_cert_url =""
-
-    [google_oauth2]
-    client_id = ""
-    project_id =""
     auth_uri = "https://accounts.google.com/o/oauth2/auth"
     token_uri ="https://oauth2.googleapis.com/token"
     auth_provider_x509_cert_url = "https://www.googleapis.com/oauth2/v1/certs"
+    client_x509_cert_url =""
+    #authentication secrets
     secret = ""
     javascript_origins = ""
     redirect_url = ""
-
-    [firebase]
-    api_key = ''
+    endpoint = "https://www.googleapis.com/identitytoolkit/v3/relyingparty"
+    #firebase api key
+    api_key = ""
 
     [supabase]
     url = ""

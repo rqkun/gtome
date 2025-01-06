@@ -17,11 +17,12 @@ from lib import custom_components
 
 def sign_in_with_external(id_token):
     """ Sending GoogleAPI signInWithIdp API for signing in with Google. """
-    request_ref = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key={0}".format(st.secrets.firebase.api_key)
+    print(st.secrets.connections.google_api.endpoint)
+    request_ref = st.secrets.connections.google_api.endpoint + "/verifyAssertion?key={0}".format(st.secrets.connections.google_api.api_key)
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({
         'postBody': f'id_token={id_token}&providerId=google.com',
-        'requestUri': st.secrets.google_oauth2.redirect_url,
+        'requestUri': st.secrets.connections.google_api.redirect_url,
         'returnIdpCredential': True,
         'returnSecureToken': True
     })
@@ -32,7 +33,7 @@ def sign_in_with_external(id_token):
 
 def sign_in_with_email_and_password(email, password):
     """ Sending GoogleAPI verifyPassword API for signing in with Email, Password. """
-    request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key={0}".format(st.secrets.firebase.api_key)
+    request_ref = st.secrets.connections.google_api.endpoint + "/verifyPassword?key={0}".format(st.secrets.connections.google_api.api_key)
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"email": email, "password": password, "returnSecureToken": True})
     request_object = requests.post(request_ref, headers=headers, data=data)
@@ -41,7 +42,7 @@ def sign_in_with_email_and_password(email, password):
 
 def get_account_info(id_token):
     """ Sending GoogleAPI getAccountInfo API for account info. """
-    request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/getAccountInfo?key={0}".format(st.secrets.firebase.api_key)
+    request_ref = st.secrets.connections.google_api.endpoint + "/getAccountInfo?key={0}".format(st.secrets.connections.google_api.api_key)
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"idToken": id_token})
     request_object = requests.post(request_ref, headers=headers, data=data)
@@ -50,7 +51,7 @@ def get_account_info(id_token):
 
 def send_email_verification(id_token):
     """ Sending GoogleAPI getAccountInfo API for sending email verification. """
-    request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/getOobConfirmationCode?key={0}".format(st.secrets.firebase.api_key)
+    request_ref = st.secrets.connections.google_api.endpoint + "/getOobConfirmationCode?key={0}".format(st.secrets.connections.google_api.api_key)
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"requestType": "VERIFY_EMAIL", "idToken": id_token})
     request_object = requests.post(request_ref, headers=headers, data=data)
@@ -59,7 +60,7 @@ def send_email_verification(id_token):
 
 def send_password_reset_email(email):
     """ Sending GoogleAPI getAccountInfo API for sending reset password email. """
-    request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/getOobConfirmationCode?key={0}".format(st.secrets.firebase.api_key)
+    request_ref = st.secrets.connections.google_api.endpoint + "/getOobConfirmationCode?key={0}".format(st.secrets.connections.google_api.api_key)
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"requestType": "PASSWORD_RESET", "email": email})
     request_object = requests.post(request_ref, headers=headers, data=data)
@@ -68,7 +69,7 @@ def send_password_reset_email(email):
 
 def create_user_with_email_and_password(email, password):
     """ Sending GoogleAPI getAccountInfo API for creating user. """
-    request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key={0}".format(st.secrets.firebase.api_key)
+    request_ref = st.secrets.connections.google_api.endpoint + "/signupNewUser?key={0}".format(st.secrets.connections.google_api.api_key)
     headers = {"content-type": "application/json; charset=UTF-8" }
     data = json.dumps({"email": email, "password": password, "returnSecureToken": True})
     request_object = requests.post(request_ref, headers=headers, data=data)
@@ -77,7 +78,7 @@ def create_user_with_email_and_password(email, password):
 
 def delete_user_account(id_token):
     """ Sending GoogleAPI getAccountInfo API for deleting user. """
-    request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/deleteAccount?key={0}".format(st.secrets.firebase.api_key)
+    request_ref = st.secrets.connections.google_api.endpoint + "/deleteAccount?key={0}".format(st.secrets.connections.google_api.api_key)
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"idToken": id_token})
     request_object = requests.post(request_ref, headers=headers, data=data)
@@ -135,19 +136,19 @@ def google_authentication(component):
     try:
         auth_code = st.query_params.get("code")
         CLIENT_CONFIG = {'web': {
-            'client_id': st.secrets.google_oauth2.client_id,
-            'project_id': st.secrets.google_oauth2.project_id,
-            'auth_uri': st.secrets.google_oauth2.auth_uri,
-            'token_uri': st.secrets.google_oauth2.token_uri,
-            'auth_provider_x509_cert_url': st.secrets.google_oauth2.auth_provider_x509_cert_url,
-            'client_secret': st.secrets.google_oauth2.secret,
-            'redirect_uris': st.secrets.google_oauth2.redirect_url,
-            'javascript_origins': st.secrets.google_oauth2.javascript_origins
+            'client_id': st.secrets.connections.google_api.client_id,
+            'project_id': st.secrets.connections.google_api.project_id,
+            'auth_uri': st.secrets.connections.google_api.auth_uri,
+            'token_uri': st.secrets.connections.google_api.token_uri,
+            'auth_provider_x509_cert_url': st.secrets.connections.google_api.auth_provider_x509_cert_url,
+            'client_secret': st.secrets.connections.google_api.secret,
+            'redirect_uris': st.secrets.connections.google_api.redirect_url,
+            'javascript_origins': st.secrets.connections.google_api.javascript_origins
         }}
         flow = google_auth_oauthlib.flow.Flow.from_client_config(
             CLIENT_CONFIG, # replace with you json credentials from your google auth app
             scopes=["https://www.googleapis.com/auth/userinfo.email", "openid"],
-            redirect_uri=st.secrets.google_oauth2.redirect_url,
+            redirect_uri=st.secrets.connections.google_api.redirect_url,
         )
         if auth_code:
             custom_components.google_sign_in_button(component,url="")
