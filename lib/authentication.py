@@ -17,7 +17,7 @@ from lib import custom_components
 
 def sign_in_with_external(id_token):
     """ Sending GoogleAPI signInWithIdp API for signing in with Google. """
-    request_ref = st.secrets.connections.google_api.endpoint + "/verifyAssertion?key={0}".format(st.secrets.connections.google_api.api_key)
+    request_ref = "{0}/verifyAssertion?key={1}".format(st.secrets.connections.google_api.endpoint,st.secrets.connections.google_api.api_key)
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({
         'postBody': f'id_token={id_token}&providerId=google.com',
@@ -32,7 +32,7 @@ def sign_in_with_external(id_token):
 
 def sign_in_with_email_and_password(email, password):
     """ Sending GoogleAPI verifyPassword API for signing in with Email, Password. """
-    request_ref = st.secrets.connections.google_api.endpoint + "/verifyPassword?key={0}".format(st.secrets.connections.google_api.api_key)
+    request_ref = "{0}/verifyPassword?key={1}".format(st.secrets.connections.google_api.endpoint,st.secrets.connections.google_api.api_key)
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"email": email, "password": password, "returnSecureToken": True})
     request_object = requests.post(request_ref, headers=headers, data=data)
@@ -41,7 +41,7 @@ def sign_in_with_email_and_password(email, password):
 
 def get_account_info(id_token):
     """ Sending GoogleAPI getAccountInfo API for account info. """
-    request_ref = st.secrets.connections.google_api.endpoint + "/getAccountInfo?key={0}".format(st.secrets.connections.google_api.api_key)
+    request_ref = "{0}/getAccountInfo?key={1}".format(st.secrets.connections.google_api.endpoint,st.secrets.connections.google_api.api_key)
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"idToken": id_token})
     request_object = requests.post(request_ref, headers=headers, data=data)
@@ -50,7 +50,7 @@ def get_account_info(id_token):
 
 def send_email_verification(id_token):
     """ Sending GoogleAPI getAccountInfo API for sending email verification. """
-    request_ref = st.secrets.connections.google_api.endpoint + "/getOobConfirmationCode?key={0}".format(st.secrets.connections.google_api.api_key)
+    request_ref = "{0}/getOobConfirmationCode?key={1}".format(st.secrets.connections.google_api.endpoint,st.secrets.connections.google_api.api_key)
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"requestType": "VERIFY_EMAIL", "idToken": id_token})
     request_object = requests.post(request_ref, headers=headers, data=data)
@@ -59,7 +59,7 @@ def send_email_verification(id_token):
 
 def send_password_reset_email(email):
     """ Sending GoogleAPI getAccountInfo API for sending reset password email. """
-    request_ref = st.secrets.connections.google_api.endpoint + "/getOobConfirmationCode?key={0}".format(st.secrets.connections.google_api.api_key)
+    request_ref = "{0}/getOobConfirmationCode?key={1}".format(st.secrets.connections.google_api.endpoint,st.secrets.connections.google_api.api_key)
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"requestType": "PASSWORD_RESET", "email": email})
     request_object = requests.post(request_ref, headers=headers, data=data)
@@ -68,7 +68,7 @@ def send_password_reset_email(email):
 
 def create_user_with_email_and_password(email, password):
     """ Sending GoogleAPI getAccountInfo API for creating user. """
-    request_ref = st.secrets.connections.google_api.endpoint + "/signupNewUser?key={0}".format(st.secrets.connections.google_api.api_key)
+    request_ref = "{0}/signupNewUser?key={1}".format(st.secrets.connections.google_api.endpoint,st.secrets.connections.google_api.api_key)
     headers = {"content-type": "application/json; charset=UTF-8" }
     data = json.dumps({"email": email, "password": password, "returnSecureToken": True})
     request_object = requests.post(request_ref, headers=headers, data=data)
@@ -77,7 +77,7 @@ def create_user_with_email_and_password(email, password):
 
 def delete_user_account(id_token):
     """ Sending GoogleAPI getAccountInfo API for deleting user. """
-    request_ref = st.secrets.connections.google_api.endpoint + "/deleteAccount?key={0}".format(st.secrets.connections.google_api.api_key)
+    request_ref = "{0}/deleteAccount?key={1}".format(st.secrets.connections.google_api.endpoint,st.secrets.connections.google_api.api_key)
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"idToken": id_token})
     request_object = requests.post(request_ref, headers=headers, data=data)
