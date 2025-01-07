@@ -1,6 +1,6 @@
 """ Dashboard Page for the Visualization. """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import plotly.express as px
 import streamlit as st
 from millify import millify
@@ -28,8 +28,9 @@ def insert(df):
                                     options=option_map.keys(),
                                     format_func=lambda option: option_map[option],
                                     selection_mode="single",
-                                    default=4
+                                    default=0
                                 )
+        extra_type = st.empty()
         notes = st.text_input("Notes",placeholder="Input note here...")
         st.write("Document Date:")
         left_insert,right_insert = st.columns([5,2])
@@ -43,13 +44,16 @@ def insert(df):
                                           icon=AppIcons.SAVE,
                                           type="primary")
 
-        if type_of_expense is not None:
-            pass
-        else:
+        if type_of_expense is None:
             raise ValueError(AppMessages.INVALID_EXPENSE_TYPE)
-
+        elif type_of_expense == 4:
+            expense_type = extra_type.text_input("Input another type: ","Misc",20,placeholder="Misc")
+        else:
+            expense_type =  option_map[type_of_expense]
+            
         if submit_bttn:
-            initial_data[option_map[type_of_expense]] = amount
+            initial_data["Type"] = expense_type
+            initial_data["Spent"] = amount
             initial_data["Date"] = date.strftime("%d/%m/%Y")
             initial_data["Note"] = notes
             df.loc[len(df)] = initial_data
@@ -61,31 +65,33 @@ def insert(df):
     except ValueError as err:
         st.error(AppMessages.get_validation_errors(err.args),icon=AppIcons.ERROR)
 
-def not_saved():
-    """ Show warning when not saved. """
-    st.error(AppMessages.WARNING_CHANGES_NOT_SAVED, icon=AppIcons.WARNING)
-
 @st.dialog("Edit Data",width="large")
 def update(sheet,selected_span):
     """ Update Dialog."""
-    data_update = Datasource.filter(sheet,selected_span)
-    placeholder = st.empty()
-    tmp_df = st.data_editor(data_update,
-                            use_container_width=True,
-                            height=35*len(data_update)+36*2,
-                            hide_index=True,
-                            column_config=DataStructure.get_column_configs(),
-                            on_change=not_saved,
-                            num_rows='dynamic')
-    if st.button("Save",use_container_width=True,type="primary",icon=AppIcons.SAVE):
-        Datasource.update_from(tmp_df,data_update,sheet)
-        st.cache_data.clear()
-        st.rerun()
+    try:
+        saved = False
+        data_update = Datasource.filter(sheet,selected_span)
+        data_update["Type"] = data_update["Type"].astype(str)
+        tmp_df = st.data_editor(data_update,
+                                use_container_width=True,
+                                height=35*len(data_update)+36*2,
+                                hide_index=True,
+                                column_config=DataStructure.get_column_configs(),
+                                num_rows='dynamic')
+        if st.button("Save",use_container_width=True,type="primary",icon=AppIcons.SAVE):
+            Datasource.update_from(tmp_df,data_update,sheet)
+            st.cache_data.clear()
+            st.rerun()
+            saved = True
+        if saved ==False:
+            raise ValueError()
+    except ValueError as err:
+        st.warning(AppMessages.WARNING_CHANGES_NOT_SAVED,icon=AppIcons.ERROR)
 
 def plotly_pie_process(df):
     """ Return a pie plot the type of expensies distribution. """
-    categories = DataStructure.get_categories_numeric()
-    totals = df[categories].sum()
+
+    totals = df.groupby('Type')['Spent'].sum()
     total_sum = totals.sum()
     percentages = (totals / total_sum) * 100
 
@@ -101,23 +107,27 @@ def plotly_pie_process(df):
 
 def normal_plot_data(df):
     """ Return group by date, category. """
-    # Add columns for year, month, day, and week
+    # Drop the 'Note' column
     df = df.drop(['Note'], axis=1)
+    
+    # Convert 'Date' to datetime
     df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
-    # Sum the total spending by day
-    return df.groupby('Date')[DataStructure.get_categories_numeric()].sum().reset_index()
+    
+    # Group by 'Date' and 'Type' and sum the 'Spent' values
+    grouped_df = df.groupby(['Date', 'Type'])['Spent'].sum().reset_index()
+    
+    return grouped_df
 
 def plotly_calendar_process(df):
     """ Return dataframe total spent by day. """
-    # Add columns for year, month, day, and week
+    # Convert 'Date' to datetime
     df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
+    
     # Sum the spending across all categories
-    df['Total_Spending'] = df[DataStructure.get_categories_numeric()].sum(axis=1)
+    df_daily = df.groupby('Date')['Spent'].sum().reset_index()
+    df_daily.rename(columns={'Spent': 'Total_Spending'}, inplace=True)
+    
     # Add columns for day of the week and week of the month
-    
-    # Sum the total spending by day
-    df_daily = df.groupby('Date')['Total_Spending'].sum().reset_index()
-    
     df_daily['day'] = df_daily['Date'].dt.day
     df_daily['weekday'] = df_daily['Date'].dt.weekday
     df_daily['week'] = (df_daily['Date'].dt.day - 1) // 7
@@ -161,7 +171,8 @@ def plotly_calendar_process(df):
 
     fig.update_layout(
         xaxis_title="Day of Week",
-        yaxis_title="Week of Month",height=260
+        yaxis_title="Week of Month",
+        height=260
     )
 
     return fig
@@ -182,14 +193,18 @@ end_date = today.replace(day=last_day)
 
 if sheet is not None and len(sheet) >0:
     oldest_record = pd.to_datetime(sheet['Date'],format="%d/%m/%Y").min().date()
+    if oldest_record < start_date.date():
+        min_date = start_date.date()
+    else:
+        min_date= oldest_record
 else:
-    oldest_record = start_date.date()
+    min_date = start_date.date()
 
 selected_span = col1.date_input(
     "Select your expense span",
-    (start_date, end_date),
+    (min_date, end_date),
     format="DD/MM/YYYY",
-    min_value=oldest_record,
+    min_value=min_date,
     help="The oldest date is: " + oldest_record.strftime("%d/%m/%Y")
     
 )
@@ -219,7 +234,8 @@ else:
             AppIcons.BAR_CHART+" Bar",
             AppIcons.PIE_CHART+" Pie",
             AppIcons.DATA_FRAME+" Data"])
-        metrics.write("Current month metrics compare to last month.")
+        lastmonth = start_date - timedelta(days=1)
+        metrics.markdown("""Metrics compare current month: `{0}` to last month: `{1}`""".format(start_date.strftime("%B-%Y"),lastmonth.strftime("%B-%Y")))
         spending,max_spent,largest_cate = metrics.columns(3)
         total_spent, highest_single, highest_category, highest_category_value   = Datasource.get_delta(metrics_src, sheet)
         
@@ -247,25 +263,22 @@ else:
                             label_visibility="visible",
                             border=True)
         calendar_chart.plotly_chart(
-            plotly_calendar_process(Datasource.filter(sheet,selected_span)),use_container_width=True
+            plotly_calendar_process(Datasource.filter(sheet,selected_span)),
+            use_container_width=True
         )
 
         normal_data = normal_plot_data(data)
         line_chart.line_chart(
-            normal_data,
-            x="Date",
-            y=DataStructure.get_categories_numeric(),
-            use_container_width= True,
+            data=normal_data.pivot(index='Date', columns='Type', values='Spent').fillna(0),
+            use_container_width=True,
             height=250
         )
 
         bar_plot.bar_chart(
-            normal_data,
-            x="Date",
-            y=DataStructure.get_categories_numeric(),
-            use_container_width= True,
+            data=normal_data.pivot(index='Date', columns='Type', values='Spent').fillna(0),
+            use_container_width=True,
+            height=250,
             stack=True,
-            height=250
         )
         
         pie_plot.plotly_chart(plotly_pie_process(data),use_container_width=True)

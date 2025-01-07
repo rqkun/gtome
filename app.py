@@ -1,7 +1,7 @@
 """The main streamlit app that invoke other pages."""
 import streamlit as st
 from classes.icons import AppIcons
-from lib.datasource import get_user_sheet, set_user_sheet, test_supabase_connection
+from lib.datasource import set_user_sheet, test_supabase_connection
 
 
 if 'user_info' not in st.session_state:

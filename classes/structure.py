@@ -4,20 +4,16 @@ import streamlit as st
 class DataStructure:
     @staticmethod
     def get_categories():
-        return ['Date', 'Food', 'Rent', 'Traverse', 'Subscriptions', 'Misc', 'Fun', 'Note']
+        return ['Date', 'Spent', 'Type', 'Note']
     
     @staticmethod
     def get_column_configs():
-        numeric_config = st.column_config.NumberColumn(min_value=0, default=0,required=False)
         return {'Date': st.column_config.DatetimeColumn(
                     format='DD/MM/YYYY',
                     max_value=datetime.combine(datetime.now(), time.max),
                 ),
-                'Food': numeric_config,
-                'Rent': numeric_config,
-                'Traverse': numeric_config,
-                'Subscriptions': numeric_config,
-                'Misc': numeric_config,
+                'Spent': st.column_config.NumberColumn(min_value=0, default=0,required=False),
+                'Type': st.column_config.TextColumn(),
                 'Note':  st.column_config.TextColumn()
                 }
     
@@ -33,9 +29,6 @@ class DataStructure:
             'Highest_Category': str,
             'Highest_Category_Value': int
         }
-    @staticmethod
-    def get_categories_numeric():
-        return ['Food', 'Rent', 'Traverse', 'Subscriptions', 'Misc', 'Fun']
 
     @staticmethod
     def get_option_map():
@@ -44,20 +37,15 @@ class DataStructure:
             1: "Rent",
             2: "Traverse",
             3: "Subscriptions",
-            4: "Misc",
-            5: "Fun"
+            4: ":material/add:"
         }
 
     @staticmethod
     def get_initial_data():
         return {
             "Date": datetime.today().strftime("%d/%m/%Y"),
-            "Food": 0,
-            "Rent": 0,
-            "Traverse": 0,
-            "Subscriptions": 0,
-            "Misc": 0,
-            "Fun": 0,
+            "Spent": 0,
+            "Type": "",
             "Note": ""
         }
     @staticmethod
@@ -72,11 +60,7 @@ class DataStructure:
     @staticmethod
     def get_convert_dict():
         return {
-            'Food': int,
-            'Rent': int,
-            'Traverse': int,
-            'Subscriptions': int,
-            'Misc': int,
-            'Fun': int,
+            'Spent': int,
+            'Type': str,
             'Note': str,
         }

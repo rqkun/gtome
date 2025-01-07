@@ -82,8 +82,8 @@ def clean(input_df):
         np.nan,datetime.today().strftime("%d/%m/%Y"),regex=True)
     input_df["Note"] = input_df["Note"].replace(np.nan, '', regex=True)
     input_df["Note"] = input_df["Note"].astype(str)
-    input_df[DataStructure.get_categories_numeric()] = \
-        input_df[DataStructure.get_categories_numeric()].fillna(0)
+    input_df["Spent"] = \
+        input_df["Spent"].fillna(0)
     return input_df.reset_index(drop=True)
 
 def get_metrics(df,start,end):
@@ -91,12 +91,12 @@ def get_metrics(df,start,end):
     
     df = filter(df,(start.date(),end.date()))
     
-    categories = DataStructure.get_categories_numeric()
-    totals = df[categories].fillna(0).sum()
+    totals = df.groupby('Type')['Spent'].sum()
+    if totals.empty:
+        return DataStructure.get_initial_statistics()
     data = DataStructure.get_initial_statistics("sheet",
                                                 total= totals.sum(),
-                                                highest=df[categories].max(skipna=True)\
-                                                                        .fillna(0)\
+                                                highest=df.groupby('Type')['Spent'].max()\
                                                                         .max(),
                                                 highest_category=totals.idxmax(),
                                                 highest_category_value=totals.max())
