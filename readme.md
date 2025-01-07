@@ -1,5 +1,6 @@
-[![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/pylint-dev/pylint)
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://rqkun-gtome.streamlit.app/)
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/rqkun/gtome/blob/main/readme.md)
+[![vi](https://img.shields.io/badge/lang-vn-yellow.svg)](https://github.com/rqkun/gtome/blob/main/readme_vn.md)
 # GTOME Streamlit App
 
 Welcome to the GTOME Streamlit App! This user-friendly application is designed to streamline your GTOME by seamlessly importing data from Google Sheets. With this app, you can track expenses, manage budgets, and generate insightful financial reports effortlessly.
@@ -17,8 +18,9 @@ Checkout the website [here](https://rqkun-gtome.streamlit.app/)
 
 - Python 3.9 or higher
 - Streamlit
-- Google Sheets API credentials
+- Google API credentials
 - Firebase API credentials
+- Supabase API credentials
 
 ### Installation
 
@@ -44,7 +46,7 @@ Checkout the website [here](https://rqkun-gtome.streamlit.app/)
 
 5. (Optional) If the app is hosted on the Streamlit Community Cloud then set the `target` field in `.streamlit/secrets.toml` to `"_blank"`.
 
-6. Your secret should look like this:
+6. Your `.streamlit/secrets.toml` or cloud secrets should look like this:
     ```
     [connections.gsheets]
     spreadsheet = "<googlesheet_url>"
@@ -84,7 +86,7 @@ Checkout the website [here](https://rqkun-gtome.streamlit.app/)
 
 ## Usage
 
-1. **Import Data**: Use the app to store your financial data to Google Sheets.
+1. **Google Sheet**: Use the app to store your financial data to Google Sheets.
 2. **Track Expenses**: Add, edit, and delete expense entries to keep your records up to date.
 3. **Visualize Data**: View your financial data through various charts and graphs for better insights.
 
