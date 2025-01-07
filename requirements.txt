@@ -8,3 +8,4 @@ supabase
 httpx_oauth==0.16.1
 google-auth==2.37.0
 google-api-python-client==2.156.0
+python-gettext

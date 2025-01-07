@@ -1,42 +1,36 @@
 """Header component for pages. """
 
 import streamlit as st
+from classes.messages import AppMessages
 import lib.authentication as auth
 from classes.icons import AppIcons
 
-def change_theme():
+def change_lang():
     """ Swap dark/light theme. (Only work correct locally or single user mode) """
-    previous_theme = st.session_state.themes["current_theme"]
-    tdict = st.session_state.themes["light"] \
-      if st.session_state.themes["current_theme"] == "light" else st.session_state.themes["dark"]
-    for vkey, vval in tdict.items():
-        if vkey.startswith("theme"): 
-            st._config.set_option(vkey, vval)
+    previous_lang = st.session_state.language
+    if previous_lang == "en":
+        st.session_state.language = "vi"
+    elif previous_lang == "vi":
+        st.session_state.language = "en"
 
-    st.session_state.themes["refreshed"] = False
-    if previous_theme == "dark":
-        st.session_state.themes["current_theme"] = "light"
-    elif previous_theme == "light":
-        st.session_state.themes["current_theme"] = "dark"
-
-@st.fragment
-def add_change_theme():
+def add_change_lang():
     """ Add chaneg theme button. (Only work correct locally or single user mode) """
-    btn_face = st.session_state.themes["light"]["button_face"] \
-      if st.session_state.themes["current_theme"] == "light" \
-        else st.session_state.themes["dark"]["button_face"]
-    st.button(btn_face,on_click=change_theme,use_container_width=True)
-
-    if st.session_state.themes["refreshed"] is False:
-        st.session_state.themes["refreshed"] = True
+    btn_face = AppIcons.ENGLISH \
+        if st.session_state.language == "en" \
+            else AppIcons.VIETNAMESE
+            
+    if st.button(btn_face,on_click=change_lang,use_container_width=True):
         st.rerun()
 
 def add_header():
     """ Add header function. """
     with st.header(""):
-        col1, _,_,col3,col4 = st.columns([1,1,4,1,2])
+        col1, col2,_,col3,col4 = st.columns([1,1,4,1,2])
         if col1.button(":material/home:",type="secondary",use_container_width=True):
             st.switch_page("views/home.py")
+        with col2:
+            add_change_lang()
+
         col3.button(":material/exit_to_app:",
                     type="secondary",
                     use_container_width=True,
@@ -59,7 +53,7 @@ def add_error_header():
         _, _,_,_,col4 = st.columns([1,1,4,1,1])
         if col4.button(AppIcons.SYNC,
                     type="secondary",
-                    use_container_width=True,help="Reload the app."
+                    use_container_width=True,help=AppMessages.RELOAD_APP_TOOLTIP
                     ):
             st.cache_data.clear()
             st.cache_resource.clear()

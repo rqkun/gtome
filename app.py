@@ -1,12 +1,14 @@
 """The main streamlit app that invoke other pages."""
 import streamlit as st
+from classes import messages
 from classes.icons import AppIcons
 from lib.datasource import set_user_sheet, test_supabase_connection
-
 
 if 'user_info' not in st.session_state:
     st.session_state.login = False
 
+if 'language' not in st.session_state or st.session_state.language =="":
+    st.session_state.language = "en"
 # ms = st.session_state
 # if "themes" not in ms:
 #     ms.themes = {"current_theme": "dark",

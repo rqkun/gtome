@@ -1,26 +1,105 @@
+# classes/messages.py
+
+import gettext
+import streamlit as st
+
+# Set the locale directory and domain
+#msgfmt locales/vi/LC_MESSAGES/messages.po -o locales/vi/LC_MESSAGES/messages.mo
+#msgfmt locales/en/LC_MESSAGES/messages.po -o locales/en/LC_MESSAGES/messages.mo
+
+
 class AppMessages:
-    # Class to store constant messages
-    MAIL_NOT_VERIFY = 'Account is not verify. Please check your email for verification link.'
-    INVALID_LOGIN_CREDENTIALS = 'Invalid email or password.'
-    INTERNAL_SERVER_ERROR = 'Internal server error.'
-    VERIFY_EMAIL_SENT = 'A verification link have been sent to your email.'
-    EMAIL_EXIST = 'Email already have an account registered'
-    RESET_EMAIL_SENT = 'A password reset link have been sent to your email'
-    INVALID_EMAIL = 'Invalid email.'
-    SIGN_OUT = 'You have successfully signed out.'
-    ACCOUNT_DELETED = 'You have successfully deleted your account.'
-    GSHEET_CONNECTION_ERROR = 'GoogleSheetAPI connection error.'
-    SUPABASE_CONNECTION_ERROR = 'SupabaseAPI connection error.'
-    WARNING_CHANGES_NOT_SAVED = 'Changes you made have not been saved.'
-    WARNING_SHEET_EMPTY = 'Sheet is empty.'
-    INVALID_DATE = 'Please choose a start/end date.'
-    INVALID_EXPENSE_TYPE = 'Please choose an expense type.'
-    SENDING_RESET_EMAIL = 'Sending password reset email'
-    SENDING_SIGNUP_EMAIL = 'Sending confirmation email'
+    # Set the default language
+    def __init__(self,language):
+        self.domain = 'messages'
+        self.language =language
+    # Function to set the language
+        locale_path = "./locales"
+        gettext.bindtextdomain(self.domain, locale_path)
+        gettext.textdomain(self.domain)
+        lang = gettext.translation(self.domain, localedir=locale_path, languages=[self.language], fallback=True)
+        lang.install()
+        self._ = lang.gettext
+        # Notification messages
+        _ = self._
+        self.MAIL_NOT_VERIFY = _('Account is not verify. Please check your email for verification link.')
+        self.INVALID_LOGIN_CREDENTIALS = _('Invalid email or password.')
+        self.INTERNAL_SERVER_ERROR = _('Internal server error.')
+        self.VERIFY_EMAIL_SENT = _('A verification link have been sent to your email.')
+        self.EMAIL_EXIST = _('Email already have an account registered')
+        self.RESET_EMAIL_SENT = _('A password reset link have been sent to your email')
+        self.INVALID_EMAIL = _('Invalid email.')
+        self.SIGN_OUT = _('You have successfully signed out.')
+        self.ACCOUNT_DELETED = _('You have successfully deleted your account.')
+        self.GSHEET_CONNECTION_ERROR = _('GoogleSheetAPI connection error.')
+        self.FIREBASE_CONNECTION_ERROR = _('FirebaseAPI connection error.')
+        self.SUPABASE_CONNECTION_ERROR = _('SupabaseAPI connection error.')
+        self.WARNING_CHANGES_NOT_SAVED = _('Changes you made have not been saved.')
+        self.WARNING_SHEET_EMPTY = _('Sheet is empty.')
+        self.INVALID_DATE = _('Please choose a start/end date.')
+        self.INVALID_EXPENSE_TYPE = _('Please choose an expense type.')
+        self.SENDING_RESET_EMAIL = _('Sending password reset email')
+        self.SENDING_SIGNUP_EMAIL = _('Sending confirmation email')
+        self.WEAK_PASSWORD = _('Weak Password. Password must contain: ')
+        # Buttons
+        self.INSERT_BUTTON = _('Insert')
+        self.UPDATE_BUTTON = _('Edit')
+        self.SAVE_BUTTON = _('Save')
+        # Form
+        self.INSERT_FORM = _('Insert Data')
+        self.UPDATE_FORM = _('Edit Data')
+        # Text
+        self.ABOUT_DESCRIPTION = _("About")
+        self.APP_DESCRIPTION = _("A user-friendly Streamlit app designed to streamline your financial management. By seamlessly store data to Google Sheets, it allows you to track expenses, manage budgets, and generate insightful financial reports. With intuitive visualizations, the app helps you stay on top of your finances effortlessly.")
+        self.FUNCTION_DESCRIPTIONS = _("Functions")
+        self.FUNCTION_CARDS_DESCRIPTION =_("Below are the cards explaining what each of the functions are.")
+        self.EXPANDER = _("Expand")
+        self.UTIL_DESCRIPTION = _("Utilities")
+        self.SUPABASE_ERROR_DESCRIPTION = _("Supabase Connection Error")
+        # Description
+        self.DESC_DASHBOARD = _("Metrics, charts from your expenses reports.")
+        self.DESC_BUG = _("Report bugs in our github repo's issue page.")
+        self.DESC_REPO = _("Source code of the project is found here.")
+        self.DESC_MENU = _("Navigation menu.")
+        self.DESC_LOGOUT = _("Logout.")
+        self.DESC_LANG_SWITCH = _("Swap out language. (EN) English / (VI) Vietnamese.")
+        # Tooltip
+        self.AMOUNT_TOOLTIP = _("Amount should be in VND")
+        self.AMOUNT_TOOLTIP_NAME = _("Amount")
+        
+        self.TYPE_TOOLTIP_NAME = _("Type of Expense")
+        self.OTHER_TYPE_TOOLTIP_NAME = _("Input another type: ")
+        
+        self.NOTE_TOOLTIP = _("Input note here...")
+        self.NOTE_TOOLTIP_NAME = _("Notes")
+        self.DATEINPUT_TOOLTIP_NAME = _("Document Date:")
+        
+        self.WEEK_TOOLTIP = _("Week")
+        self.DAY_OF_WEEK_TOOLTIP = _("Day of Week")
+        self.WEEK_OF_MONTH_TOOLTIP = _("Week of Month")
+        
+        self.SPAN_TOOLTIP_NAME= _("Select your expense span")
+        self.SPAN_TOOLTIP = _("First entry:")
+        
+        self.TOTAL_SPENDING_TOOLTIP =_("Total Spending (VND)")
+        self.HIGHEST_SPENDING_TOOLTIP =_("Highest Spending (VND)")
+        
+        self.RELOAD_APP_TOOLTIP = _("Reload the app.")
+        # Tab names
+        self.METRICS = _("Metrics")
+        self.HEAT_MAP = _("Spending Map Chart")
+        self.LINE_CHART = _("Line Chart")
+        self.BAR_CHART = _("Bar Chart")
+        self.PIE_CHART = _("Pie Chart")
+        self.DATA_FRAME = _("Dataframe")
+    def get_comparestring(self,last,current):
+        tmp = self._("Metrics only compare from current month - last month")
+        msg =f"""{tmp} (`{current}` - `{last}`)"""
+        #msg = self._("Metrics compare: ") + last +" >< "+ current
+        return msg
     
-    @staticmethod
-    def get_connection_errors(args):
-        return "Connection error: "+"-".join(args)
-    @staticmethod
-    def get_validation_errors(args):
-        return "Input error: "+":".join(args)
+    def get_connection_errors(self,args):
+        return self._("Connection error: ") + "-".join(args)
+
+    def get_validation_errors(self,args):
+        return self._("Input error: ") + ":".join(args)

@@ -165,7 +165,7 @@ def google_authentication(component):
             response = sign_in_with_external(credentials.id_token)
             
             if 'error' in response:
-                raise requests.exceptions.HTTPError(f"Error authenticating with Firebase: {response['error']['message']}")
+                raise requests.exceptions.HTTPError(f"{AppMessages.FIREBASE_CONNECTION_ERROR}: {response['error']['message']}")
             
             st.session_state["google_auth_code"] = auth_code
             st.session_state.user_info = user_info
@@ -195,7 +195,7 @@ def password_warning_builder(str):
     requirements_part = re.search(r'\[(.*?)\]', str).group(1)
     requirements_list = [req.strip() for req in requirements_part.split(',')]
     formatted_requirements = ', '.join([req.replace('Password must contain', '') for req in requirements_list])
-    return "Password must contain: " + formatted_requirements + "."
+    return f"{AppMessages.WEAK_PASSWORD} {formatted_requirements}."
 
 
 def create_account(email:str, password:str) -> None:
@@ -233,7 +233,7 @@ def reset_password(email:str) -> None:
     except requests.exceptions.HTTPError as error:
         error_message = json.loads(error.args[1])['error']['message']
         if error_message in {"MISSING_EMAIL","INVALID_EMAIL","EMAIL_NOT_FOUND"}:
-            st.session_state.auth_warning = 'Error: Use a valid email'
+            st.session_state.auth_warning = AppMessages.INVALID_EMAIL
         else:
             st.session_state.auth_warning = error_message
     

@@ -6,6 +6,12 @@ from classes.messages import AppMessages
 import lib.authentication as auth
 from classes.icons import AppIcons
 
+
+if 'language' not in st.session_state or st.session_state.language =="":
+    st.session_state.language = "en"
+    
+app_lang = AppMessages(st.session_state.language)
+
 def get_auth_client():
     """ Initalize an google authentication client. """
     authorization_url = asyncio.run(
@@ -27,7 +33,7 @@ def reset_password():
                                         )
     auth_notification_dialog = reset_form.empty()
     if send_btn:
-        with auth_notification_dialog, st.spinner(AppMessages.SENDING_RESET_EMAIL):
+        with auth_notification_dialog, st.spinner(app_lang.SENDING_RESET_EMAIL):
             auth.reset_password(reset_email)
         if 'auth_success' in st.session_state:
             auth_notification_dialog.success(st.session_state.auth_success, icon= AppIcons.SUCCESS)
@@ -50,7 +56,7 @@ def sign_up():
                                     type='primary',
                                     icon=AppIcons.SEND_EMAIL
                                     ):
-        with register_notification, st.spinner(AppMessages.SENDING_SIGNUP_EMAIL):
+        with register_notification, st.spinner(app_lang.SENDING_SIGNUP_EMAIL):
             auth.create_account(email,password)
         if 'auth_success' in st.session_state:
             register_notification.success(st.session_state.auth_success, icon= AppIcons.SUCCESS)

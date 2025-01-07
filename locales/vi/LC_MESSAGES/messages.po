@@ -1,0 +1,187 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: vi\n"
+
+msgid "Account is not verify. Please check your email for verification link."
+msgstr "Tài khoản chưa được xác minh. Vui lòng kiểm tra email của bạn để lấy liên kết xác minh."
+
+msgid "Invalid email or password."
+msgstr "Email hoặc mật khẩu không hợp lệ."
+
+msgid "About"
+msgstr "Giới thiệu"
+
+msgid "Internal server error."
+msgstr "Lỗi máy chủ nội bộ."
+
+msgid "A verification link have been sent to your email."
+msgstr "Một liên kết xác minh đã được gửi đến email của bạn."
+
+msgid "Email already have an account registered"
+msgstr "Email đã có tài khoản đăng ký"
+
+msgid "A password reset link have been sent to your email"
+msgstr "Một liên kết đặt lại mật khẩu đã được gửi đến email của bạn"
+
+msgid "Invalid email."
+msgstr "Email không hợp lệ."
+
+msgid "You have successfully signed out."
+msgstr "Bạn đã đăng xuất thành công."
+
+msgid "You have successfully deleted your account."
+msgstr "Bạn đã xóa tài khoản thành công."
+
+msgid "GoogleSheetAPI connection error."
+msgstr "Lỗi kết nối GoogleSheetAPI."
+
+msgid "FirebaseAPI connection error."
+msgstr "Lỗi kết nối FirebaseAPI."
+
+msgid "SupabaseAPI connection error."
+msgstr "Lỗi kết nối SupabaseAPI."
+
+msgid "Changes you made have not been saved."
+msgstr "Những thay đổi bạn đã thực hiện chưa được lưu."
+
+msgid "Sheet is empty."
+msgstr "Trang tính trống."
+
+msgid "Please choose a start/end date."
+msgstr "Vui lòng chọn ngày bắt đầu/kết thúc."
+
+msgid "Please choose an expense type."
+msgstr "Vui lòng chọn loại chi phí."
+
+msgid "Sending password reset email"
+msgstr "Đang gửi email đặt lại mật khẩu"
+
+msgid "Sending confirmation email"
+msgstr "Đang gửi email xác nhận"
+
+msgid "Weak Password. Password must contain: "
+msgstr "Mật khẩu yếu. Mật khẩu phải chứa: "
+
+msgid "A user-friendly Streamlit app designed to streamline your financial management. By seamlessly store data to Google Sheets, it allows you to track expenses, manage budgets, and generate insightful financial reports. With intuitive visualizations, the app helps you stay on top of your finances effortlessly."
+msgstr "Một ứng dụng Streamlit thân thiện với người dùng được thiết kế để đơn giản hóa việc quản lý tài chính của bạn. Bằng cách lưu trữ dữ liệu liền mạch vào Google Sheets, nó cho phép bạn theo dõi chi phí, quản lý ngân sách và tạo các báo cáo tài chính sâu sắc. Với các hình ảnh trực quan, ứng dụng giúp bạn dễ dàng kiểm soát tài chính của mình."
+
+msgid "Functions"
+msgstr "Chức năng"
+
+msgid "Below are the cards explaining what each of the functions are."
+msgstr "Dưới đây là các thẻ giải thích từng chức năng là gì."
+
+msgid "Expand"
+msgstr "Mở rộng"
+
+msgid "Utilities"
+msgstr "Tiện ích"
+
+msgid "Supabase Connection Error"
+msgstr "Lỗi kết nối Supabase"
+
+msgid "Metrics, charts from your expenses reports."
+msgstr "Các chỉ số, biểu đồ từ báo cáo chi tiêu của bạn."
+
+msgid "Report bugs in our github repo's issue page."
+msgstr "Báo cáo lỗi trong trang /issue trên github."
+
+msgid "Source code of the project is found here."
+msgstr "Mã nguồn của dự án được tìm thấy ở đây."
+
+msgid "Navigation menu."
+msgstr "Menu điều hướng."
+
+msgid "Logout."
+msgstr "Đăng xuất."
+
+msgid "Amount should be in VND"
+msgstr "Số tiền phải bằng VND"
+
+msgid "Amount"
+msgstr "Số tiền"
+
+msgid "Type of Expense"
+msgstr "Loại chi phí"
+
+msgid "Input another type: "
+msgstr "Nhập loại khác: "
+
+msgid "Input note here..."
+msgstr "Nhập ghi chú ở đây..."
+
+msgid "Notes"
+msgstr "Ghi chú"
+
+msgid "Document Date:"
+msgstr "Tài liệu của ngày:"
+
+msgid "Week"
+msgstr "Tuần"
+
+msgid "Day of Week"
+msgstr "Ngày trong tuần"
+
+msgid "Week of Month"
+msgstr "Tuần trong tháng"
+
+msgid "Select your expense span"
+msgstr "Chọn khoảng thời gian chi tiêu của bạn"
+
+msgid "First entry:"
+msgstr "Chi tiêutiêu đầu tiên:"
+
+msgid "Total Spending (VND)"
+msgstr "Tổng chi tiêu (VND)"
+
+msgid "Highest Spending (VND)"
+msgstr "Chi tiêu cao nhất (VND)"
+
+msgid "Reload the app."
+msgstr "Tải lại ứng dụng."
+
+msgid "Metrics only compare from current month - last month"
+msgstr "So sánh chỉ số giữa tháng này - tháng trước"
+
+msgid "Connection error: "
+msgstr "Lỗi kết nối: "
+
+msgid "Input error: "
+msgstr "Lỗi nhập: "
+
+msgid "Metrics"
+msgstr "Chỉ số"
+
+msgid "Spending Map Chart"
+msgstr "Biểu đồ phân bố chi tiêu"
+
+msgid "Line Chart"
+msgstr "Biểu đồ đường"
+
+msgid "Bar Chart"
+msgstr "Biểu đồ cột"
+
+msgid "Pie Chart"
+msgstr "Biểu đồ tròn"
+
+msgid "Dataframe"
+msgstr "Dữ liệu bảng"
+
+msgid "Swap out language. (EN) English / (VI) Vietnamese."
+msgstr "Chuyển đổi ngôn ngữ hiển thị. (EN) Tiếng Anh / (VI) Tiếng Việt."
+
+msgid "Save"
+msgstr "Lưu"
+
+msgid "Insert"
+msgstr "Thêm"
+
+msgid "Edit"
+msgstr "Sửa"
+
+msgid "Insert Data"
+msgstr "Thêm Dữ Liệu"
+
+msgid "Edit Data"
+msgstr "Sửa Dữ Liệu"
