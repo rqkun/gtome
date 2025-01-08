@@ -85,6 +85,7 @@ class AppMessages:
         self.HIGHEST_SPENDING_TOOLTIP =_("Highest Spending (VND)")
         
         self.RELOAD_APP_TOOLTIP = _("Reload the app.")
+        self.OLD_METRIC_TOOLTIP = _("Old")
         # Tab names
         self.METRICS = _("Metrics")
         self.HEAT_MAP = _("Spending Map Chart")

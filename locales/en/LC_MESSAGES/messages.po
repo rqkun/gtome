@@ -182,3 +182,6 @@ msgstr "Insert Data"
 
 msgid "Edit Data"
 msgstr "Edit Data"
+
+msgid "Old"
+msgstr "Old"

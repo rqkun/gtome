@@ -203,7 +203,7 @@ if sheet is not None and len(sheet) >0:
         min_date= oldest_record
 else:
     min_date = start_date.date()
-oldest_str = oldest_record.strftime("%d/%m/%Y")
+oldest_str = min_date.strftime("%d/%m/%Y")
 selected_span = col1.date_input(
     app_lang.SPAN_TOOLTIP_NAME,
     (min_date, end_date),
@@ -219,7 +219,7 @@ update_bttn =  col4.button(app_lang.UPDATE_BUTTON,use_container_width=True, icon
 placeholder = st.empty()
 
 
-if len(selected_span) < 2 or selected_span[0] < oldest_record:
+if len(selected_span) < 2 or selected_span[0] < min_date:
     st.warning(app_lang.INVALID_DATE, icon=AppIcons.WARNING)
 else: 
     data = Datasource.filter(sheet,selected_span)
@@ -263,7 +263,7 @@ else:
                             millify(metrics_src["Highest_Category_Value"],precision=3),
                             delta=millify(highest_category_value,precision=3),
                             delta_color="inverse",
-                            help="Old: "+highest_category,
+                            help=f"{app_lang.OLD_METRIC_TOOLTIP}: {highest_category}",
                             label_visibility="visible",
                             border=True)
         calendar_chart.plotly_chart(

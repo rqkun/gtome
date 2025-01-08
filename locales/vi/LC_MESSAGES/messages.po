@@ -185,3 +185,6 @@ msgstr "Thêm Dữ Liệu"
 
 msgid "Edit Data"
 msgstr "Sửa Dữ Liệu"
+
+msgid "Old"
+msgstr "Cũ"
