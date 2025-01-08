@@ -90,6 +90,8 @@ class AppMessages:
         self.OLD_METRIC_TOOLTIP = _("Old")
         
         self.EXPORT_TOGGLE_TOOLTIP = _("Download the full sheet ?")
+        self.EXPORT_TYPE_TOOLTIP = _("Default type: .csv")
+        self.EXPORT_TYPE_TOOLTIP_NAME =_("File Type")
         # Tab names
         self.METRICS = _("Metrics")
         self.HEAT_MAP = _("Spending Map Chart")
@@ -97,10 +99,10 @@ class AppMessages:
         self.BAR_CHART = _("Bar Chart")
         self.PIE_CHART = _("Pie Chart")
         self.DATA_FRAME = _("Dataframe")
+        
     def get_comparestring(self,last,current):
         tmp = self._("Metrics only compare from current month - last month")
         msg =f"""{tmp} (`{current}` - `{last}`)"""
-        #msg = self._("Metrics compare: ") + last +" >< "+ current
         return msg
     
     def get_connection_errors(self,args):

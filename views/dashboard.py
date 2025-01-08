@@ -8,7 +8,7 @@ from classes.icons import AppIcons
 from classes.messages import AppMessages
 from classes.structure import DataStructure
 import lib.datasource as Datasource
-import lib.utils as header
+import lib.utils as utils
 import plotly.graph_objects as go
 import pandas as pd 
 import numpy as np
@@ -72,7 +72,7 @@ def update(sheet,selected_span):
     """ Update Dialog."""
     try:
         saved = False
-        data_update = Datasource.filter(sheet,selected_span)
+        data_update = utils.filter(sheet,selected_span)
         data_update["Type"] = data_update["Type"].astype(str)
         update_placeholder = st.empty()
         tmp_df = st.data_editor(data_update,
@@ -96,25 +96,30 @@ def export_form(sheet,selected_span):
     """ Export Dialog."""
     export_placeholder = st.empty()
     if len(sheet) > 0:
-        left,right = st.columns([4,2])
-        if left.toggle(app_lang.EXPORT_TOGGLE_TOOLTIP):
+        left,right = st.columns([5,2],vertical_alignment="bottom")
+        if st.toggle(app_lang.EXPORT_TOGGLE_TOOLTIP):
             dataframe_show = sheet
         else:
-            dataframe_show = Datasource.filter(sheet,selected_span)
+            dataframe_show = utils.filter(sheet,selected_span)
         dataframe_show = pd.DataFrame(dataframe_show).sort_values("Date",ignore_index=True,ascending=False)
-        data_export = dataframe_show.to_csv().encode("utf-8-sig")
-        file_name = "{0}_{1}".format(st.session_state.user_info['email'].split('@')[0],datetime.today().strftime("%d_%M_%Y_%H_%M_%S"))
+        
+        file_type = left.segmented_control(app_lang.EXPORT_TYPE_TOOLTIP_NAME,
+                               options=DataStructure.get_export_type().keys(),
+                               format_func=lambda option: DataStructure.get_export_type()[option],
+                               selection_mode="single",
+                               default=0,
+                               help=app_lang.EXPORT_TYPE_TOOLTIP)
+        
+        data_export, file_name = utils.get_export_data(dataframe_show,file_type)
         right.download_button(label=app_lang.EXPORT_BUTTON,
                            data=data_export,
-                           file_name=f"{file_name}.csv",
-                           mime="text/csv",
+                           file_name=file_name,
                            use_container_width=True,
                            type="primary",
                            icon=AppIcons.EXPORT_PAGE)
         st.expander(app_lang.EXPANDER).dataframe(dataframe_show,
                     use_container_width=True,
-                    hide_index=True,
-                    column_config=DataStructure.get_column_configs()
+                    hide_index=True
                     )
     else:
         export_placeholder.warning(app_lang.WARNING_SHEET_EMPTY,icon=AppIcons.ERROR)
@@ -196,7 +201,7 @@ def plotly_calendar_process(df):
     return fig
 
 
-header.add_header()
+utils.add_header()
 
 try:
     sheet = Datasource.get_detail_sheets()
@@ -212,16 +217,17 @@ end_date = today.replace(day=last_day)
 
 if sheet is not None and len(sheet) >0:
     oldest_record = pd.to_datetime(sheet['Date'],format="%d/%m/%Y").min().date()
-    if oldest_record < start_date.date():
+    if oldest_record > start_date.date():
         min_date = start_date.date()
     else:
         min_date= oldest_record
 else:
-    min_date = start_date.date()
+    min_date = oldest_record = start_date.date()
+
 oldest_str = min_date.strftime("%d/%m/%Y")
 selected_span = col1.date_input(
     app_lang.SPAN_TOOLTIP_NAME,
-    (min_date, end_date),
+    (start_date, end_date),
     format="DD/MM/YYYY",
     min_value=min_date,
     help=f"{app_lang.SPAN_TOOLTIP} {oldest_str}" 
@@ -235,10 +241,10 @@ export_bttn =  col5.button(app_lang.EXPORT_BUTTON,use_container_width=True, icon
 placeholder = st.empty()
 
 
-if len(selected_span) < 2 or selected_span[0] < min_date:
+if len(selected_span) < 2 or selected_span[0] < oldest_record:
     st.warning(app_lang.INVALID_DATE, icon=AppIcons.WARNING)
 else: 
-    data = Datasource.filter(sheet,selected_span)
+    data = utils.filter(sheet,selected_span)
     if insert_bttn:
         insert(sheet)
     if update_bttn:
@@ -247,7 +253,7 @@ else:
         export_form(sheet,selected_span)
     if len(data) >0:
         
-        metrics_src = Datasource.get_metrics(sheet,start_date,end_date)
+        metrics_src = utils.get_metrics(sheet,start_date,end_date)
         
         metrics,calendar_chart,line_chart,bar_plot,pie_plot,dataframe_tab = placeholder.tabs(
             [f"{AppIcons.METRICS} {app_lang.METRICS}",
@@ -259,7 +265,7 @@ else:
         lastmonth = start_date - timedelta(days=1)
         metrics.markdown(app_lang.get_comparestring(lastmonth.strftime("%B-%Y"),start_date.strftime("%B-%Y")))
         spending,max_spent,largest_cate = metrics.columns(3)
-        total_spent, highest_single, highest_category, highest_category_value   = Datasource.get_delta(metrics_src, sheet)
+        total_spent, highest_single, highest_category, highest_category_value   = utils.get_delta(metrics_src, sheet)
         
         spending.metric(app_lang.TOTAL_SPENDING_TOOLTIP,
                         millify(metrics_src["Total"],precision=3),
@@ -285,11 +291,11 @@ else:
                             label_visibility="visible",
                             border=True)
         calendar_chart.plotly_chart(
-            plotly_calendar_process(Datasource.filter(sheet,selected_span)),
+            plotly_calendar_process(utils.filter(sheet,selected_span)),
             use_container_width=True
         )
 
-        normal_data = Datasource.normal_plot_data(data)
+        normal_data = utils.normal_plot_data(data)
         line_chart.line_chart(
             data=normal_data.pivot(index='Date', columns='Type', values='Spent').fillna(0),
             use_container_width=True,

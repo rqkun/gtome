@@ -3,9 +3,17 @@ import streamlit as st
 
 class DataStructure:
     @staticmethod
+    def get_export_type():
+        return {
+                0: ".csv",
+                1: ".xlsx",
+                2: ".xml",
+                3: ".parquet",
+                4: ".orc"
+                }
+    @staticmethod
     def get_categories():
         return ['Date', 'Spent', 'Type', 'Note']
-    
     @staticmethod
     def get_column_configs():
         return {'Date': st.column_config.DatetimeColumn(

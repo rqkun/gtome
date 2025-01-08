@@ -194,3 +194,9 @@ msgstr "Export Data"
 
 msgid "Download the full sheet ?"
 msgstr "Download the full sheet ?"
+
+msgid "Default type: .csv"
+msgstr "Default type: .csv"
+
+msgid "File Type"
+msgstr "File Type"

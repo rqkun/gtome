@@ -197,3 +197,9 @@ msgstr "Xuất Dữ Liệu"
 
 msgid "Download the full sheet ?"
 msgstr "Tải toàn bộ trang tính ?"
+
+msgid "Default type: .csv"
+msgstr "Loại mặc định: .csv"
+
+msgid "File Type"
+msgstr "Loại Tệp"

@@ -1,10 +1,10 @@
 """ Homepage. """
 import streamlit as st
 from classes.messages import AppMessages
-import lib.utils as header
+import lib.utils as utils
 from classes.icons import AppIcons
 
-header.add_header()
+utils.add_header()
 app_lang = AppMessages(st.session_state.language)
 st.markdown(f"# {app_lang.ABOUT_DESCRIPTION}")
 st.markdown(f"""
