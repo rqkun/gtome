@@ -44,10 +44,12 @@ class AppMessages:
         # Buttons
         self.INSERT_BUTTON = _('Insert')
         self.UPDATE_BUTTON = _('Edit')
+        self.EXPORT_BUTTON = _('Export')
         self.SAVE_BUTTON = _('Save')
         # Form
         self.INSERT_FORM = _('Insert Data')
         self.UPDATE_FORM = _('Edit Data')
+        self.EXPORT_FORM = _('Export Data')
         # Text
         self.ABOUT_DESCRIPTION = _("About")
         self.APP_DESCRIPTION = _("A user-friendly Streamlit app designed to streamline your financial management. By seamlessly store data to Google Sheets, it allows you to track expenses, manage budgets, and generate insightful financial reports. With intuitive visualizations, the app helps you stay on top of your finances effortlessly.")
@@ -86,6 +88,8 @@ class AppMessages:
         
         self.RELOAD_APP_TOOLTIP = _("Reload the app.")
         self.OLD_METRIC_TOOLTIP = _("Old")
+        
+        self.EXPORT_TOGGLE_TOOLTIP = _("Download the full sheet ?")
         # Tab names
         self.METRICS = _("Metrics")
         self.HEAT_MAP = _("Spending Map Chart")

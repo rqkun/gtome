@@ -7,7 +7,8 @@ class AppIcons():
     #Menu
     HOME_PAGE = ":material/home:"
     MENU_PAGE = ":material/menu:"
-    INSERT_PAGE = ":material/add_task:"
+    INSERT_PAGE = ":material/add:"
+    EXPORT_PAGE = ":material/download:"
     DASHBOARD_PAGE = ":material/empty_dashboard:"
     MANAGE_PAGE = ":material/lists:"
     BUG_REPORT_PAGE = ":material/bug_report:"

@@ -86,6 +86,19 @@ def clean(input_df):
         input_df["Spent"].fillna(0)
     return input_df.reset_index(drop=True)
 
+def normal_plot_data(df):
+    """ Return dataframe group by date, type. """
+    # Drop the 'Note' column
+    df = df.drop(['Note'], axis=1)
+    
+    # Convert 'Date' to datetime
+    df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
+    
+    # Group by 'Date' and 'Type' and sum the 'Spent' values
+    grouped_df = df.groupby(['Date', 'Type'])['Spent'].sum().reset_index()
+    
+    return grouped_df
+
 def get_metrics(df,start,end):
     """ Get metrics from Sheet. """
     

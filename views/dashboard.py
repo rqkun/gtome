@@ -87,9 +87,37 @@ def update(sheet,selected_span):
             st.rerun()
             saved = True
         if saved ==False:
-            raise ValueError()
+            raise ValueError(app_lang.WARNING_CHANGES_NOT_SAVED)
     except ValueError as err:
-        update_placeholder.warning(app_lang.WARNING_CHANGES_NOT_SAVED,icon=AppIcons.ERROR)
+        update_placeholder.warning(err.args[0],icon=AppIcons.ERROR)
+
+@st.dialog(app_lang.EXPORT_FORM)
+def export_form(sheet,selected_span):
+    """ Export Dialog."""
+    export_placeholder = st.empty()
+    if len(sheet) > 0:
+        left,right = st.columns([4,2])
+        if left.toggle(app_lang.EXPORT_TOGGLE_TOOLTIP):
+            dataframe_show = sheet
+        else:
+            dataframe_show = Datasource.filter(sheet,selected_span)
+        dataframe_show = pd.DataFrame(dataframe_show).sort_values("Date",ignore_index=True,ascending=False)
+        data_export = dataframe_show.to_csv().encode("utf-8-sig")
+        file_name = "{0}_{1}".format(st.session_state.user_info['email'].split('@')[0],datetime.today().strftime("%d_%M_%Y_%H_%M_%S"))
+        right.download_button(label=app_lang.EXPORT_BUTTON,
+                           data=data_export,
+                           file_name=f"{file_name}.csv",
+                           mime="text/csv",
+                           use_container_width=True,
+                           type="primary",
+                           icon=AppIcons.EXPORT_PAGE)
+        st.expander(app_lang.EXPANDER).dataframe(dataframe_show,
+                    use_container_width=True,
+                    hide_index=True,
+                    column_config=DataStructure.get_column_configs()
+                    )
+    else:
+        export_placeholder.warning(app_lang.WARNING_SHEET_EMPTY,icon=AppIcons.ERROR)
 
 def plotly_pie_process(df):
     """ Return a pie plot the type of expensies distribution. """
@@ -107,19 +135,6 @@ def plotly_pie_process(df):
 
     fig = px.pie(values=grouped_totals, names=grouped_totals.index, height=260)
     return fig
-
-def normal_plot_data(df):
-    """ Return group by date, category. """
-    # Drop the 'Note' column
-    df = df.drop(['Note'], axis=1)
-    
-    # Convert 'Date' to datetime
-    df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
-    
-    # Group by 'Date' and 'Type' and sum the 'Spent' values
-    grouped_df = df.groupby(['Date', 'Type'])['Spent'].sum().reset_index()
-    
-    return grouped_df
 
 def plotly_calendar_process(df):
     """ Return dataframe total spent by day. """
@@ -188,7 +203,7 @@ try:
 except ConnectionError as err:
     st.error(app_lang.get_connection_errors(err.args),icon=AppIcons.ERROR)
 
-col1,col2,col3,col4 = st.columns([3,1,2,2],vertical_alignment="bottom")
+col1,col2,col3,col4,col5 = st.columns([4,1,2,2,2],vertical_alignment="bottom")
 
 today = datetime.now()
 start_date = today.replace(day=1)
@@ -209,13 +224,14 @@ selected_span = col1.date_input(
     (min_date, end_date),
     format="DD/MM/YYYY",
     min_value=min_date,
-    help=f"{app_lang.SPAN_TOOLTIP_NAME} {oldest_str}" 
+    help=f"{app_lang.SPAN_TOOLTIP} {oldest_str}" 
     
 )
 
 refresh_button = col2.button(AppIcons.SYNC,use_container_width=True, type="primary")
 insert_bttn =  col3.button(app_lang.INSERT_BUTTON,use_container_width=True, icon=AppIcons.INSERT_PAGE,type="primary")
 update_bttn =  col4.button(app_lang.UPDATE_BUTTON,use_container_width=True, icon=AppIcons.MANAGE_PAGE,type="primary")
+export_bttn =  col5.button(app_lang.EXPORT_BUTTON,use_container_width=True, icon=AppIcons.EXPORT_PAGE,type="primary")
 placeholder = st.empty()
 
 
@@ -227,6 +243,8 @@ else:
         insert(sheet)
     if update_bttn:
         update(sheet,selected_span)
+    if export_bttn:
+        export_form(sheet,selected_span)
     if len(data) >0:
         
         metrics_src = Datasource.get_metrics(sheet,start_date,end_date)
@@ -271,7 +289,7 @@ else:
             use_container_width=True
         )
 
-        normal_data = normal_plot_data(data)
+        normal_data = Datasource.normal_plot_data(data)
         line_chart.line_chart(
             data=normal_data.pivot(index='Date', columns='Type', values='Spent').fillna(0),
             use_container_width=True,

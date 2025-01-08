@@ -130,7 +130,7 @@ msgid "Select your expense span"
 msgstr "Chọn khoảng thời gian chi tiêu của bạn"
 
 msgid "First entry:"
-msgstr "Chi tiêutiêu đầu tiên:"
+msgstr "Chi tiêu đầu tiên:"
 
 msgid "Total Spending (VND)"
 msgstr "Tổng chi tiêu (VND)"
@@ -188,3 +188,12 @@ msgstr "Sửa Dữ Liệu"
 
 msgid "Old"
 msgstr "Cũ"
+
+msgid "Export"
+msgstr "Tải"
+
+msgid "Export Data"
+msgstr "Xuất Dữ Liệu"
+
+msgid "Download the full sheet ?"
+msgstr "Tải toàn bộ trang tính ?"

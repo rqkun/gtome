@@ -185,3 +185,12 @@ msgstr "Edit Data"
 
 msgid "Old"
 msgstr "Old"
+
+msgid "Export"
+msgstr "Export"
+
+msgid "Export Data"
+msgstr "Export Data"
+
+msgid "Download the full sheet ?"
+msgstr "Download the full sheet ?"
