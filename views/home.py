@@ -50,6 +50,6 @@ with st.expander(app_lang.EXPANDER):
     ###### {app_lang.UTIL_DESCRIPTION}:
     - [{AppIcons.VIETNAMESE} / {AppIcons.ENGLISH}] - {app_lang.DESC_LANG_SWITCH}
     - [{AppIcons.MENU_PAGE} Menu] - {app_lang.DESC_MENU}
-    - [{AppIcons.LOG_OUT} Logout] - {app_lang.DESC_LOGOUT}
+    - [{AppIcons.LOG_OUT}] - {app_lang.DESC_LOGOUT}
     """
 )
