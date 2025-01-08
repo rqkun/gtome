@@ -91,7 +91,7 @@ def sign_in():
     st.write("")
 
 if 'user_info' not in st.session_state:
-    _,col2,_ = st.columns([1,2,1])
+    _,col2,_ = st.columns([2,2,2])
     # _,left,right = col2.columns([1,5,1])
     col2.markdown("""<div style="text-align: center;
                         font-size: 50px; font-weight: bold;">GTOME
