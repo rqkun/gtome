@@ -92,12 +92,9 @@ def sign_in():
 
 if 'user_info' not in st.session_state:
     _,col2,_ = st.columns([2,2,2])
-    # _,left,right = col2.columns([1,5,1])
     col2.markdown("""<div style="text-align: center;
                         font-size: 50px; font-weight: bold;">GTOME
                     </div>""",unsafe_allow_html=True)
-    # with right:
-    #     header.add_change_theme()
     col2.write("")
     placeholder = col2.container()
     col2.divider()
@@ -105,9 +102,17 @@ if 'user_info' not in st.session_state:
     col2.button("Forget Password",use_container_width=True,on_click=reset_password)
     col2.write("Already have an account ?")
     col2.button("Sign In",use_container_width=True,on_click=sign_in,type="primary")
-
     with col2, st.spinner("Signing in..."):
         auth.google_authentication(placeholder)
+    if 'auth_success' in st.session_state:
+        st.toast(st.session_state.auth_success, icon= AppIcons.SUCCESS)
+        del st.session_state.auth_success
+    elif 'auth_warning' in st.session_state:
+        st.toast(st.session_state.auth_warning, icon= AppIcons.ERROR)
+        del st.session_state.auth_warning
+
+    
+    
 
         
 

@@ -10,16 +10,6 @@ if 'user_info' not in st.session_state:
 
 if 'language' not in st.session_state or st.session_state.language =="":
     st.session_state.language = "en"
-# ms = st.session_state
-# if "themes" not in ms:
-#     ms.themes = {"current_theme": "dark",
-#                     "refreshed": True,
-#                     "light": {"theme.base": "dark",
-#                               "button_face": ":material/dark_mode:"},
-
-#                     "dark":  {"theme.base": "light",
-#                               "button_face": ":material/light_mode:"},
-#                     }
 
 st.set_page_config(page_title="GTOME", page_icon=AppIcons.MAIN_APP,layout="wide")
 home_page = st.Page("views/home.py", title="Home", icon=AppIcons.HOME_PAGE)
@@ -28,15 +18,14 @@ login_page = st.Page("views/login.py", title="Login", icon=AppIcons.LOG_IN)
 error_page = st.Page("views/error.py",title="Error",icon=AppIcons.BUG_REPORT_PAGE,url_path="/error")
 authenticated_pages = [home_page,view_page]
 
+st.session_state.login_query=st.query_params.to_dict()
+st.query_params.clear()
 try:
     test_supabase_connection()
     if st.session_state.login is True:
-        st.query_params.clear()
         st.session_state.sheet_name = set_user_sheet(st.session_state.user_info['email'])
         pg = st.navigation(authenticated_pages,position="hidden")
     else:
-        if len(st.query_params.get_all("code")) == 0:
-            st.query_params.clear()
         pg = st.navigation([login_page],position="hidden")
     pg.run()
 except ConnectionError:

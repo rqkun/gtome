@@ -1,6 +1,7 @@
 """ Firebase API Authentication. """
 import json
 import re
+import oauthlib
 import streamlit as st
 import requests
 from classes.messages import AppMessages
@@ -133,7 +134,10 @@ def sign_in(email:str, password:str) -> None:
 def google_authentication(component):
     """ Sign in with OAuth (Google). """
     try:
-        auth_code = st.query_params.get("code")
+        if 'code' in st.session_state.login_query and len(st.session_state.login_query) != 0 :
+            auth_code = st.session_state.login_query['code']
+        else:
+            auth_code =""
         CLIENT_CONFIG = {'web': {
             'client_id': st.secrets.connections.google_api.client_id,
             'project_id': st.secrets.connections.google_api.project_id,
@@ -149,9 +153,8 @@ def google_authentication(component):
             scopes=["https://www.googleapis.com/auth/userinfo.email", "openid"],
             redirect_uri=st.secrets.connections.google_api.redirect_url,
         )
-        if auth_code:
+        if auth_code != "":
             custom_components.google_sign_in_button(component,url="")
-            
             flow.fetch_token(code=auth_code)
             credentials = flow.credentials
             user_info_service = build(
@@ -170,10 +173,8 @@ def google_authentication(component):
             st.session_state["google_auth_code"] = auth_code
             st.session_state.user_info = user_info
             st.session_state.login = True
-            st.query_params.clear()
             st.rerun()
         else:
-            st.query_params.clear()
             authorization_url, state = flow.authorization_url(
                 access_type="offline",
                 include_granted_scopes="true",
@@ -183,9 +184,11 @@ def google_authentication(component):
     except requests.exceptions.HTTPError as error:
         error_message = json.loads(error.args[1])['error']['message']
         st.session_state.auth_warning = error_message
-
-    except Exception as error:
-        st.session_state.auth_warning = AppMessages.INTERNAL_SERVER_ERROR + "".join(error.args)
+    except oauthlib.oauth2.rfc6749.errors.InvalidGrantError as error:
+        error_message = AppMessages("en").INVALID_LOGIN_CODE
+        st.session_state.login_query['code'] = ""
+        st.session_state.auth_warning = error_message
+        st.rerun()
 
 
 

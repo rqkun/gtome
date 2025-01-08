@@ -29,6 +29,7 @@ class AppMessages:
         self.EMAIL_EXIST = _('Email already have an account registered')
         self.RESET_EMAIL_SENT = _('A password reset link have been sent to your email')
         self.INVALID_EMAIL = _('Invalid email.')
+        self.INVALID_LOGIN_CODE = _('Invalid sign in code.')
         self.SIGN_OUT = _('You have successfully signed out.')
         self.ACCOUNT_DELETED = _('You have successfully deleted your account.')
         self.GSHEET_CONNECTION_ERROR = _('GoogleSheetAPI connection error.')
