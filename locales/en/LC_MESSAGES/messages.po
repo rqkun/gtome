@@ -200,3 +200,36 @@ msgstr "Default type: .csv"
 
 msgid "File Type"
 msgstr "File Type"
+
+msgid "Sign in with Google"
+msgstr "Sign in with Google"
+
+msgid "Sign In"
+msgstr "Sign In"
+
+msgid "Create Account"
+msgstr "Create Account"
+
+msgid "Forget Password"
+msgstr "Forget Password"
+
+msgid "Send"
+msgstr "Send"
+
+msgid "Sign in"
+msgstr "Sign in"
+
+msgid "Create your account"
+msgstr "Create your account"
+
+msgid "Reset password"
+msgstr "Reset password"
+
+msgid "Already have an account ?"
+msgstr "Already have an account ?"
+
+msgid "Signing in..."
+msgstr "Signing in..."
+
+msgid "Password"
+msgstr "Password"

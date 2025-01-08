@@ -23,8 +23,7 @@ def add_change_lang():
     btn_face = AppIcons.ENGLISH \
         if st.session_state.language == "en" \
             else AppIcons.VIETNAMESE
-            
-    if st.button(btn_face,on_click=change_lang,use_container_width=True):
+    if st.button(btn_face,on_click=change_lang,use_container_width=True,type="secondary"):
         st.rerun()
 
 def add_header():

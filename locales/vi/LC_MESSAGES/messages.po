@@ -203,3 +203,37 @@ msgstr "Loại mặc định: .csv"
 
 msgid "File Type"
 msgstr "Loại Tệp"
+
+
+msgid "Sign in with Google"
+msgstr "Đăng nhập với Google"
+
+msgid "Sign In"
+msgstr "Đăng Nhập"
+
+msgid "Create Account"
+msgstr "Đăng Kí"
+
+msgid "Forget Password"
+msgstr "Quên Mật Khẩu"
+
+msgid "Send"
+msgstr "Gửi"
+
+msgid "Sign in"
+msgstr "Đăng nhập"
+
+msgid "Create your account"
+msgstr "Tạo tài khoản"
+
+msgid "Reset password"
+msgstr "Đặt lại mật khẩukhẩu"
+
+msgid "Already have an account ?"
+msgstr "Bạn đã có tài khoản ?"
+
+msgid "Signing in..."
+msgstr "Đăng nhập..."
+
+msgid "Password"
+msgstr "Mật khẩu"

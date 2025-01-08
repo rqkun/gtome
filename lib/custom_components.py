@@ -1,5 +1,7 @@
 import streamlit as st
 
+from classes.messages import AppMessages
+
 
 def google_sign_in_button(componet, url: str):
     """
@@ -22,7 +24,7 @@ def google_sign_in_button(componet, url: str):
                         </svg>
                     </div>
                 <span class="gsi-material-button-contents" style="-webkit-flex-grow:1;flex-grow:1;font-family:'Roboto', arial, sans-serif;font-weight:500;overflow:hidden;text-overflow:ellipsis;vertical-align:top;" >Sign in with Google</span>
-                <span style="display:none;" >Sign in with Google</span>
+                <span style="display:none;" >{AppMessages(st.session_state.language).SIGN_IN_GOOGLE}</span>
                 </div>
         </button>
     </a>

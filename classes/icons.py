@@ -27,6 +27,6 @@ class AppIcons():
     BAR_CHART = ":material/insert_chart:"
     PIE_CHART = ":material/pie_chart:"
     HEAT_MAP = ":material/key_visualizer:"
-    VIETNAMESE =":flag-vi:"
-    ENGLISH =":flag-us:"
+    VIETNAMESE =":material/language: VI"
+    ENGLISH =":material/language: EN"
     

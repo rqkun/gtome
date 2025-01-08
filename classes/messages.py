@@ -47,10 +47,18 @@ class AppMessages:
         self.UPDATE_BUTTON = _('Edit')
         self.EXPORT_BUTTON = _('Export')
         self.SAVE_BUTTON = _('Save')
+        self.SIGN_IN_GOOGLE = _('Sign in with Google')
+        self.SIGN_IN = _('Sign In')
+        self.CREATE_ACCOUNT = _('Create Account')
+        self.FORGET_PASSWORD = _('Forget Password')
+        self.SEND_BUTTON = _('Send')
         # Form
         self.INSERT_FORM = _('Insert Data')
         self.UPDATE_FORM = _('Edit Data')
         self.EXPORT_FORM = _('Export Data')
+        self.SIGN_IN_FORM = _('Sign in')
+        self.CREATE_ACCOUNT_FORM = _('Create your account')
+        self.FORGET_PASSWORD_FORM = _('Reset password')
         # Text
         self.ABOUT_DESCRIPTION = _("About")
         self.APP_DESCRIPTION = _("A user-friendly Streamlit app designed to streamline your financial management. By seamlessly store data to Google Sheets, it allows you to track expenses, manage budgets, and generate insightful financial reports. With intuitive visualizations, the app helps you stay on top of your finances effortlessly.")
@@ -93,6 +101,11 @@ class AppMessages:
         self.EXPORT_TOGGLE_TOOLTIP = _("Download the full sheet ?")
         self.EXPORT_TYPE_TOOLTIP = _("Default type: .csv")
         self.EXPORT_TYPE_TOOLTIP_NAME =_("File Type")
+        
+        self.SIGN_IN_TOOLTIP = _('Already have an account ?')
+        self.SIGN_IN_LOAD_TOOLTIP = _('Signing in...')
+        
+        self.PASSWORD_TOOLTIP = _("Password")
         # Tab names
         self.METRICS = _("Metrics")
         self.HEAT_MAP = _("Spending Map Chart")
