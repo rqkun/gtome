@@ -30,12 +30,12 @@ def add_header():
     """ Add header function. """
     with st.header(""):
         col1, col2,_,col3,col4 = st.columns([1,1,4,1,2])
-        if col1.button(":material/home:",type="secondary",use_container_width=True):
+        if col1.button(AppIcons.HOME_PAGE,type="secondary",use_container_width=True):
             st.switch_page("views/home.py")
         with col2:
             add_change_lang()
 
-        col3.button(":material/exit_to_app:",
+        col3.button(AppIcons.LOG_OUT,
                     type="secondary",
                     use_container_width=True,
                     on_click=auth.sign_out)
