@@ -11,7 +11,7 @@ if 'user_info' not in st.session_state:
 if 'language' not in st.session_state or st.session_state.language =="":
     st.session_state.language = "en"
 
-st.set_page_config(page_title="GTOME", page_icon=AppIcons.MAIN_APP)
+st.set_page_config(page_title="GTOME", page_icon=AppIcons.MAIN_APP,layout="wide")
 about_page = st.Page("views/about.py", title="About", icon=AppIcons.ABOUT_PAGE)
 view_page = st.Page("views/dashboard.py", title="Dashboard", icon=AppIcons.DASHBOARD_PAGE)
 login_page = st.Page("views/login.py", title="Login", icon=AppIcons.LOG_IN)
