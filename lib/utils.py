@@ -54,10 +54,12 @@ def add_header():
 def add_error_header():
     """ Add setup header function. """
     with st.header(""):
-        _, _,_,_,col4 = st.columns([1,1,4,1,1])
+        col1, _,_,_,col4 = st.columns([1,1,4,1,1])
+        with col1:
+            add_change_lang()
         if col4.button(AppIcons.SYNC,
                     type="secondary",
-                    use_container_width=True,help=AppMessages.RELOAD_APP_TOOLTIP
+                    use_container_width=True,help=AppMessages(st.session_state.language).RELOAD_APP_TOOLTIP
                     ):
             st.cache_data.clear()
             st.cache_resource.clear()

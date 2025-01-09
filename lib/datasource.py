@@ -31,7 +31,7 @@ def add_from(df):
             data=df
         )
     except ConnectionError as err:
-        st.error(AppMessages.get_connection_errors(err.args),icon=AppIcons.ERROR)
+        st.error(AppMessages(st.session_state.language).get_connection_errors(err.args),icon=AppIcons.ERROR)
 
 def create_from(df):
     """ Create Sheet. """
@@ -42,7 +42,7 @@ def create_from(df):
             data=df
         )
     except ConnectionError as err:
-        st.error(AppMessages.get_connection_errors(err.args),icon=AppIcons.ERROR)
+        st.error(AppMessages(st.session_state.language).get_connection_errors(err.args),icon=AppIcons.ERROR)
 
 
 def update_from(updated_df,old_df,sheet):
@@ -59,7 +59,7 @@ def update_from(updated_df,old_df,sheet):
         )
         
     except ConnectionError as err:
-        st.error(AppMessages.get_connection_errors(err.args),icon=AppIcons.ERROR)
+        st.error(AppMessages(st.session_state.language).get_connection_errors(err.args),icon=AppIcons.ERROR)
 
 @st.cache_resource
 def connect_to_gsheet():
@@ -67,18 +67,17 @@ def connect_to_gsheet():
     try:
         return st.connection("google_api", type=GSheetsConnection)
     except Exception as e:
-        raise ConnectionError('GoogleSheet', AppMessages.GSHEET_CONNECTION_ERROR) from e
+        raise ConnectionError('GoogleSheet', AppMessages(st.session_state.language).GSHEET_CONNECTION_ERROR) from e
 
-def test_connect_to_sheet(link):
+def test_connect_to_sheet():
     """ Connection """
+    st.cache_resource.clear()
     try:
         conn = st.connection("google_api", type=GSheetsConnection)
-        conn.read(
-            worksheet = link,
-        )
-        return True
-    except gspread.exceptions.SpreadsheetNotFound:
-        return False
+        conn.read()
+        return True, ""
+    except gspread.exceptions.SpreadsheetNotFound as err:
+        return False, err
 
 def get_detail_sheets():
     """ Get all or create a new Sheet. """
@@ -97,12 +96,14 @@ def get_detail_sheets():
 
 def test_supabase_connection():
     """ Connection """
+    st.cache_resource.clear()
     conn = connect_to_supabase()
     try:
         conn.table("user_sheet").select("*").execute().data
+        return True, ""
     except postgrest.exceptions.APIError as e:
         tmp = ast.literal_eval(e.args[0])
-        raise ConnectionError("{0}: {1}".format(tmp['message'], tmp['hint']))
+        return False, "{0}: {1}".format(tmp['message'], tmp['hint'])
 
 @st.cache_resource
 def connect_to_supabase():

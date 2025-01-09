@@ -3,6 +3,18 @@ import streamlit as st
 
 class DataStructure:
     @staticmethod
+    def get_error_object(supabase_state,gsheet_state,supabase_err,gsheet_err):
+        return {
+                "Supabase": {
+                  "connected":supabase_state,
+                  "error": supabase_err
+                },
+                "GSheet": {
+                  "connected":gsheet_state,
+                  "error": gsheet_err
+                }
+                }
+    @staticmethod
     def get_export_type():
         return {
                 0: ".csv",
