@@ -71,7 +71,6 @@ def connect_to_gsheet():
 
 def test_connect_to_sheet():
     """ Connection """
-    st.cache_resource.clear()
     try:
         conn = st.connection("google_api", type=GSheetsConnection)
         conn.read()
@@ -96,7 +95,6 @@ def get_detail_sheets():
 
 def test_supabase_connection():
     """ Connection """
-    st.cache_resource.clear()
     conn = connect_to_supabase()
     try:
         conn.table("user_sheet").select("*").execute().data

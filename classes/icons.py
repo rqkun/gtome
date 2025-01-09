@@ -5,7 +5,7 @@ class AppIcons():
     WARNING = ":material/warning:"
     SUCCESS =":material/check_circle:"
     #Menu
-    HOME_PAGE = ":material/home:"
+    ABOUT_PAGE = ":material/description:"
     MENU_PAGE = ":material/menu:"
     INSERT_PAGE = ":material/add:"
     EXPORT_PAGE = ":material/download:"
@@ -27,6 +27,6 @@ class AppIcons():
     BAR_CHART = ":material/insert_chart:"
     PIE_CHART = ":material/pie_chart:"
     HEAT_MAP = ":material/key_visualizer:"
-    VIETNAMESE =":material/language: VI"
-    ENGLISH =":material/language: EN"
+    LANGUAGE =":material/language:"
+    TOOLS = ":material/construction:"
     

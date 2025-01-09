@@ -73,7 +73,7 @@ class AppMessages:
         self.DESC_REPO = _("Source code of the project is found here.")
         self.DESC_MENU = _("Navigation menu.")
         self.DESC_LOGOUT = _("Logout.")
-        self.DESC_LANG_SWITCH = _("Swap out language. (EN) English / (VI) Vietnamese.")
+        self.DESC_LANG_SWITCH = _("Language.")
         # Tooltip
         self.AMOUNT_TOOLTIP = _("Amount should be in VND")
         self.AMOUNT_TOOLTIP_NAME = _("Amount")

@@ -20,19 +20,17 @@ def change_lang():
 
 def add_change_lang():
     """ Add chaneg theme button. (Only work correct locally or single user mode) """
-    btn_face = AppIcons.ENGLISH \
+    btn_face = " EN" \
         if st.session_state.language == "en" \
-            else AppIcons.VIETNAMESE
-    if st.button(btn_face,on_click=change_lang,use_container_width=True,type="secondary"):
+            else " VI"
+    if st.button(AppIcons.LANGUAGE+btn_face,on_click=change_lang,use_container_width=True,type="secondary"):
         st.rerun()
 
 def add_header():
     """ Add header function. """
     with st.header(""):
-        col1, col2,_,col3,col4 = st.columns([1,1,4,1,2])
-        if col1.button(AppIcons.HOME_PAGE,type="secondary",use_container_width=True):
-            st.switch_page("views/home.py")
-        with col2:
+        col1, _,_,col3,col4 = st.columns([1,1,4,1,2])
+        with col1:
             add_change_lang()
 
         col3.button(AppIcons.LOG_OUT,
@@ -46,6 +44,10 @@ def add_header():
                 st.page_link("views/dashboard.py",
                              label="Dashboard",
                              icon=AppIcons.DASHBOARD_PAGE,
+                             use_container_width=True)
+                st.page_link("views/about.py",
+                             label="About",
+                             icon=AppIcons.ABOUT_PAGE,
                              use_container_width=True)
                 st.page_link("https://github.com/rqkun/gtome/issues",
                              label="Report",

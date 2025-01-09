@@ -168,8 +168,8 @@ msgstr "Biểu đồ tròn"
 msgid "Dataframe"
 msgstr "Dữ liệu bảng"
 
-msgid "Swap out language. (EN) English / (VI) Vietnamese."
-msgstr "Chuyển đổi ngôn ngữ hiển thị. (EN) Tiếng Anh / (VI) Tiếng Việt."
+msgid "Language."
+msgstr "Ngôn ngữ hiển thị."
 
 msgid "Save"
 msgstr "Lưu"
