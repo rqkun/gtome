@@ -45,17 +45,13 @@ def create_from(df):
         st.error(AppMessages(st.session_state.language).get_connection_errors(err.args),icon=AppIcons.ERROR)
 
 
-def update_from(updated_df,old_df,sheet):
+def update_from(original_df):#updated_df,old_df,sheet
     """ Update Sheet that include another dataframe. """
     conn = connect_to_gsheet()
     try:
-        sheet = sheet[~sheet.apply(tuple,1).isin(old_df.apply(tuple,1))]
-
-        save = pd.concat([sheet, updated_df], ignore_index= True)
-        save = clean(save)
         conn.update(
             worksheet=st.session_state.sheet_name,
-            data=save
+            data=original_df
         )
         
     except ConnectionError as err:

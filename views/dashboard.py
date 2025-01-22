@@ -72,8 +72,8 @@ def update(sheet,selected_span):
     """ Update Dialog."""
     try:
         saved = False
-        data_update = utils.filter(sheet,selected_span)
-        data_update["Type"] = data_update["Type"].astype(str)
+        sheet["Type"] = sheet["Type"].astype(str)
+        data_update, remaining = utils.filter(sheet,selected_span)
         update_placeholder = st.empty()
         tmp_df = st.data_editor(data_update,
                                 use_container_width=True,
@@ -81,11 +81,16 @@ def update(sheet,selected_span):
                                 hide_index=True,
                                 column_config=DataStructure.get_column_configs(),
                                 num_rows='dynamic')
-        if st.button(app_lang.SAVE_BUTTON,use_container_width=True,type="primary",icon=AppIcons.SAVE):
-            Datasource.update_from(tmp_df,data_update,sheet)
+        
+        
+        
+        if st.button(app_lang.SAVE_BUTTON, use_container_width=True, type="primary", icon=AppIcons.SAVE):
+            # Add updated data_update back to sheet
+            update = pd.concat([remaining, tmp_df], ignore_index=True)
+            Datasource.update_from(update)
+            saved = True
             st.cache_data.clear()
             st.rerun()
-            saved = True
         if saved ==False:
             raise ValueError(app_lang.WARNING_CHANGES_NOT_SAVED)
     except ValueError as err:
@@ -100,7 +105,7 @@ def export_form(sheet,selected_span):
         if st.toggle(app_lang.EXPORT_TOGGLE_TOOLTIP):
             dataframe_show = sheet
         else:
-            dataframe_show = utils.filter(sheet,selected_span)
+            dataframe_show,_ = utils.filter(sheet,selected_span)
         dataframe_show = pd.DataFrame(dataframe_show).sort_values("Date",ignore_index=True,ascending=False)
         
         file_type = left.segmented_control(app_lang.EXPORT_TYPE_TOOLTIP_NAME,
@@ -244,7 +249,7 @@ placeholder = st.empty()
 if len(selected_span) < 2 or selected_span[0] < oldest_record:
     st.warning(app_lang.INVALID_DATE, icon=AppIcons.WARNING)
 else: 
-    data = utils.filter(sheet,selected_span)
+    data,_ = utils.filter(sheet,selected_span)
     if insert_bttn:
         insert(sheet)
     if update_bttn:
@@ -290,8 +295,9 @@ else:
                             help=f"{app_lang.OLD_METRIC_TOOLTIP}: {highest_category}",
                             label_visibility="visible",
                             border=True)
+        plotly,_  = utils.filter(sheet,selected_span)
         calendar_chart.plotly_chart(
-            plotly_calendar_process(utils.filter(sheet,selected_span)),
+            plotly_calendar_process(plotly),
             use_container_width=True
         )
 

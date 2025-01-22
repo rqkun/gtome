@@ -82,17 +82,22 @@ def clean(input_df):
     return input_df.reset_index(drop=True)
 
 
-def filter(df,span):
-    """ Return data from dataframe that is in a span of time. """
+def filter(df, span):
+    """ Return data from dataframe that is in a span of time and the data outside the span. """
     start_date = span[0]
     end_date = span[1]
-    filtered_df = df
-    filtered_df["Date"] = pd.to_datetime(filtered_df['Date'],format='%d/%m/%Y')
+    
+    df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
+    
     if start_date == end_date:
-        filtered_df = filtered_df[(filtered_df['Date'].dt.date == start_date)]
+        filtered_df = df.loc[(df['Date'].dt.date == start_date)]
     else:
-        filtered_df = filtered_df[(filtered_df['Date'].dt.date >= start_date) & (filtered_df['Date'].dt.date <= end_date)]
-    return clean(filtered_df)
+        filtered_df = df.loc[(df['Date'].dt.date >= start_date) & (df['Date'].dt.date <= end_date)]
+    
+    remaining_df = df.loc[~df.index.isin(filtered_df.index)]
+    
+    return clean(filtered_df), clean(remaining_df)
+
 
 
 def normal_plot_data(df):
@@ -112,7 +117,7 @@ def normal_plot_data(df):
 def get_metrics(df,start,end):
     """ Get metrics from Sheet. """
 
-    df = filter(df,(start.date(),end.date()))
+    df,_ = filter(df,(start.date(),end.date()))
 
     totals = df.groupby('Type')['Spent'].sum()
     if totals.empty:
