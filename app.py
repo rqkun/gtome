@@ -18,8 +18,8 @@ login_page = st.Page("views/login.py", title="Login", icon=AppIcons.LOG_IN)
 error_page = st.Page("views/error.py",title="Error",icon=AppIcons.BUG_REPORT_PAGE)
 authenticated_pages = [view_page,about_page]
 
-st.session_state.login_query=st.query_params.to_dict()
-st.query_params.clear()
+st.json(st.experimental_user)
+
 if st.experimental_user.is_logged_in:
     supbase_cnn, supbase_err = test_supabase_connection()
     gsheet_cnn, gsheet_err = test_connect_to_sheet()
