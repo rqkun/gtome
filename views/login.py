@@ -91,32 +91,41 @@ def sign_in():
             del st.session_state.auth_warning
     st.write("")
 
-if 'user_info' not in st.session_state:
-    _,col2,_ = st.columns([2,2,2])
-    col2.markdown("""<div style="text-align: center;
-                        font-size: 50px; font-weight: bold;">GTOME
-                    </div>""",unsafe_allow_html=True)
-    col2.write("")
-    placeholder = col2.container()
-    col2.divider()
-    col2.button(app_lang.CREATE_ACCOUNT,use_container_width=True,on_click=sign_up,type='secondary')
-    col2.button(app_lang.FORGET_PASSWORD,use_container_width=True,on_click=reset_password)
-    left,right = col2.columns([4,2],vertical_alignment="center")
-    left.write(app_lang.SIGN_IN_TOOLTIP)
-    with right:
-        utils.add_change_lang()
-    col2.button(app_lang.SIGN_IN,use_container_width=True,on_click=sign_in,type="primary")
-    with col2, st.spinner(app_lang.SIGN_IN_LOAD_TOOLTIP):
-        auth.google_authentication(placeholder)
-    if 'auth_success' in st.session_state:
-        st.toast(st.session_state.auth_success, icon= AppIcons.SUCCESS)
-        del st.session_state.auth_success
-    elif 'auth_warning' in st.session_state:
-        st.toast(st.session_state.auth_warning, icon= AppIcons.ERROR)
-        del st.session_state.auth_warning
+# if 'user_info' not in st.session_state:
+#     _,col2,_ = st.columns([2,2,2])
+#     col2.markdown("""<div style="text-align: center;
+#                         font-size: 50px; font-weight: bold;">GTOME
+#                     </div>""",unsafe_allow_html=True)
+#     col2.write("")
+#     placeholder = col2.container()
+#     col2.divider()
+#     col2.button(app_lang.CREATE_ACCOUNT,use_container_width=True,on_click=sign_up,type='secondary')
+#     col2.button(app_lang.FORGET_PASSWORD,use_container_width=True,on_click=reset_password)
+#     left,right = col2.columns([4,2],vertical_alignment="center")
+#     left.write(app_lang.SIGN_IN_TOOLTIP)
+#     with right:
+#         utils.add_change_lang()
+#     col2.button(app_lang.SIGN_IN,use_container_width=True,on_click=sign_in,type="primary")
+#     with col2, st.spinner(app_lang.SIGN_IN_LOAD_TOOLTIP):
+#         auth.google_authentication(placeholder)
+#     if 'auth_success' in st.session_state:
+#         st.toast(st.session_state.auth_success, icon= AppIcons.SUCCESS)
+#         del st.session_state.auth_success
+#     elif 'auth_warning' in st.session_state:
+#         st.toast(st.session_state.auth_warning, icon= AppIcons.ERROR)
+#         del st.session_state.auth_warning
 
     
     
 
         
-
+if not st.experimental_user.is_logged_in:
+    _,col2,_ = st.columns([2,2,2])
+    col2.markdown("""<div style="text-align: center;
+                        font-size: 50px; font-weight: bold;">GTOME
+                    </div>""",unsafe_allow_html=True)
+    col2.write("")
+    col2.divider()
+    if col2.button("Sign in with Google",use_container_width=True,type="primary"):
+        st.login()
+        st.stop()

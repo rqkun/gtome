@@ -20,7 +20,7 @@ authenticated_pages = [view_page,about_page]
 
 st.session_state.login_query=st.query_params.to_dict()
 st.query_params.clear()
-if st.session_state.login is True:
+if st.experimental_user.is_logged_in:
     supbase_cnn, supbase_err = test_supabase_connection()
     gsheet_cnn, gsheet_err = test_connect_to_sheet()
     if (supbase_cnn is False or gsheet_cnn is False):
@@ -28,7 +28,7 @@ if st.session_state.login is True:
         st.session_state.connection_error = error
         pg = st.navigation([error_page],position="hidden")
     else:
-        st.session_state.sheet_name = set_user_sheet(st.session_state.user_info['email'])
+        st.session_state.sheet_name = set_user_sheet(st.experimental_user.email)
         pg = st.navigation(authenticated_pages,position="hidden")
 else:
         pg = st.navigation([login_page],position="hidden")

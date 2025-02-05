@@ -249,6 +249,7 @@ def sign_out() -> None:
     st.session_state.clear()
     st.cache_data.clear()
     st.cache_resource.clear()
+    st.logout()
 
 def delete_account(password:str) -> None:
     """ Delete account button. """
