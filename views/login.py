@@ -119,13 +119,13 @@ def sign_in():
     
 
         
-if not st.experimental_user.is_logged_in:
-    _,col2,_ = st.columns([2,2,2])
-    col2.markdown("""<div style="text-align: center;
-                        font-size: 50px; font-weight: bold;">GTOME
-                    </div>""",unsafe_allow_html=True)
-    col2.write("")
-    col2.divider()
-    if col2.button("Sign in with Google",use_container_width=True,type="primary"):
-        st.login()
-        st.stop()
+# if not st.experimental_user.is_logged_in:
+_,col2,_ = st.columns([2,2,2])
+col2.markdown("""<div style="text-align: center;
+                    font-size: 50px; font-weight: bold;">GTOME
+                </div>""",unsafe_allow_html=True)
+col2.write("")
+col2.divider()
+if col2.button("Sign in with Google",use_container_width=True,type="primary"):
+    st.login()
+    st.stop()
