@@ -5,7 +5,6 @@ class AppIcons():
     WARNING = ":material/warning:"
     SUCCESS =":material/check_circle:"
     #Menu
-    ABOUT_PAGE = ":material/description:"
     MENU_PAGE = ":material/menu:"
     INSERT_PAGE = ":material/add:"
     EXPORT_PAGE = ":material/download:"

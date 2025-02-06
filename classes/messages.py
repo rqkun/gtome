@@ -50,6 +50,7 @@ class AppMessages:
         self.CREATE_ACCOUNT = _('Create Account')
         self.FORGET_PASSWORD = _('Forget Password')
         self.SEND_BUTTON = _('Send')
+        self.LOGOUT_BUTTON = _("Logout")
         # Form
         self.INSERT_FORM = _('Insert Data')
         self.UPDATE_FORM = _('Edit Data')
@@ -58,7 +59,6 @@ class AppMessages:
         self.CREATE_ACCOUNT_FORM = _('Create your account')
         self.FORGET_PASSWORD_FORM = _('Reset password')
         # Text
-        self.ABOUT_DESCRIPTION = _("About")
         self.APP_DESCRIPTION = _("A user-friendly Streamlit app designed to streamline your financial management. By seamlessly store data to Google Sheets, it allows you to track expenses, manage budgets, and generate insightful financial reports. With intuitive visualizations, the app helps you stay on top of your finances effortlessly.")
         self.FUNCTION_DESCRIPTIONS = _("Functions")
         self.FUNCTION_CARDS_DESCRIPTION =_("Below are the cards explaining what each of the functions are.")

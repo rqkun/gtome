@@ -13,7 +13,6 @@ import plotly.graph_objects as go
 import pandas as pd 
 import numpy as np
 import calendar
-
 app_lang = AppMessages(st.session_state.language)
 
 @st.dialog(app_lang.INSERT_FORM)
@@ -205,48 +204,48 @@ def plotly_calendar_process(df):
 
     return fig
 
+today = datetime.now()
+start_date = today.replace(day=1)
+last_day = calendar.monthrange(today.year, today.month)[1]
+end_date = today.replace(day=last_day)
 
-utils.add_header()
+
+col1,col2,col3,col4,col5 = st.columns([1,8,1,1,2],vertical_alignment="bottom")
+
+col1.image(utils.get_image(st.experimental_user.picture),use_container_width=True)
+
+selected_span = col2.date_input(
+    app_lang.SPAN_TOOLTIP_NAME,
+    (start_date, end_date),
+    format="DD/MM/YYYY",
+)
+
+refresh_button = col3.button(AppIcons.SYNC,use_container_width=True, type="primary")
+
+insert_bttn =  col4.button(AppIcons.INSERT_PAGE,use_container_width=True, type="primary")
+
+
+with col5.popover(AppIcons.MENU_PAGE,use_container_width=True):
+    utils.add_change_lang()
+    update_bttn =  st.button(app_lang.UPDATE_BUTTON,use_container_width=True, icon=AppIcons.MANAGE_PAGE,type="primary")
+    export_bttn =  st.button(app_lang.EXPORT_BUTTON,use_container_width=True, icon=AppIcons.EXPORT_PAGE,type="primary")
+    st.button(app_lang.LOGOUT_BUTTON,use_container_width=True, icon=AppIcons.LOG_OUT,type="primary",on_click=utils.sign_out)
+
+metrics,calendar_chart,line_chart,bar_plot,pie_plot,dataframe_tab = st.tabs(
+    [f"{AppIcons.METRICS} {app_lang.METRICS}",
+    f"{AppIcons.HEAT_MAP} {app_lang.HEAT_MAP}",
+    f"{AppIcons.LINE_CHART} {app_lang.LINE_CHART}",
+    f"{AppIcons.BAR_CHART} {app_lang.BAR_CHART}",
+    f"{AppIcons.PIE_CHART} {app_lang.PIE_CHART}",
+    f"{AppIcons.DATA_FRAME} {app_lang.DATA_FRAME}"]
+)
 
 try:
     sheet = Datasource.get_detail_sheets()
 except ConnectionError as err:
     st.error(app_lang.get_connection_errors(err.args),icon=AppIcons.ERROR)
 
-col1,col2,col3,col4,col5 = st.columns([4,1,2,2,2],vertical_alignment="bottom")
-
-today = datetime.now()
-start_date = today.replace(day=1)
-last_day = calendar.monthrange(today.year, today.month)[1]
-end_date = today.replace(day=last_day)
-
-if sheet is not None and len(sheet) >0:
-    oldest_record = pd.to_datetime(sheet['Date'],format="%d/%m/%Y").min().date()
-    if oldest_record > start_date.date():
-        min_date = start_date.date()
-    else:
-        min_date= oldest_record
-else:
-    min_date = oldest_record = start_date.date()
-
-oldest_str = min_date.strftime("%d/%m/%Y")
-selected_span = col1.date_input(
-    app_lang.SPAN_TOOLTIP_NAME,
-    (start_date, end_date),
-    format="DD/MM/YYYY",
-    min_value=min_date,
-    help=f"{app_lang.SPAN_TOOLTIP} {oldest_str}" 
-    
-)
-
-refresh_button = col2.button(AppIcons.SYNC,use_container_width=True, type="primary")
-insert_bttn =  col3.button(app_lang.INSERT_BUTTON,use_container_width=True, icon=AppIcons.INSERT_PAGE,type="primary")
-update_bttn =  col4.button(app_lang.UPDATE_BUTTON,use_container_width=True, icon=AppIcons.MANAGE_PAGE,type="primary")
-export_bttn =  col5.button(app_lang.EXPORT_BUTTON,use_container_width=True, icon=AppIcons.EXPORT_PAGE,type="primary")
-placeholder = st.empty()
-
-
-if len(selected_span) < 2 or selected_span[0] < oldest_record:
+if len(selected_span) < 2:
     st.warning(app_lang.INVALID_DATE, icon=AppIcons.WARNING)
 else: 
     data,_ = utils.filter(sheet,selected_span)
@@ -259,14 +258,6 @@ else:
     if len(data) >0:
         
         metrics_src = utils.get_metrics(sheet,start_date,end_date)
-        
-        metrics,calendar_chart,line_chart,bar_plot,pie_plot,dataframe_tab = placeholder.tabs(
-            [f"{AppIcons.METRICS} {app_lang.METRICS}",
-            f"{AppIcons.HEAT_MAP} {app_lang.HEAT_MAP}",
-            f"{AppIcons.LINE_CHART} {app_lang.LINE_CHART}",
-            f"{AppIcons.BAR_CHART} {app_lang.BAR_CHART}",
-            f"{AppIcons.PIE_CHART} {app_lang.PIE_CHART}",
-            f"{AppIcons.DATA_FRAME} {app_lang.DATA_FRAME}"])
         lastmonth = start_date - timedelta(days=1)
         metrics.markdown(app_lang.get_comparestring(lastmonth.strftime("%B-%Y"),start_date.strftime("%B-%Y")))
         spending,max_spent,largest_cate = metrics.columns(3)
@@ -325,7 +316,6 @@ else:
         st.warning(app_lang.WARNING_SHEET_EMPTY,icon=AppIcons.ERROR)
 
     if refresh_button:
-        placeholder.empty()
         st.cache_data.clear()
         st.cache_resource.clear()
         st.rerun()

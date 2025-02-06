@@ -9,9 +9,6 @@ msgstr "Tài khoản chưa được xác minh. Vui lòng kiểm tra email của 
 msgid "Invalid email or password."
 msgstr "Email hoặc mật khẩu không hợp lệ."
 
-msgid "About"
-msgstr "Giới thiệu"
-
 msgid "Internal server error."
 msgstr "Lỗi máy chủ nội bộ."
 

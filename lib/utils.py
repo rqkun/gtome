@@ -7,8 +7,9 @@ import pandas as pd
 import streamlit as st
 from classes.messages import AppMessages
 from classes.structure import DataStructure
-import lib.authentication as auth
 from classes.icons import AppIcons
+from PIL import Image
+import requests
 
 def change_lang():
     """ Swap dark/light theme. (Only work correct locally or single user mode) """
@@ -23,36 +24,9 @@ def add_change_lang():
     btn_face = " EN" \
         if st.session_state.language == "en" \
             else " VI"
-    if st.button(AppIcons.LANGUAGE+btn_face,on_click=change_lang,use_container_width=True,type="secondary"):
+    if st.button(AppIcons.LANGUAGE+btn_face,on_click=change_lang,use_container_width=True,type="primary"):
         st.rerun()
-
-def add_header():
-    """ Add header function. """
-    with st.header(""):
-        col1, _,_,col3,col4 = st.columns([1,1,4,1,2])
-        with col1:
-            add_change_lang()
-
-        col3.button(AppIcons.LOG_OUT,
-                    type="secondary",
-                    use_container_width=True,
-                    on_click=auth.sign_out)
-
-        with col4:
-            with st.popover("Menu",use_container_width=True, icon=AppIcons.MENU_PAGE):
-                
-                st.page_link("views/dashboard.py",
-                             label="Dashboard",
-                             icon=AppIcons.DASHBOARD_PAGE,
-                             use_container_width=True)
-                st.page_link("views/about.py",
-                             label="About",
-                             icon=AppIcons.ABOUT_PAGE,
-                             use_container_width=True)
-                st.page_link("https://github.com/rqkun/gtome/issues",
-                             label="Report",
-                             icon=AppIcons.BUG_REPORT_PAGE,
-                             use_container_width=True)
+  
 def add_error_header():
     """ Add setup header function. """
     with st.header(""):
@@ -153,7 +127,7 @@ def get_export_data(dataframe,selection):
     export_types = DataStructure.get_export_type()
     file_extension = export_types.get(selection, ".csv")
     file_name = "{0}_{1}{2}".format(
-        st.session_state.user_info['email'].split('@')[0],
+        st.experimental_user.email.split('@')[0],
         datetime.today().strftime("%d_%m_%Y_%H_%M_%S"),
         file_extension
     )
@@ -179,3 +153,34 @@ def get_export_data(dataframe,selection):
         raise ValueError("Unsupported export type")
     
     return data_export, file_name
+
+def raise_detailed_error(request_object):
+    """ Get details on http errors.
+
+    Args:
+        request_object (json): Json response data.
+
+    Raises:
+        requests.exceptions.HTTPError: HTTP error
+    """
+    try:
+        request_object.raise_for_status()
+    except requests.exceptions.HTTPError as error:
+        raise requests.exceptions.HTTPError(error, request_object.text)
+
+def get_image(user_url):
+    try:
+        request_object = requests.get(user_url)
+        raise_detailed_error(request_object)
+        return Image.open(BytesIO(request_object.content))
+    except requests.exceptions.HTTPError as err:
+        return None
+
+
+def sign_out() -> None:
+    """ Clear everything and signout. """
+    st.session_state.clear()
+    st.cache_data.clear()
+    st.cache_resource.clear()
+    st.logout()
+

@@ -9,8 +9,6 @@ msgstr "Account is not verify. Please check your email for verification link."
 msgid "Invalid email or password."
 msgstr "Invalid email or password."
 
-msgid "About"
-msgstr "About"
 
 msgid "Internal server error."
 msgstr "Internal server error."

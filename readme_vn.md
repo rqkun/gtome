@@ -20,7 +20,6 @@ Kiểm tra trang web [tại đây](https://rqkun-gtome.streamlit.app/)
 - Python 3.9 trở lên
 - Streamlit
 - Thông tin đăng nhập API của Google
-- Thông tin đăng nhập API của Firebase
 
 ### Cài đặt
 
@@ -37,8 +36,6 @@ Kiểm tra trang web [tại đây](https://rqkun-gtome.streamlit.app/)
 3. Thiết lập thông tin đăng nhập API của Google:
     - Làm theo hướng dẫn [tại đây](https://github.com/streamlit/gsheets-connection?tab=readme-ov-file#service-account--crud-example) để tạo thông tin đăng nhập của bạn và lưu vào tệp `.streamlit/secrets.toml`.
     - Truy cập [tại đây](https://console.cloud.google.com/) và tạo một Client xác thực và sao chép thông tin đăng nhập của bạn và lưu vào tệp `.streamlit/secrets.toml`.
-    - Truy cập [tại đây](https://firebase.google.com/) và tạo một ứng dụng xác thực và thêm API_KEY của bạn vào tệp `.streamlit/secrets.toml`.
-    - Mở bảng điều khiển firebase của bạn và đi tới Authentication > Sign-in methods và thêm nhà cung cấp Google, điền vào trường `client_id`, `client_secret` và `secret`.
 
 4. Tệp `.streamlit/secrets.toml` và secret của Streamlit Cloud của bạn sẽ trông như thế này:
     ```
@@ -61,13 +58,6 @@ Kiểm tra trang web [tại đây](https://rqkun-gtome.streamlit.app/)
     token_uri ="https://oauth2.googleapis.com/token"
     auth_provider_x509_cert_url = "https://www.googleapis.com/oauth2/v1/certs"
     client_x509_cert_url =""
-    #authentication secrets
-    secret = ""
-    javascript_origins = ""
-    redirect_url = ""
-    endpoint = "https://www.googleapis.com/identitytoolkit/v3/relyingparty"
-    #firebase api key
-    api_key = ""
     ```
 ### Chạy ứng dụng
 

@@ -19,7 +19,6 @@ Checkout the website [here](https://rqkun-gtome.streamlit.app/)
 - Python 3.9 or higher
 - Streamlit
 - Google API credentials
-- Firebase API credentials
 
 
 ### Installation
@@ -37,8 +36,6 @@ Checkout the website [here](https://rqkun-gtome.streamlit.app/)
 3. Set up Google API credentials:
     - Follow the instructions [here](https://github.com/streamlit/gsheets-connection?tab=readme-ov-file#service-account--crud-example) to create your credentials and save it to your `.streamlit/secrets.toml` file.
     - Go to [here](https://console.cloud.google.com/) and create an authentication Client and copy your credentials and save it to your `.streamlit/secrets.toml` file.
-    - Go to [here](https://firebase.google.com/) and create an authentication app and add your API_KEY to `.streamlit/secrets.toml` file.
-    - Open your firebase console and go to Authentication > Sign-in methods and add the Google provider, fill the `client_id`, `client_secret` and `secret` field.
 
 4. Your `.streamlit/secrets.toml` or cloud secrets should look like this:
     ```
@@ -61,13 +58,6 @@ Checkout the website [here](https://rqkun-gtome.streamlit.app/)
     token_uri ="https://oauth2.googleapis.com/token"
     auth_provider_x509_cert_url = "https://www.googleapis.com/oauth2/v1/certs"
     client_x509_cert_url =""
-    #authentication secrets
-    secret = ""
-    javascript_origins = ""
-    redirect_url = ""
-    endpoint = "https://www.googleapis.com/identitytoolkit/v3/relyingparty"
-    #firebase api key
-    api_key = ""
     ```
 ### Running the App
 
