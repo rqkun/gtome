@@ -34,15 +34,11 @@ def insert(df):
                                 )
         extra_type = st.empty()
         st.write(app_lang.DATEINPUT_TOOLTIP_NAME)
-        left_insert,right_insert = st.columns(2)
-        date = left_insert.date_input("Document Date",
+        date = st.date_input("Document Date",
                                       "today",
                                       format="DD/MM/YYYY",
-                                      label_visibility="collapsed",
-                                      max_value=utils.get_endtime_of_today())
-        time = right_insert.time_input("Document Time",
-                                      "now",
                                       label_visibility="collapsed")
+
         st.write(app_lang.NOTE_TOOLTIP_NAME)
         left_insert,right_insert = st.columns([5,2])
         notes = left_insert.text_input(app_lang.NOTE_TOOLTIP_NAME,placeholder=app_lang.NOTE_TOOLTIP,label_visibility='collapsed')
@@ -61,7 +57,7 @@ def insert(df):
         if submit_bttn:
             initial_data["Type"] = expense_type
             initial_data["Spent"] = amount
-            initial_data["Date"] = datetime.combine(date,time)
+            initial_data["Date"] = date.strftime("%d/%m/%Y")
             initial_data["Note"] = notes
             df.loc[len(df)] = initial_data
             df['Date'] = pd.to_datetime(df['Date'], format="%d/%m/%Y")
