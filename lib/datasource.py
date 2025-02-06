@@ -1,6 +1,5 @@
 """ Datasource management"""
 
-import calendar
 import gspread
 import postgrest
 import streamlit as st

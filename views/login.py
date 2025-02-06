@@ -1,11 +1,7 @@
 """ Simple Login Page. """
 
-import asyncio
 import streamlit as st
 from classes.messages import AppMessages
-from lib import utils
-import lib.authentication as auth
-from classes.icons import AppIcons
 
 
 if 'language' not in st.session_state or st.session_state.language =="":

@@ -1,13 +1,10 @@
 """ Firebase API Authentication. """
 import json
 import re
-import oauthlib
 import streamlit as st
 import requests
 from classes.messages import AppMessages
 
-import google_auth_oauthlib.flow
-from googleapiclient.discovery import build
 import streamlit as st
 
 
