@@ -2,8 +2,21 @@ from datetime import datetime, time
 import streamlit as st
 
 class DataStructure:
+    """
+    Initials Structures for objects.
+
+    """
     @staticmethod
     def get_error_object(gsheet_state,gsheet_err):
+        """ Compact gspread error into an object.
+
+        Args:
+            gsheet_state (boolean): Connection state.
+            gsheet_err (object): Exceptions.
+
+        Returns:
+            dict: Error object.
+        """
         return {
                 "GSheet": {
                   "connected":gsheet_state,
@@ -12,6 +25,11 @@ class DataStructure:
                 }
     @staticmethod
     def get_export_type():
+        """ Return export types.
+
+        Returns:
+            dict: Indext and file types.
+        """
         return {
                 0: ".csv",
                 1: ".xlsx",
@@ -21,9 +39,19 @@ class DataStructure:
                 }
     @staticmethod
     def get_categories():
+        """ Return list of columns.
+
+        Returns:
+            list: Column list.
+        """
         return ['Date', 'Spent', 'Type', 'Note']
     @staticmethod
     def get_column_configs():
+        """ Return config of Columns in Streamlit dataframe API.
+
+        Returns:
+            dict: Column configs.
+        """
         return {'Date': st.column_config.DatetimeColumn(
                     format='DD/MM/YYYY',
                     max_value=datetime.combine(datetime.now(), time.max),
@@ -34,20 +62,12 @@ class DataStructure:
                 }
     
     @staticmethod
-    def get_statistic_categories():
-        return ['Sheet', 'Total', 'Highest', 'Highest_Category', 'Highest_Category_Value']
-    @staticmethod
-    def get_statistic_dict():
-        return {
-            'Sheet': str,
-            'Total': int,
-            'Highest': int,
-            'Highest_Category': str,
-            'Highest_Category_Value': int
-        }
+    def get_option_map()-> list:
+        """ Return option mapping for expense types.
 
-    @staticmethod
-    def get_option_map():
+        Returns:
+            dict: Options.
+        """
         return {
             0: "Food",
             1: "Rent",
@@ -58,6 +78,11 @@ class DataStructure:
 
     @staticmethod
     def get_initial_data():
+        """ Initiatal data for inserting.
+
+        Returns:
+            dict: 1 data row.
+        """
         return {
             "Date": datetime.today().strftime("%d/%m/%Y"),
             "Spent": 0,
@@ -66,6 +91,18 @@ class DataStructure:
         }
     @staticmethod
     def get_initial_statistics(sheet="",total=0,highest=0,highest_category="",highest_category_value=0):
+        """ Initiatal data for calculate statistics.
+
+        Args:
+            sheet (str, optional): Spreadsheet name. Defaults to "".
+            total (int, optional): Total spent. Defaults to 0.
+            highest (int, optional): Highest spent. Defaults to 0.
+            highest_category (str, optional): Highest Spent of a certain category name. Defaults to "".
+            highest_category_value (int, optional): Highest Spent of a certain category value. Defaults to 0.
+
+        Returns:
+            dict: Statistics Object.
+        """
         return {
             "Sheet": sheet,
             "Total": total,
@@ -75,6 +112,11 @@ class DataStructure:
         }
     @staticmethod
     def get_convert_dict():
+        """ Define value types.
+
+        Returns:
+            dict: Types.
+        """
         return {
             'Spent': int,
             'Type': str,

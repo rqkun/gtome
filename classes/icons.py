@@ -1,4 +1,8 @@
 class AppIcons():
+    """
+        Icons for the app.
+
+    """
     MAIN_APP = ":material/book_4_spark:"
     #Notification
     ERROR = ":material/error:"

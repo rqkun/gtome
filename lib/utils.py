@@ -13,7 +13,7 @@ import requests
 from dateutil.relativedelta import relativedelta
 
 def change_lang():
-    """ Swap dark/light theme. (Only work correct locally or single user mode) """
+    """ Swap language. """
     previous_lang = st.session_state.language
     if previous_lang == "en":
         st.session_state.language = "vi"
@@ -21,11 +21,11 @@ def change_lang():
         st.session_state.language = "en"
 
 def add_change_lang():
-    """ Add chaneg theme button. (Only work correct locally or single user mode) """
+    """ Add language button. """
     btn_face = " EN" \
         if st.session_state.language == "en" \
             else " VI"
-    if st.button(AppIcons.LANGUAGE+btn_face,on_click=change_lang,use_container_width=True,type="primary"):
+    if st.button(AppIcons.LANGUAGE+btn_face,on_click=change_lang,use_container_width=True,type="secondary"):
         st.rerun()
   
 def add_error_header():
@@ -45,7 +45,14 @@ def add_error_header():
 
 
 def clean(input_df):
-    """ Clean the dataframe """
+    """ Clean dataframe.
+
+    Args:
+        input_df (DataFrame): Dataframe that needed to be cleaned.
+
+    Returns:
+        DataFrame: A cleaned Dataframe.
+    """
     # input_df["Date"] = pd.to_datetime(input_df['Date'],format='%d/%m/%Y')
     input_df = input_df.sort_values(by="Date")
     input_df["Date"] = input_df["Date"].replace(
@@ -58,7 +65,15 @@ def clean(input_df):
 
 
 def filter(df, span):
-    """ Return data from dataframe that is in a span of time and the data outside the span. """
+    """ Return data from dataframe that is in a span of time and the data outside the span.
+
+    Args:
+        df (DataFrame): Dataframe that needed to be filtered.
+        span (tuple): (start_date,end_date).
+
+    Returns:
+        DataFrame: A filtered Dataframe.
+    """
     start_date = span[0]
     
     end_date = span[1]
@@ -76,7 +91,14 @@ def filter(df, span):
 
 
 def normal_plot_data(df):
-    """ Return dataframe group by date, type. """
+    """ Return dataframe group by date, type for plotly plot.
+
+    Args:
+        df (DataFrame): Dataframe that needed to be grouped.
+
+    Returns:
+        DataFrame: A grouped Dataframe.
+    """
     # Drop the 'Note' column
     df = df.drop(['Note'], axis=1)
 
@@ -90,7 +112,16 @@ def normal_plot_data(df):
 
 
 def get_metrics(df,start,end):
-    """ Get metrics from Sheet. """
+    """ Get metrics from a dataframe.
+
+    Args:
+        df (DataFrame): Dataframe that needed to be calculated.
+        start (date): Start date.
+        end (date): End date.
+
+    Returns:
+        dict: Statistic Object.
+    """
 
     df,_ = filter(df,(start.date(),end.date()))
 
@@ -107,7 +138,16 @@ def get_metrics(df,start,end):
 
 
 def get_delta(new_metric, df, span):
-    """ Get delta from old sheet """
+    """ Get delta between current metric with metric from a certain span of time.
+
+    Args:
+        new_metric (dict): Current metrics dictionary.
+        df (DataFrame): The whole dataframe.
+        span (tuple): (start_date,end_date).
+
+    Returns:
+        dict: Delta mertrics.
+    """
 
     last_metric = get_metrics(df,span[0],span[1])
 
@@ -117,7 +157,18 @@ def get_delta(new_metric, df, span):
             new_metric["Highest_Category_Value"]- last_metric["Highest_Category_Value"]
             
 def get_export_data(dataframe,selection):
-    """ Return dataframe object of type chosen and that file name."""
+    """ Return dataframe object of type chosen and that file name.
+
+    Args:
+        dataframe (DataFrame): Exported dataframe.
+        selection (string): File type.
+
+    Raises:
+        ValueError: Unsupported export type.
+
+    Returns:
+        tuple: (file,file_name)
+    """
     export_types = DataStructure.get_export_type()
     file_extension = export_types.get(selection, ".csv")
     file_name = "{0}_{1}{2}".format(
@@ -163,6 +214,14 @@ def raise_detailed_error(request_object):
         raise requests.exceptions.HTTPError(error, request_object.text)
 
 def get_image(user_url):
+    """ Get user avatar image from url.
+
+    Args:
+        user_url (string): Image url.
+
+    Returns:
+        ImageFile: PIL image file.
+    """
     try:
         request_object = requests.get(user_url)
         raise_detailed_error(request_object)
@@ -179,12 +238,33 @@ def sign_out() -> None:
     st.logout()
 
 def get_start_and_end(time):
+    """ Get start and end date of a month.
 
+    Args:
+        time (datetime): Time anchor.
+
+    Returns:
+        tuple: (start,end)
+    """
     start = time.replace(hour=0, minute=0, second=0, microsecond=0)
     end = start + relativedelta(months=1)
     return start , end
 
 def get_endtime_of_today():
+    """ Get start and end time of today.
+
+    Returns:
+        tuple: (start,end)
+    """
     today = datetime.today()
     end = today.replace(hour=23, minute=59, second=59, microsecond=999)
     return end
+
+def hide_streamlit_header():
+    """Hide the Streamlit header. """
+    return """
+            <style>
+                /* Hide the Streamlit header and menu */
+                header {visibility: hidden;}
+            </style>
+        """

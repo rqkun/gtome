@@ -9,6 +9,10 @@ import streamlit as st
 
 
 class AppMessages:
+    """ 
+    The Messages class for the app with locales.
+
+    """
     # Set the default language
     def __init__(self,language):
         self.domain = 'messages'

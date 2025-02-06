@@ -66,7 +66,7 @@ def insert(df):
             df.loc[len(df)] = initial_data
             df['Date'] = pd.to_datetime(df['Date'], format="%d/%m/%Y")
             df = df.sort_values(by=['Date'])
-            Datasource.add_from(df)
+            Datasource.update_from(df)
             st.cache_data.clear()
             st.rerun()
     except ValueError as err:
@@ -231,9 +231,9 @@ insert_bttn =  col4.button(AppIcons.INSERT_PAGE,use_container_width=True, type="
 
 with col5.popover(AppIcons.MENU_PAGE,use_container_width=True):
     utils.add_change_lang()
-    update_bttn =  st.button(app_lang.UPDATE_BUTTON,use_container_width=True, icon=AppIcons.MANAGE_PAGE,type="primary")
-    export_bttn =  st.button(app_lang.EXPORT_BUTTON,use_container_width=True, icon=AppIcons.EXPORT_PAGE,type="primary")
-    st.button(app_lang.LOGOUT_BUTTON,use_container_width=True, icon=AppIcons.LOG_OUT,type="primary",on_click=utils.sign_out)
+    update_bttn =  st.button(app_lang.UPDATE_BUTTON,use_container_width=True, icon=AppIcons.MANAGE_PAGE,type="secondary")
+    export_bttn =  st.button(app_lang.EXPORT_BUTTON,use_container_width=True, icon=AppIcons.EXPORT_PAGE,type="secondary")
+    st.button(app_lang.LOGOUT_BUTTON,use_container_width=True, icon=AppIcons.LOG_OUT,type="secondary",on_click=utils.sign_out)
 
 metrics,calendar_chart,line_chart,bar_plot,pie_plot,dataframe_tab = st.tabs(
     [f"{AppIcons.METRICS} {app_lang.METRICS}",

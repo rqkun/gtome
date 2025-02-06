@@ -1,13 +1,16 @@
 """The main streamlit app that invoke other pages."""
 import streamlit as st
 from classes.icons import AppIcons
+from lib import utils
 from lib.datasource import test_connect_to_sheet
 from classes.structure import DataStructure 
+
+utils.hide_streamlit_header()
 
 if 'language' not in st.session_state or st.session_state.language =="":
     st.session_state.language = "en"
 
-st.set_page_config(page_title="GTOME", page_icon=AppIcons.MAIN_APP,layout="wide")
+st.set_page_config(page_title="GTOME", page_icon=AppIcons.MAIN_APP,layout="centered")
 view_page = st.Page("views/dashboard.py", title="Dashboard", icon=AppIcons.DASHBOARD_PAGE)
 login_page = st.Page("views/login.py", title="Login", icon=AppIcons.LOG_IN)
 error_page = st.Page("views/error.py",title="Error",icon=AppIcons.BUG_REPORT_PAGE)

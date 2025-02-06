@@ -1,3 +1,4 @@
 [theme]
 base = "dark"
-
+[server]
+runOnSave = true
