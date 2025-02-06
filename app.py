@@ -1,7 +1,7 @@
 """The main streamlit app that invoke other pages."""
 import streamlit as st
 from classes.icons import AppIcons
-from lib.datasource import set_user_sheet, test_connect_to_sheet, test_supabase_connection
+from lib.datasource import test_connect_to_sheet
 from classes.structure import DataStructure 
 
 if 'language' not in st.session_state or st.session_state.language =="":
@@ -15,14 +15,12 @@ error_page = st.Page("views/error.py",title="Error",icon=AppIcons.BUG_REPORT_PAG
 authenticated_pages = [view_page,about_page]
 
 if st.experimental_user.is_logged_in:
-    supbase_cnn, supbase_err = test_supabase_connection()
     gsheet_cnn, gsheet_err = test_connect_to_sheet()
-    if (supbase_cnn is False or gsheet_cnn is False):
-        error = DataStructure.get_error_object(supbase_cnn,gsheet_cnn,supbase_err,gsheet_err)
+    if gsheet_cnn is False:
+        error = DataStructure.get_error_object(gsheet_cnn,gsheet_err)
         st.session_state.connection_error = error
         pg = st.navigation([error_page],position="hidden")
     else:
-        st.session_state.sheet_name = set_user_sheet(st.experimental_user.email)
         pg = st.navigation(authenticated_pages,position="hidden")
 else:
         pg = st.navigation([login_page],position="hidden")

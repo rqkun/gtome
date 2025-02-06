@@ -39,8 +39,6 @@ msgstr "Lỗi kết nối GoogleSheetAPI."
 msgid "FirebaseAPI connection error."
 msgstr "Lỗi kết nối FirebaseAPI."
 
-msgid "SupabaseAPI connection error."
-msgstr "Lỗi kết nối SupabaseAPI."
 
 msgid "Changes you made have not been saved."
 msgstr "Những thay đổi bạn đã thực hiện chưa được lưu."
@@ -77,9 +75,6 @@ msgstr "Mở rộng"
 
 msgid "Utilities"
 msgstr "Tiện ích"
-
-msgid "Supabase Connection Error"
-msgstr "Lỗi kết nối Supabase"
 
 msgid "Metrics, charts from your expenses reports."
 msgstr "Các chỉ số, biểu đồ từ báo cáo chi tiêu của bạn."

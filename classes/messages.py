@@ -33,8 +33,6 @@ class AppMessages:
         self.SIGN_OUT = _('You have successfully signed out.')
         self.ACCOUNT_DELETED = _('You have successfully deleted your account.')
         self.GSHEET_CONNECTION_ERROR = _('GoogleSheetAPI connection error.')
-        self.FIREBASE_CONNECTION_ERROR = _('FirebaseAPI connection error.')
-        self.SUPABASE_CONNECTION_ERROR = _('SupabaseAPI connection error.')
         self.WARNING_CHANGES_NOT_SAVED = _('Changes you made have not been saved.')
         self.WARNING_SHEET_EMPTY = _('Sheet is empty.')
         self.INVALID_DATE = _('Please choose a start/end date.')
@@ -66,7 +64,6 @@ class AppMessages:
         self.FUNCTION_CARDS_DESCRIPTION =_("Below are the cards explaining what each of the functions are.")
         self.EXPANDER = _("Expand")
         self.UTIL_DESCRIPTION = _("Utilities")
-        self.SUPABASE_ERROR_DESCRIPTION = _("Supabase Connection Error")
         # Description
         self.DESC_DASHBOARD = _("Metrics, charts from your expenses reports.")
         self.DESC_BUG = _("Report bugs in our github repo's issue page.")

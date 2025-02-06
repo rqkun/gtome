@@ -20,7 +20,7 @@ Checkout the website [here](https://rqkun-gtome.streamlit.app/)
 - Streamlit
 - Google API credentials
 - Firebase API credentials
-- Supabase API credentials
+
 
 ### Installation
 
@@ -40,10 +40,7 @@ Checkout the website [here](https://rqkun-gtome.streamlit.app/)
     - Go to [here](https://firebase.google.com/) and create an authentication app and add your API_KEY to `.streamlit/secrets.toml` file.
     - Open your firebase console and go to Authentication > Sign-in methods and add the Google provider, fill the `client_id`, `client_secret` and `secret` field.
 
-4. Set up Supabase credentials:
-    - Follow the instructions [here](https://docs.streamlit.io/develop/tutorials/databases/supabase) to create your credentials and save it to your `.streamlit/secrets.toml` file.
-
-5. Your `.streamlit/secrets.toml` or cloud secrets should look like this:
+4. Your `.streamlit/secrets.toml` or cloud secrets should look like this:
     ```
     [auth]
     redirect_uri = "http://localhost:8501/oauth2callback"
@@ -71,11 +68,6 @@ Checkout the website [here](https://rqkun-gtome.streamlit.app/)
     endpoint = "https://www.googleapis.com/identitytoolkit/v3/relyingparty"
     #firebase api key
     api_key = ""
-
-    [supabase]
-    url = ""
-    key = ""
-
     ```
 ### Running the App
 

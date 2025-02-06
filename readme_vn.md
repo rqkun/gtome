@@ -21,7 +21,6 @@ Kiểm tra trang web [tại đây](https://rqkun-gtome.streamlit.app/)
 - Streamlit
 - Thông tin đăng nhập API của Google
 - Thông tin đăng nhập API của Firebase
-- Thông tin đăng nhập API của Supabase
 
 ### Cài đặt
 
@@ -41,10 +40,7 @@ Kiểm tra trang web [tại đây](https://rqkun-gtome.streamlit.app/)
     - Truy cập [tại đây](https://firebase.google.com/) và tạo một ứng dụng xác thực và thêm API_KEY của bạn vào tệp `.streamlit/secrets.toml`.
     - Mở bảng điều khiển firebase của bạn và đi tới Authentication > Sign-in methods và thêm nhà cung cấp Google, điền vào trường `client_id`, `client_secret` và `secret`.
 
-4. Thiết lập thông tin đăng nhập Supabase:
-    - Làm theo hướng dẫn [tại đây](https://docs.streamlit.io/develop/tutorials/databases/supabase) để tạo thông tin đăng nhập của bạn và lưu vào tệp `.streamlit/secrets.toml`.
-
-5. Tệp `.streamlit/secrets.toml` và secret của Streamlit Cloud của bạn sẽ trông như thế này:
+4. Tệp `.streamlit/secrets.toml` và secret của Streamlit Cloud của bạn sẽ trông như thế này:
     ```
     [auth]
     redirect_uri = "http://localhost:8501/oauth2callback"
@@ -72,11 +68,6 @@ Kiểm tra trang web [tại đây](https://rqkun-gtome.streamlit.app/)
     endpoint = "https://www.googleapis.com/identitytoolkit/v3/relyingparty"
     #firebase api key
     api_key = ""
-
-    [supabase]
-    url = ""
-    key = ""
-
     ```
 ### Chạy ứng dụng
 

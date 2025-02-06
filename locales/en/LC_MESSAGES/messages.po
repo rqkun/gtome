@@ -39,9 +39,6 @@ msgstr "GoogleSheetAPI connection error."
 msgid "FirebaseAPI connection error."
 msgstr "FirebaseAPI connection error."
 
-msgid "SupabaseAPI connection error."
-msgstr "SupabaseAPI connection error."
-
 msgid "Changes you made have not been saved."
 msgstr "Changes you made have not been saved."
 
@@ -78,8 +75,7 @@ msgstr "Expand"
 msgid "Utilities"
 msgstr "Utilities"
 
-msgid "Supabase Connection Error"
-msgstr "Supabase Connection Error"
+
 
 msgid "Metrics, charts from your expenses reports."
 msgstr "Metrics, charts from your expenses reports."
