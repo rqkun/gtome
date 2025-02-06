@@ -205,41 +205,41 @@ def plotly_calendar_process(df):
     )
 
     return fig
-
-today = datetime.now()
-start_date = today.replace(day=1)
-last_day = calendar.monthrange(today.year, today.month)[1]
-end_date = today.replace(day=last_day)
-
-
-col1,col2_2,col2_3,col3,col4,col5 = st.columns([1,4,4,1,1,2],vertical_alignment="bottom")
-
-col1.image(utils.get_image(st.experimental_user.picture),use_container_width=True)
+with st.spinner(app_lang.LOADING_TOOLTIP, show_time=True):
+    today = datetime.now()
+    start_date = today.replace(day=1)
+    last_day = calendar.monthrange(today.year, today.month)[1]
+    end_date = today.replace(day=last_day)
 
 
-selected_month = col2_2.selectbox(app_lang.MONTH_TOOLTIP, range(1, 13),format_func= lambda option: f"{option:02d}",index=today.month-1)
-selected_year = col2_3.selectbox(app_lang.YEAR_TOOLTIP, range(2024, today.year+1),index=today.year-2024)
+    col1,col2_2,col2_3,col3,col4,col5 = st.columns([1,4,4,1,1,2],vertical_alignment="bottom")
 
-refresh_button = col3.button(AppIcons.SYNC,use_container_width=True, type="primary")
-
-insert_bttn =  col4.button(AppIcons.INSERT_PAGE,use_container_width=True, type="primary")
+    col1.image(utils.get_image(st.experimental_user.picture),use_container_width=True)
 
 
-with col5.popover(AppIcons.MENU_PAGE,use_container_width=True):
-    utils.add_change_lang()
-    update_bttn =  st.button(app_lang.UPDATE_BUTTON,use_container_width=True, icon=AppIcons.MANAGE_PAGE,type="secondary")
-    export_bttn =  st.button(app_lang.EXPORT_BUTTON,use_container_width=True, icon=AppIcons.EXPORT_PAGE,type="secondary")
-    st.link_button("Github","https://github.com/rqkun/gtome",icon=AppIcons.BUG_REPORT_PAGE,use_container_width=True)
-    st.button(app_lang.LOGOUT_BUTTON,use_container_width=True, icon=AppIcons.LOG_OUT,type="secondary",on_click=utils.sign_out)
+    selected_month = col2_2.selectbox(app_lang.MONTH_TOOLTIP, range(1, 13),format_func= lambda option: f"{option:02d}",index=today.month-1)
+    selected_year = col2_3.selectbox(app_lang.YEAR_TOOLTIP, range(2024, today.year+1),index=today.year-2024)
 
-metrics,calendar_chart,line_chart,bar_plot,pie_plot,dataframe_tab = st.tabs(
-    [f"{AppIcons.METRICS} {app_lang.METRICS}",
-    f"{AppIcons.HEAT_MAP} {app_lang.HEAT_MAP}",
-    f"{AppIcons.LINE_CHART} {app_lang.LINE_CHART}",
-    f"{AppIcons.BAR_CHART} {app_lang.BAR_CHART}",
-    f"{AppIcons.PIE_CHART} {app_lang.PIE_CHART}",
-    f"{AppIcons.DATA_FRAME} {app_lang.DATA_FRAME}"]
-)
+    refresh_button = col3.button(AppIcons.SYNC,use_container_width=True, type="primary")
+
+    insert_bttn =  col4.button(AppIcons.INSERT_PAGE,use_container_width=True, type="primary")
+
+
+    with col5.popover(AppIcons.MENU_PAGE,use_container_width=True):
+        utils.add_change_lang()
+        update_bttn =  st.button(app_lang.UPDATE_BUTTON,use_container_width=True, icon=AppIcons.MANAGE_PAGE,type="secondary")
+        export_bttn =  st.button(app_lang.EXPORT_BUTTON,use_container_width=True, icon=AppIcons.EXPORT_PAGE,type="secondary")
+        st.link_button("Github","https://github.com/rqkun/gtome",icon=AppIcons.BUG_REPORT_PAGE,use_container_width=True)
+        st.button(app_lang.LOGOUT_BUTTON,use_container_width=True, icon=AppIcons.LOG_OUT,type="secondary",on_click=utils.sign_out)
+
+    metrics,calendar_chart,line_chart,bar_plot,pie_plot,dataframe_tab = st.tabs(
+        [f"{AppIcons.METRICS} {app_lang.METRICS}",
+        f"{AppIcons.HEAT_MAP} {app_lang.HEAT_MAP}",
+        f"{AppIcons.LINE_CHART} {app_lang.LINE_CHART}",
+        f"{AppIcons.BAR_CHART} {app_lang.BAR_CHART}",
+        f"{AppIcons.PIE_CHART} {app_lang.PIE_CHART}",
+        f"{AppIcons.DATA_FRAME} {app_lang.DATA_FRAME}"]
+    )
 
 try:
     sheet = Datasource.get_detail_sheets()
