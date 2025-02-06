@@ -103,6 +103,7 @@ class AppMessages:
         self.SIGN_IN_LOAD_TOOLTIP = _('Signing in...')
         
         self.PASSWORD_TOOLTIP = _("Password")
+        self.LOADING_TOOLTIP = _('Loading...')
         # Tab names
         self.METRICS = _("Metrics")
         self.HEAT_MAP = _("Spending Map Chart")

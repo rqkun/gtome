@@ -10,6 +10,7 @@ from classes.structure import DataStructure
 from classes.icons import AppIcons
 from PIL import Image
 import requests
+from dateutil.relativedelta import relativedelta
 
 def change_lang():
     """ Swap dark/light theme. (Only work correct locally or single user mode) """
@@ -59,14 +60,14 @@ def clean(input_df):
 def filter(df, span):
     """ Return data from dataframe that is in a span of time and the data outside the span. """
     start_date = span[0]
-    end_date = span[1]
     
+    end_date = span[1]
     df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
     
     if start_date == end_date:
         filtered_df = df.loc[(df['Date'].dt.date == start_date)]
     else:
-        filtered_df = df.loc[(df['Date'].dt.date >= start_date) & (df['Date'].dt.date <= end_date)]
+        filtered_df = df.loc[(df['Date'].dt.date >= start_date) & (df['Date'].dt.date < end_date)]
     
     remaining_df = df.loc[~df.index.isin(filtered_df.index)]
     
@@ -105,17 +106,10 @@ def get_metrics(df,start,end):
     return data
 
 
-def get_delta(new_metric, df):
+def get_delta(new_metric, df, span):
     """ Get delta from old sheet """
-    today = datetime.now()
-    # Calculate the first day of the current month
-    start_date_this_month = today.replace(day=1)
-    # Calculate the last day of the previous month
-    end_date_last_month = start_date_this_month - timedelta(days=1)
-    # Calculate the first day of the previous month
-    start_date_last_month = end_date_last_month.replace(day=1)
 
-    last_metric = get_metrics(df,start_date_last_month,end_date_last_month)
+    last_metric = get_metrics(df,span[0],span[1])
 
     return new_metric["Total"] - last_metric["Total"], \
             new_metric["Highest"] - last_metric["Highest"], \
@@ -184,3 +178,13 @@ def sign_out() -> None:
     st.cache_resource.clear()
     st.logout()
 
+def get_start_and_end(time):
+
+    start = time.replace(hour=0, minute=0, second=0, microsecond=0)
+    end = start + relativedelta(months=1)
+    return start , end
+
+def get_endtime_of_today():
+    today = datetime.today()
+    end = today.replace(hour=23, minute=59, second=59, microsecond=999)
+    return end

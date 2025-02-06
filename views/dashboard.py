@@ -1,6 +1,7 @@
 """ Dashboard Page for the Visualization. """
 
 from datetime import datetime, timedelta
+from matplotlib.dates import relativedelta
 import plotly.express as px
 import streamlit as st
 from millify import millify
@@ -32,14 +33,19 @@ def insert(df):
                                     default=0
                                 )
         extra_type = st.empty()
-        notes = st.text_input(app_lang.NOTE_TOOLTIP_NAME,placeholder=app_lang.NOTE_TOOLTIP)
         st.write(app_lang.DATEINPUT_TOOLTIP_NAME)
-        left_insert,right_insert = st.columns([5,2])
+        left_insert,right_insert = st.columns(2)
         date = left_insert.date_input("Document Date",
                                       "today",
                                       format="DD/MM/YYYY",
                                       label_visibility="collapsed",
-                                      max_value=datetime.today())
+                                      max_value=utils.get_endtime_of_today())
+        time = right_insert.time_input("Document Time",
+                                      "now",
+                                      label_visibility="collapsed")
+        st.write(app_lang.NOTE_TOOLTIP_NAME)
+        left_insert,right_insert = st.columns([5,2])
+        notes = left_insert.text_input(app_lang.NOTE_TOOLTIP_NAME,placeholder=app_lang.NOTE_TOOLTIP,label_visibility='collapsed')
         submit_bttn = right_insert.button(app_lang.SAVE_BUTTON,
                                           use_container_width=True,
                                           icon=AppIcons.SAVE,
@@ -55,7 +61,7 @@ def insert(df):
         if submit_bttn:
             initial_data["Type"] = expense_type
             initial_data["Spent"] = amount
-            initial_data["Date"] = date.strftime("%d/%m/%Y")
+            initial_data["Date"] = datetime.combine(date,time)
             initial_data["Note"] = notes
             df.loc[len(df)] = initial_data
             df['Date'] = pd.to_datetime(df['Date'], format="%d/%m/%Y")
@@ -210,15 +216,13 @@ last_day = calendar.monthrange(today.year, today.month)[1]
 end_date = today.replace(day=last_day)
 
 
-col1,col2,col3,col4,col5 = st.columns([1,8,1,1,2],vertical_alignment="bottom")
+col1,col2_2,col2_3,col3,col4,col5 = st.columns([1,4,4,1,1,2],vertical_alignment="bottom")
 
 col1.image(utils.get_image(st.experimental_user.picture),use_container_width=True)
 
-selected_span = col2.date_input(
-    app_lang.SPAN_TOOLTIP_NAME,
-    (start_date, end_date),
-    format="DD/MM/YYYY",
-)
+
+selected_month = col2_2.selectbox('Month', range(1, 13),format_func= lambda option: f"{option:02d}",index=today.month-1)
+selected_year = col2_3.selectbox('Year', range(2024, today.year+1),index=today.year-2024)
 
 refresh_button = col3.button(AppIcons.SYNC,use_container_width=True, type="primary")
 
@@ -245,23 +249,29 @@ try:
 except ConnectionError as err:
     st.error(app_lang.get_connection_errors(err.args),icon=AppIcons.ERROR)
 
-if len(selected_span) < 2:
-    st.warning(app_lang.INVALID_DATE, icon=AppIcons.WARNING)
-else: 
-    data,_ = utils.filter(sheet,selected_span)
+start_date,end_date = utils.get_start_and_end(datetime.strptime(f"01/{selected_month}/{selected_year}","%d/%m/%Y"))
+
+with st.spinner(app_lang.LOADING_TOOLTIP):
+    data,_ = utils.filter(sheet,(start_date.date(),end_date.date()))
     if insert_bttn:
         insert(sheet)
     if update_bttn:
-        update(sheet,selected_span)
+        update(sheet,(start_date.date(),end_date.date()))
     if export_bttn:
-        export_form(sheet,selected_span)
+        export_form(sheet,(start_date.date(),end_date.date()))
     if len(data) >0:
         
+        with metrics:
+            m_l,m_m,m_r = st.columns([1,1,1],vertical_alignment='top')
+            m_l.header("Compare with ",anchor=False)
+            lastmonth = start_date - relativedelta(months=1)
+            compared_month = m_m.selectbox('Month', range(1, 13),format_func= lambda option: f"{option:02d}",index=lastmonth.month-1,key='compared_month')
+            compared_year = m_r.selectbox('Year', range(2024, today.year+1),index=lastmonth.year-2024,key='compared_year')
+            last_start_date,last_end_date = utils.get_start_and_end(datetime.strptime(f"01/{compared_month}/{compared_year}","%d/%m/%Y"))
+
         metrics_src = utils.get_metrics(sheet,start_date,end_date)
-        lastmonth = start_date - timedelta(days=1)
-        metrics.markdown(app_lang.get_comparestring(lastmonth.strftime("%B-%Y"),start_date.strftime("%B-%Y")))
         spending,max_spent,largest_cate = metrics.columns(3)
-        total_spent, highest_single, highest_category, highest_category_value   = utils.get_delta(metrics_src, sheet)
+        total_spent, highest_single, highest_category, highest_category_value   = utils.get_delta(metrics_src, sheet, (last_start_date,last_end_date))
         
         spending.metric(app_lang.TOTAL_SPENDING_TOOLTIP,
                         millify(metrics_src["Total"],precision=3),
@@ -286,7 +296,7 @@ else:
                             help=f"{app_lang.OLD_METRIC_TOOLTIP}: {highest_category}",
                             label_visibility="visible",
                             border=True)
-        plotly,_  = utils.filter(sheet,selected_span)
+        plotly,_  = utils.filter(sheet,(start_date.date(),end_date.date()))
         calendar_chart.plotly_chart(
             plotly_calendar_process(plotly),
             use_container_width=True
@@ -307,7 +317,7 @@ else:
         )
         
         pie_plot.plotly_chart(plotly_pie_process(data),use_container_width=True)
-        dataframe_tab.dataframe(data,
+        dataframe_tab.dataframe(data.sort_values(by=['Date'],ascending=False),
                                 use_container_width=True,
                                 height=35*len(data)+36*2,
                                 hide_index=True,
