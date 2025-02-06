@@ -229,6 +229,7 @@ with col5.popover(AppIcons.MENU_PAGE,use_container_width=True):
     utils.add_change_lang()
     update_bttn =  st.button(app_lang.UPDATE_BUTTON,use_container_width=True, icon=AppIcons.MANAGE_PAGE,type="secondary")
     export_bttn =  st.button(app_lang.EXPORT_BUTTON,use_container_width=True, icon=AppIcons.EXPORT_PAGE,type="secondary")
+    st.link_button("Github","https://github.com/rqkun/gtome",icon=AppIcons.BUG_REPORT_PAGE,use_container_width=True)
     st.button(app_lang.LOGOUT_BUTTON,use_container_width=True, icon=AppIcons.LOG_OUT,type="secondary",on_click=utils.sign_out)
 
 metrics,calendar_chart,line_chart,bar_plot,pie_plot,dataframe_tab = st.tabs(
