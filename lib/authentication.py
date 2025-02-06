@@ -10,7 +10,6 @@ import google_auth_oauthlib.flow
 from googleapiclient.discovery import build
 import streamlit as st
 
-from lib import custom_components
 
 ## -------------------------------------------------------------------------------------------------
 ## Firebase Auth API -------------------------------------------------------------------------------
@@ -131,64 +130,64 @@ def sign_in(email:str, password:str) -> None:
 ## OAuth2 API --------------------------------------------------------------------------------------
 ## -------------------------------------------------------------------------------------------------
 
-def google_authentication(component):
-    """ Sign in with OAuth (Google). """
-    try:
-        if 'code' in st.session_state.login_query and len(st.session_state.login_query) != 0 :
-            auth_code = st.session_state.login_query['code']
-        else:
-            auth_code =""
-        CLIENT_CONFIG = {'web': {
-            'client_id': st.secrets.connections.google_api.client_id,
-            'project_id': st.secrets.connections.google_api.project_id,
-            'auth_uri': st.secrets.connections.google_api.auth_uri,
-            'token_uri': st.secrets.connections.google_api.token_uri,
-            'auth_provider_x509_cert_url': st.secrets.connections.google_api.auth_provider_x509_cert_url,
-            'client_secret': st.secrets.connections.google_api.secret,
-            'redirect_uris': st.secrets.connections.google_api.redirect_url,
-            'javascript_origins': st.secrets.connections.google_api.javascript_origins
-        }}
-        flow = google_auth_oauthlib.flow.Flow.from_client_config(
-            CLIENT_CONFIG, # replace with you json credentials from your google auth app
-            scopes=["https://www.googleapis.com/auth/userinfo.email", "openid"],
-            redirect_uri=st.secrets.connections.google_api.redirect_url,
-        )
-        if auth_code != "":
-            custom_components.google_sign_in_button(component,url="")
-            flow.fetch_token(code=auth_code)
-            credentials = flow.credentials
-            user_info_service = build(
-                serviceName="oauth2",
-                version="v2",
-                credentials=credentials,
-            )
+# def google_authentication(component):
+#     """ Sign in with OAuth (Google). """
+#     try:
+#         if 'code' in st.session_state.login_query and len(st.session_state.login_query) != 0 :
+#             auth_code = st.session_state.login_query['code']
+#         else:
+#             auth_code =""
+#         CLIENT_CONFIG = {'web': {
+#             'client_id': st.secrets.connections.google_api.client_id,
+#             'project_id': st.secrets.connections.google_api.project_id,
+#             'auth_uri': st.secrets.connections.google_api.auth_uri,
+#             'token_uri': st.secrets.connections.google_api.token_uri,
+#             'auth_provider_x509_cert_url': st.secrets.connections.google_api.auth_provider_x509_cert_url,
+#             'client_secret': st.secrets.connections.google_api.secret,
+#             'redirect_uris': st.secrets.connections.google_api.redirect_url,
+#             'javascript_origins': st.secrets.connections.google_api.javascript_origins
+#         }}
+#         flow = google_auth_oauthlib.flow.Flow.from_client_config(
+#             CLIENT_CONFIG, # replace with you json credentials from your google auth app
+#             scopes=["https://www.googleapis.com/auth/userinfo.email", "openid"],
+#             redirect_uri=st.secrets.connections.google_api.redirect_url,
+#         )
+#         if auth_code != "":
+#             custom_components.google_sign_in_button(component,url="")
+#             flow.fetch_token(code=auth_code)
+#             credentials = flow.credentials
+#             user_info_service = build(
+#                 serviceName="oauth2",
+#                 version="v2",
+#                 credentials=credentials,
+#             )
             
-            user_info = user_info_service.userinfo().get().execute()
-            assert user_info.get("email"), "Email not found in infos"
-            response = sign_in_with_external(credentials.id_token)
+#             user_info = user_info_service.userinfo().get().execute()
+#             assert user_info.get("email"), "Email not found in infos"
+#             response = sign_in_with_external(credentials.id_token)
             
-            if 'error' in response:
-                raise requests.exceptions.HTTPError(f"{AppMessages(st.session_state.language).FIREBASE_CONNECTION_ERROR}: {response['error']['message']}")
+#             if 'error' in response:
+#                 raise requests.exceptions.HTTPError(f"{AppMessages(st.session_state.language).FIREBASE_CONNECTION_ERROR}: {response['error']['message']}")
             
-            st.session_state["google_auth_code"] = auth_code
-            st.session_state.user_info = user_info
-            st.session_state.login = True
-            st.rerun()
-        else:
-            authorization_url, state = flow.authorization_url(
-                access_type="offline",
-                include_granted_scopes="true",
-            )
-            custom_components.google_sign_in_button(component,url=authorization_url)
+#             st.session_state["google_auth_code"] = auth_code
+#             st.session_state.user_info = user_info
+#             st.session_state.login = True
+#             st.rerun()
+#         else:
+#             authorization_url, state = flow.authorization_url(
+#                 access_type="offline",
+#                 include_granted_scopes="true",
+#             )
+#             custom_components.google_sign_in_button(component,url=authorization_url)
             
-    except requests.exceptions.HTTPError as error:
-        error_message = json.loads(error.args[1])['error']['message']
-        st.session_state.auth_warning = error_message
-    except oauthlib.oauth2.rfc6749.errors.InvalidGrantError as error:
-        error_message = AppMessages(st.session_state.language).INVALID_LOGIN_CODE
-        st.session_state.login_query['code'] = ""
-        st.session_state.auth_warning = error_message
-        st.rerun()
+#     except requests.exceptions.HTTPError as error:
+#         error_message = json.loads(error.args[1])['error']['message']
+#         st.session_state.auth_warning = error_message
+#     except oauthlib.oauth2.rfc6749.errors.InvalidGrantError as error:
+#         error_message = AppMessages(st.session_state.language).INVALID_LOGIN_CODE
+#         st.session_state.login_query['code'] = ""
+#         st.session_state.auth_warning = error_message
+#         st.rerun()
 
 
 

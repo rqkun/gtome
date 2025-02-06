@@ -1,12 +1,8 @@
 """The main streamlit app that invoke other pages."""
 import streamlit as st
-from classes import messages
 from classes.icons import AppIcons
 from lib.datasource import set_user_sheet, test_connect_to_sheet, test_supabase_connection
 from classes.structure import DataStructure 
-
-if 'user_info' not in st.session_state:
-    st.session_state.login = False
 
 if 'language' not in st.session_state or st.session_state.language =="":
     st.session_state.language = "en"

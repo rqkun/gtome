@@ -39,16 +39,20 @@ Kiểm tra trang web [tại đây](https://rqkun-gtome.streamlit.app/)
     - Làm theo hướng dẫn [tại đây](https://github.com/streamlit/gsheets-connection?tab=readme-ov-file#service-account--crud-example) để tạo thông tin đăng nhập của bạn và lưu vào tệp `.streamlit/secrets.toml`.
     - Truy cập [tại đây](https://console.cloud.google.com/) và tạo một Client xác thực và sao chép thông tin đăng nhập của bạn và lưu vào tệp `.streamlit/secrets.toml`.
     - Truy cập [tại đây](https://firebase.google.com/) và tạo một ứng dụng xác thực và thêm API_KEY của bạn vào tệp `.streamlit/secrets.toml`.
-    - Mở bảng điều khiển firebase của bạn và đi tới Authentication > Sign-in methods và thêm nhà cung cấp Email/Password.
-    - Mở bảng điều khiển firebase của bạn và đi tới Authentication > Sign-in methods và thêm nhà cung cấp Google, điền vào trường `client_id` và `secret`.
+    - Mở bảng điều khiển firebase của bạn và đi tới Authentication > Sign-in methods và thêm nhà cung cấp Google, điền vào trường `client_id`, `client_secret` và `secret`.
 
 4. Thiết lập thông tin đăng nhập Supabase:
     - Làm theo hướng dẫn [tại đây](https://docs.streamlit.io/develop/tutorials/databases/supabase) để tạo thông tin đăng nhập của bạn và lưu vào tệp `.streamlit/secrets.toml`.
 
-5. (Tùy chọn) Nếu ứng dụng được lưu trữ trên Streamlit Community Cloud thì đặt trường `target` trong tệp `.streamlit/secrets.toml` thành `"_blank"`.
-
-6. Tệp `.streamlit/secrets.toml` và secret của Streamlit Cloud của bạn sẽ trông như thế này:
+5. Tệp `.streamlit/secrets.toml` và secret của Streamlit Cloud của bạn sẽ trông như thế này:
     ```
+    [auth]
+    redirect_uri = "http://localhost:8501/oauth2callback"
+    cookie_secret = "" # self generated
+    client_id = ""
+    client_secret = ""
+    server_metadata_url = "https://accounts.google.com/.well-known/openid-configuration"
+
     [connections.gsheets]
     spreadsheet = "<googlesheet_url>"
     type = "service_account"
@@ -73,8 +77,6 @@ Kiểm tra trang web [tại đây](https://rqkun-gtome.streamlit.app/)
     url = ""
     key = ""
 
-    [host]
-    target = "_self" # cloud "_blank"
     ```
 ### Chạy ứng dụng
 

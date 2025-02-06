@@ -38,17 +38,21 @@ Checkout the website [here](https://rqkun-gtome.streamlit.app/)
     - Follow the instructions [here](https://github.com/streamlit/gsheets-connection?tab=readme-ov-file#service-account--crud-example) to create your credentials and save it to your `.streamlit/secrets.toml` file.
     - Go to [here](https://console.cloud.google.com/) and create an authentication Client and copy your credentials and save it to your `.streamlit/secrets.toml` file.
     - Go to [here](https://firebase.google.com/) and create an authentication app and add your API_KEY to `.streamlit/secrets.toml` file.
-    - Open your firebase console and go to Authentication > Sign-in methods and add the Email/Password provider.
-    - Open your firebase console and go to Authentication > Sign-in methods and add the Google provider, fill the `client_id` and `secret` field.
+    - Open your firebase console and go to Authentication > Sign-in methods and add the Google provider, fill the `client_id`, `client_secret` and `secret` field.
 
 4. Set up Supabase credentials:
     - Follow the instructions [here](https://docs.streamlit.io/develop/tutorials/databases/supabase) to create your credentials and save it to your `.streamlit/secrets.toml` file.
 
-5. (Optional) If the app is hosted on the Streamlit Community Cloud then set the `target` field in `.streamlit/secrets.toml` to `"_blank"`.
-
-6. Your `.streamlit/secrets.toml` or cloud secrets should look like this:
+5. Your `.streamlit/secrets.toml` or cloud secrets should look like this:
     ```
-    [connections.gsheets]
+    [auth]
+    redirect_uri = "http://localhost:8501/oauth2callback"
+    cookie_secret = "" # self generated
+    client_id = ""
+    client_secret = ""
+    server_metadata_url = "https://accounts.google.com/.well-known/openid-configuration"
+
+    [connections.google_api]
     spreadsheet = "<googlesheet_url>"
     type = "service_account"
     project_id = ""
@@ -72,8 +76,6 @@ Checkout the website [here](https://rqkun-gtome.streamlit.app/)
     url = ""
     key = ""
 
-    [host]
-    target = "_self" # cloud "_blank"
     ```
 ### Running the App
 
