@@ -221,8 +221,8 @@ col1,col2_2,col2_3,col3,col4,col5 = st.columns([1,4,4,1,1,2],vertical_alignment=
 col1.image(utils.get_image(st.experimental_user.picture),use_container_width=True)
 
 
-selected_month = col2_2.selectbox('Month', range(1, 13),format_func= lambda option: f"{option:02d}",index=today.month-1)
-selected_year = col2_3.selectbox('Year', range(2024, today.year+1),index=today.year-2024)
+selected_month = col2_2.selectbox(app_lang.MONTH_TOOLTIP, range(1, 13),format_func= lambda option: f"{option:02d}",index=today.month-1)
+selected_year = col2_3.selectbox(app_lang.YEAR_TOOLTIP, range(2024, today.year+1),index=today.year-2024)
 
 refresh_button = col3.button(AppIcons.SYNC,use_container_width=True, type="primary")
 
@@ -265,8 +265,8 @@ with st.spinner(app_lang.LOADING_TOOLTIP):
             m_l,m_m,m_r = st.columns([1,1,1],vertical_alignment='top')
             m_l.header("Compare with ",anchor=False)
             lastmonth = start_date - relativedelta(months=1)
-            compared_month = m_m.selectbox('Month', range(1, 13),format_func= lambda option: f"{option:02d}",index=lastmonth.month-1,key='compared_month')
-            compared_year = m_r.selectbox('Year', range(2024, today.year+1),index=lastmonth.year-2024,key='compared_year')
+            compared_month = m_m.selectbox(app_lang.MONTH_TOOLTIP, range(1, 13),format_func= lambda option: f"{option:02d}",index=lastmonth.month-1,key='compared_month')
+            compared_year = m_r.selectbox(app_lang.YEAR_TOOLTIP, range(2024, today.year+1),index=lastmonth.year-2024,key='compared_year')
             last_start_date,last_end_date = utils.get_start_and_end(datetime.strptime(f"01/{compared_month}/{compared_year}","%d/%m/%Y"))
 
         metrics_src = utils.get_metrics(sheet,start_date,end_date)

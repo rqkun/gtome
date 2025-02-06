@@ -40,8 +40,8 @@ msgstr "Lỗi kết nối FirebaseAPI."
 msgid "Changes you made have not been saved."
 msgstr "Những thay đổi bạn đã thực hiện chưa được lưu."
 
-msgid "Sheet is empty."
-msgstr "Trang tính trống."
+msgid "No Entries."
+msgstr "Không có dữ liệu."
 
 msgid "Please choose a start/end date."
 msgstr "Vui lòng chọn ngày bắt đầu/kết thúc."
@@ -229,3 +229,9 @@ msgstr "Đăng nhập..."
 
 msgid "Password"
 msgstr "Mật khẩu"
+
+msgid "Month"
+msgstr "Tháng"
+
+msgid "Year"
+msgstr "Năm"

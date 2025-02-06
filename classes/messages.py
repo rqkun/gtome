@@ -34,7 +34,7 @@ class AppMessages:
         self.ACCOUNT_DELETED = _('You have successfully deleted your account.')
         self.GSHEET_CONNECTION_ERROR = _('GoogleSheetAPI connection error.')
         self.WARNING_CHANGES_NOT_SAVED = _('Changes you made have not been saved.')
-        self.WARNING_SHEET_EMPTY = _('Sheet is empty.')
+        self.WARNING_SHEET_EMPTY = _('No Entries.')
         self.INVALID_DATE = _('Please choose a start/end date.')
         self.INVALID_EXPENSE_TYPE = _('Please choose an expense type.')
         self.SENDING_RESET_EMAIL = _('Sending password reset email')
@@ -85,6 +85,8 @@ class AppMessages:
         self.WEEK_TOOLTIP = _("Week")
         self.DAY_OF_WEEK_TOOLTIP = _("Day of Week")
         self.WEEK_OF_MONTH_TOOLTIP = _("Week of Month")
+        self.MONTH_TOOLTIP = _("Month")
+        self.YEAR_TOOLTIP = _("Year")
         
         self.SPAN_TOOLTIP_NAME= _("Select your expense span")
         self.SPAN_TOOLTIP = _("First entry:")

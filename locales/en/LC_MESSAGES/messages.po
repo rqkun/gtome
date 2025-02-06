@@ -40,8 +40,8 @@ msgstr "FirebaseAPI connection error."
 msgid "Changes you made have not been saved."
 msgstr "Changes you made have not been saved."
 
-msgid "Sheet is empty."
-msgstr "Sheet is empty."
+msgid "No Entries."
+msgstr "No Entries."
 
 msgid "Please choose a start/end date."
 msgstr "Please choose a start/end date."
@@ -227,3 +227,9 @@ msgstr "Signing in..."
 
 msgid "Password"
 msgstr "Password"
+
+msgid "Month"
+msgstr "Month"
+
+msgid "Year"
+msgstr "Year"
