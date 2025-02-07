@@ -37,7 +37,7 @@ def update_from(df:pd.DataFrame):
     try:
         conn.update(
             worksheet=st.experimental_user.sub,
-            data=df
+            data=clean(df)
         )
     except ConnectionError as err:
         st.error(AppMessages(st.session_state.language).get_connection_errors(err.args),icon=AppIcons.ERROR)

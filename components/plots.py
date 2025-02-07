@@ -25,8 +25,6 @@ def plotly_pie(df):
 def plotly_calendar(df):
     """ Return dataframe total spent by day. """
     app_lang = AppMessages(st.session_state.language)
-    # Convert 'Date' to datetime
-    df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
     
     # Sum the spending across all categories
     df_daily = df.groupby('Date')['Spent'].sum().reset_index()

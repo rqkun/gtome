@@ -44,15 +44,17 @@ def show(df):
             expense_type =  option_map[type_of_expense]
             
         if submit_bttn:
-            initial_data["Type"] = expense_type
-            initial_data["Spent"] = amount
-            initial_data["Date"] = date.strftime("%d/%m/%Y")
-            initial_data["Note"] = notes
-            df.loc[len(df)] = initial_data
-            df['Date'] = pd.to_datetime(df['Date'], format="%d/%m/%Y")
-            df = df.sort_values(by=['Date'])
-            datasource.update_from(df)
-            st.cache_data.clear()
+            with st.spinner(app_lang.LOADING_TOOLTIP, show_time=True):
+                initial_data["Type"] = expense_type
+                initial_data["Spent"] = amount
+                initial_data["Date"] = date.strftime("%d/%m/%Y")
+                initial_data["Note"] = notes
+                df.loc[len(df)] = initial_data
+                df['Date'] = pd.to_datetime(df['Date'], format="%d/%m/%Y")
+                df = df.sort_values(by=['Date'])
+                datasource.update_from(df)
+                st.cache_data.clear()
+                st.cache_resource.clear()
             st.rerun()
     except ValueError as err:
         st.error(app_lang.get_validation_errors(err.args),icon=AppIcons.ERROR)

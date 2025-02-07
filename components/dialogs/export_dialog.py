@@ -16,7 +16,7 @@ def show(sheet,selected_span):
             dataframe_show = sheet
         else:
             dataframe_show,_ = utils.filter(sheet,selected_span)
-        dataframe_show = pd.DataFrame(dataframe_show).sort_values("Date",ignore_index=True,ascending=False)
+        dataframe_show = pd.DataFrame(dataframe_show).sort_values("Date",ascending=False)
 
         file_type = left.segmented_control(app_lang.EXPORT_TYPE_TOOLTIP_NAME,
                                options=DataStructure.get_export_type().keys(),

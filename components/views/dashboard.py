@@ -16,6 +16,12 @@ from components.dialogs import insert_dialog,update_dialog,export_dialog
 
 app_lang = AppMessages(st.session_state.language)
 
+@st.dialog("Edit")
+def select_df(sheet,row_data):
+    update_dialog.single(sheet,row_data)
+    #st.write(data.iloc[row])
+    
+
 @st.dialog(app_lang.INSERT_FORM)
 def insert(df):
     insert_dialog.show(df)
@@ -131,11 +137,18 @@ with st.spinner(app_lang.LOADING_TOOLTIP):
         
         pie_plot.plotly_chart(plots.plotly_pie(data),use_container_width=True)
         
-        dataframe_tab.dataframe(data.sort_values(by=['Date'],ascending=False),
+        test = dataframe_tab.dataframe(data.sort_values(by=['Date'],ascending=False),
                                 use_container_width=True,
                                 height=35*len(data)+36*2,
                                 hide_index=True,
-                                column_config=DataStructure.get_column_configs())
+                                column_config=DataStructure.get_column_configs(),
+                                column_order=("Date","Spent","Type","Note"),
+                                on_select="rerun",
+                                selection_mode="single-row")
+        
+        if len(test["selection"]["rows"]) >0:
+            rowidx = test["selection"]["rows"][0]
+            select_df(sheet,data.sort_values(by=['Date'],ascending=False).iloc[rowidx])
     else:
         st.warning(app_lang.WARNING_SHEET_EMPTY,icon=AppIcons.ERROR)
 

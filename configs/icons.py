@@ -1,7 +1,6 @@
 class AppIcons():
     """
         Icons for the app.
-
     """
     MAIN_APP = ":material/book_4_spark:"
     #Notification
@@ -32,4 +31,5 @@ class AppIcons():
     HEAT_MAP = ":material/key_visualizer:"
     LANGUAGE =":material/language:"
     TOOLS = ":material/construction:"
+    TRASH = ":material/delete:"
     

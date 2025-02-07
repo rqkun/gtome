@@ -9,7 +9,7 @@ from configs.structure import DataStructure
 from PIL import Image
 import requests
 from dateutil.relativedelta import relativedelta
-
+import uuid
 def clean(input_df):
     """ Clean dataframe.
 
@@ -19,15 +19,16 @@ def clean(input_df):
     Returns:
         DataFrame: A cleaned Dataframe.
     """
-    # input_df["Date"] = pd.to_datetime(input_df['Date'],format='%d/%m/%Y')
-    input_df = input_df.sort_values(by="Date")
+    input_df["Date"] = pd.to_datetime(input_df['Date'],format='%d/%m/%Y')
+    input_df["Id"] = input_df["Id"].map(lambda x: uuid.uuid4() if x is None or x =="" else x)
+    input_df.sort_values(by="Date",ascending=False,inplace =True,ignore_index=True)
     input_df["Date"] = input_df["Date"].replace(
         np.nan,datetime.today().strftime("%d/%m/%Y"),regex=True)
     input_df["Note"] = input_df["Note"].replace(np.nan, '', regex=True)
     input_df["Note"] = input_df["Note"].astype(str)
     input_df["Spent"] = \
         input_df["Spent"].fillna(0)
-    return input_df.reset_index(drop=True)
+    return input_df
 
 
 def filter(df, span):
@@ -50,9 +51,9 @@ def filter(df, span):
     else:
         filtered_df = df.loc[(df['Date'].dt.date >= start_date) & (df['Date'].dt.date < end_date)]
     
-    remaining_df = df.loc[~df.index.isin(filtered_df.index)]
+    remaining_df = df.iloc[~df.index.isin(filtered_df.index)]
     
-    return clean(filtered_df), clean(remaining_df)
+    return filtered_df, remaining_df
 
 
 

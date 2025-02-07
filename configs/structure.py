@@ -1,5 +1,6 @@
 from datetime import datetime, time
 import streamlit as st
+import uuid
 
 class DataStructure:
     """
@@ -44,7 +45,7 @@ class DataStructure:
         Returns:
             list: Column list.
         """
-        return ['Date', 'Spent', 'Type', 'Note']
+        return ['Id','Date', 'Spent', 'Type', 'Note']
     @staticmethod
     def get_column_configs():
         """ Return config of Columns in Streamlit dataframe API.
@@ -54,7 +55,6 @@ class DataStructure:
         """
         return {'Date': st.column_config.DatetimeColumn(
                     format='DD/MM/YYYY',
-                    max_value=datetime.combine(datetime.now(), time.max),
                 ),
                 'Spent': st.column_config.NumberColumn(min_value=0, default=0,required=False),
                 'Type': st.column_config.TextColumn(),
@@ -84,6 +84,7 @@ class DataStructure:
             dict: 1 data row.
         """
         return {
+            "Id": uuid.uuid4(),
             "Date": datetime.today().strftime("%d/%m/%Y"),
             "Spent": 0,
             "Type": "",

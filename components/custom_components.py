@@ -41,8 +41,6 @@ def error_page_header():
 def sign_out_callable() -> None:
     """ Clear everything and signout. """
     st.session_state.clear()
-    st.cache_data.clear()
-    st.cache_resource.clear()
     st.logout()
 
 
