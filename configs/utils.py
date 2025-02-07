@@ -27,7 +27,7 @@ def clean(input_df):
     input_df["Note"] = input_df["Note"].replace(np.nan, '', regex=True)
     input_df["Note"] = input_df["Note"].astype(str)
     input_df["Spent"] = \
-        input_df["Spent"].fillna(0)
+        input_df["Spent"].astype(int).fillna(0)
     return input_df
 
 
@@ -123,7 +123,7 @@ def get_delta(new_metric, df, span):
                                 last_metric["Highest_Category"], \
             new_metric["Highest_Category_Value"]- last_metric["Highest_Category_Value"]
             
-def get_export_data(dataframe,selection):
+def get_export_data(dataframe,selection,app_lang):
     """ Return dataframe object of type chosen and that file name.
 
     Args:
@@ -162,7 +162,7 @@ def get_export_data(dataframe,selection):
         dataframe.to_orc(output, index=False)
         data_export = output.getvalue()
     else:
-        raise ValueError("Unsupported export type")
+        raise ValueError(app_lang.UNSUPPORTED_TYPE)
     
     return data_export, file_name
 

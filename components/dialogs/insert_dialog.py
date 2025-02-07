@@ -4,6 +4,7 @@ import streamlit as st
 from configs.icons import AppIcons
 from configs.messages import AppMessages
 from configs import datasource
+import uuid
 
 def show(df):
     """
@@ -45,10 +46,10 @@ def show(df):
             
         if submit_bttn:
             with st.spinner(app_lang.LOADING_TOOLTIP, show_time=True):
-                initial_data["Type"] = expense_type
-                initial_data["Spent"] = amount
-                initial_data["Date"] = date.strftime("%d/%m/%Y")
-                initial_data["Note"] = notes
+                initial_data = (
+                    uuid.uuid4(),date.strftime("%d/%m/%Y"), amount, expense_type, notes
+                )
+
                 df.loc[len(df)] = initial_data
                 df['Date'] = pd.to_datetime(df['Date'], format="%d/%m/%Y")
                 df = df.sort_values(by=['Date'])

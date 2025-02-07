@@ -17,7 +17,7 @@ class AppMessages:
         self.domain = 'messages'
         self.language =language
     # Function to set the language
-        locale_path = "./locales"
+        locale_path = "./configs/locales"
         gettext.bindtextdomain(self.domain, locale_path)
         gettext.textdomain(self.domain)
         lang = gettext.translation(self.domain, localedir=locale_path, languages=[self.language], fallback=True)
@@ -47,6 +47,8 @@ class AppMessages:
         self.INSERT_BUTTON = _('Insert')
         self.UPDATE_BUTTON = _('Edit')
         self.EXPORT_BUTTON = _('Export')
+        self.IMPORT_BUTTON = _('Import')
+        self.BACKUP_BUTTON = _('Backup')
         self.SAVE_BUTTON = _('Save')
         self.SIGN_IN_GOOGLE = _('Sign in with Google')
         self.SIGN_IN = _('Sign In')
@@ -57,7 +59,7 @@ class AppMessages:
         # Form
         self.INSERT_FORM = _('Insert Data')
         self.UPDATE_FORM = _('Edit Data')
-        self.EXPORT_FORM = _('Export Data')
+        self.BACKUP_FORM = _('Backup Data')
         self.SIGN_IN_FORM = _('Sign in')
         self.CREATE_ACCOUNT_FORM = _('Create your account')
         self.FORGET_PASSWORD_FORM = _('Reset password')
@@ -103,6 +105,8 @@ class AppMessages:
         self.EXPORT_TYPE_TOOLTIP = _("Default type: .csv")
         self.EXPORT_TYPE_TOOLTIP_NAME =_("File Type")
         
+        self.IMPORT_TOOLTIP = _("Choose a file.")
+        
         self.SIGN_IN_TOOLTIP = _('Already have an account ?')
         self.SIGN_IN_LOAD_TOOLTIP = _('Signing in...')
         
@@ -110,6 +114,8 @@ class AppMessages:
         self.LOADING_TOOLTIP = _('Loading...')
         
         self.COMPARING_TOOLTIP = _("Compare with")
+        
+        self.UNSUPPORTED_TYPE = _("Unsupported export type")
         # Tab names
         self.METRICS = _("Metrics")
         self.HEAT_MAP = _("Spending Map Chart")

@@ -12,15 +12,13 @@ from components import plots
 import components.custom_components
 import configs.datasource as Datasource
 import configs.utils as utils
-from components.dialogs import insert_dialog,update_dialog,export_dialog
+from components.dialogs import backup_dialog, insert_dialog,update_dialog
 
 app_lang = AppMessages(st.session_state.language)
 
 @st.dialog("Edit")
 def select_df(sheet,row_data):
     update_dialog.single(sheet,row_data)
-    #st.write(data.iloc[row])
-    
 
 @st.dialog(app_lang.INSERT_FORM)
 def insert(df):
@@ -30,9 +28,9 @@ def insert(df):
 def update(sheet,selected_span):
     update_dialog.show(sheet,selected_span)
 
-@st.dialog(app_lang.EXPORT_FORM)
-def export(sheet,selected_span):
-    export_dialog.show(sheet,selected_span)
+@st.dialog(app_lang.BACKUP_FORM)
+def backup(sheet,selected_span):
+    backup_dialog.show(sheet,selected_span)
 
 try:
     sheet = Datasource.get_detail_sheets()
@@ -54,7 +52,7 @@ with st.spinner(app_lang.LOADING_TOOLTIP, show_time=True):
     with col5.popover(AppIcons.MENU_PAGE,use_container_width=True):
         components.custom_components.change_language_button()
         update_bttn =  st.button(app_lang.UPDATE_BUTTON,use_container_width=True, icon=AppIcons.MANAGE_PAGE,type="secondary")
-        export_bttn =  st.button(app_lang.EXPORT_BUTTON,use_container_width=True, icon=AppIcons.EXPORT_PAGE,type="secondary")
+        export_bttn =  st.button(app_lang.BACKUP_BUTTON,use_container_width=True, icon=AppIcons.EXPORT_PAGE,type="secondary")
         st.link_button("Github","https://github.com/rqkun/gtome",icon=AppIcons.BUG_REPORT_PAGE,use_container_width=True)
         st.button(app_lang.LOGOUT_BUTTON,use_container_width=True, icon=AppIcons.LOG_OUT,type="secondary",on_click=components.custom_components.sign_out_callable)
     
@@ -76,7 +74,7 @@ with st.spinner(app_lang.LOADING_TOOLTIP):
     if update_bttn:
         update(sheet,(start_date.date(),end_date.date()))
     if export_bttn:
-        export(sheet,(start_date.date(),end_date.date()))
+        backup(sheet,(start_date.date(),end_date.date()))
     if len(data) >0:
         
         with metrics:
