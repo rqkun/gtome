@@ -85,8 +85,8 @@ msgstr "Mã nguồn của dự án được tìm thấy ở đây."
 msgid "Navigation menu."
 msgstr "Menu điều hướng."
 
-msgid "Logout."
-msgstr "Đăng xuất."
+msgid "Logout"
+msgstr "Thoát"
 
 msgid "Amount should be in VND"
 msgstr "Số tiền phải bằng VND"
@@ -235,3 +235,9 @@ msgstr "Tháng"
 
 msgid "Year"
 msgstr "Năm"
+
+msgid "Compare with"
+msgstr "So sánh với"
+
+msgid "Loading..."
+msgstr "Đang tải..."

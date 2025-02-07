@@ -77,22 +77,22 @@ def update(sheet,selected_span):
         sheet["Type"] = sheet["Type"].astype(str)
         data_update, remaining = utils.filter(sheet,selected_span)
         update_placeholder = st.empty()
-        tmp_df = st.data_editor(data_update,
+        update_form = st.form("update_form",clear_on_submit=True,enter_to_submit=True)
+        tmp_df = update_form.data_editor(data_update,
                                 use_container_width=True,
                                 height=35*len(data_update)+36*2,
                                 hide_index=True,
                                 column_config=DataStructure.get_column_configs(),
                                 num_rows='dynamic')
-        
-        
-        
-        if st.button(app_lang.SAVE_BUTTON, use_container_width=True, type="primary", icon=AppIcons.SAVE):
+
+        if update_form.form_submit_button(app_lang.SAVE_BUTTON, use_container_width=True, type="primary", icon=AppIcons.SAVE):
             # Add updated data_update back to sheet
-            update = pd.concat([remaining, tmp_df], ignore_index=True)
-            Datasource.update_from(update)
-            saved = True
-            st.cache_data.clear()
-            st.rerun()
+            with st.spinner(app_lang.LOADING_TOOLTIP, show_time=True):
+                update = pd.concat([remaining, tmp_df], ignore_index=True)
+                Datasource.update_from(update)
+                saved = True
+                st.cache_data.clear()
+                st.rerun(scope="app")
         if saved ==False:
             raise ValueError(app_lang.WARNING_CHANGES_NOT_SAVED)
     except ValueError as err:
@@ -227,19 +227,13 @@ with st.spinner(app_lang.LOADING_TOOLTIP, show_time=True):
     last_day = calendar.monthrange(today.year, today.month)[1]
     end_date = today.replace(day=last_day)
 
-
     col1,col2_2,col2_3,col3,col4,col5 = st.columns([1,4,4,1,1,2],vertical_alignment="bottom")
 
     col1.image(utils.get_image(st.experimental_user.picture),use_container_width=True)
-
-
     selected_month = col2_2.selectbox(app_lang.MONTH_TOOLTIP, range(1, 13),format_func= lambda option: f"{option:02d}",index=latest_date.month-1)
     selected_year = col2_3.selectbox(app_lang.YEAR_TOOLTIP, range(2024, today.year+1),index=latest_date.year-2024)
-
     refresh_button = col3.button(AppIcons.SYNC,use_container_width=True, type="primary")
-
     insert_bttn =  col4.button(AppIcons.INSERT_PAGE,use_container_width=True, type="primary")
-
 
     with col5.popover(AppIcons.MENU_PAGE,use_container_width=True):
         utils.add_change_lang()
@@ -271,7 +265,7 @@ with st.spinner(app_lang.LOADING_TOOLTIP):
         
         with metrics:
             m_l,m_m,m_r = st.columns([1,1,1],vertical_alignment='top')
-            m_l.header("Compare with ",anchor=False)
+            m_l.header(app_lang.COMPARING_TOOLTIP,anchor=False)
             lastmonth = start_date - relativedelta(months=1)
             compared_month = m_m.selectbox(app_lang.MONTH_TOOLTIP, range(1, 13),format_func= lambda option: f"{option:02d}",index=lastmonth.month-1,key='compared_month')
             compared_year = m_r.selectbox(app_lang.YEAR_TOOLTIP, range(2024, today.year+1),index=lastmonth.year-2024,key='compared_year')
@@ -304,6 +298,7 @@ with st.spinner(app_lang.LOADING_TOOLTIP):
                             help=f"{app_lang.OLD_METRIC_TOOLTIP}: {highest_category}",
                             label_visibility="visible",
                             border=True)
+        
         plotly,_  = utils.filter(sheet,(start_date.date(),end_date.date()))
         calendar_chart.plotly_chart(
             plotly_calendar_process(plotly),

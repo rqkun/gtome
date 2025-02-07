@@ -73,7 +73,6 @@ class AppMessages:
         self.DESC_BUG = _("Report bugs in our github repo's issue page.")
         self.DESC_REPO = _("Source code of the project is found here.")
         self.DESC_MENU = _("Navigation menu.")
-        self.DESC_LOGOUT = _("Logout.")
         self.DESC_LANG_SWITCH = _("Language.")
         # Tooltip
         self.AMOUNT_TOOLTIP = _("Amount should be in VND")
@@ -110,6 +109,8 @@ class AppMessages:
         
         self.PASSWORD_TOOLTIP = _("Password")
         self.LOADING_TOOLTIP = _('Loading...')
+        
+        self.COMPARING_TOOLTIP = _("Compare with")
         # Tab names
         self.METRICS = _("Metrics")
         self.HEAT_MAP = _("Spending Map Chart")

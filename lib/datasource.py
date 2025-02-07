@@ -26,12 +26,13 @@ def init_sheet():
     temp_df = pd.DataFrame(columns=DataStructure.get_categories())
     return temp_df.astype(DataStructure.get_convert_dict())
 
-def update_from(df):
+def update_from(df:pd.DataFrame):
     """ Update the whole spreadsheet.
 
     Args:
         df (DataFrame): Dataframe that needed to be update.
     """
+    df["Date"] = df["Date"].apply(lambda x: x.replace(hour=0, minute=0, second=0, microsecond=0))
     conn = connect_to_gsheet()
     try:
         conn.update(

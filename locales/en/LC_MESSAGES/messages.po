@@ -233,3 +233,9 @@ msgstr "Month"
 
 msgid "Year"
 msgstr "Year"
+
+msgid "Compare with"
+msgstr "Compare with"
+
+msgid "Loading..."
+msgstr "Loading..."
