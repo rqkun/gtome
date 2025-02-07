@@ -76,6 +76,7 @@ coverage/
 lib/streamlit/static
 streamlit-storage
 certificates/*
+messages.po*
 # Data Files
 **/uber-raw-data-sep14.csv
 

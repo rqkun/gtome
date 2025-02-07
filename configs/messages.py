@@ -1,11 +1,10 @@
 # classes/messages.py
 
 import gettext
-import streamlit as st
 
 # Set the locale directory and domain
-#msgfmt locales/vi/LC_MESSAGES/messages.po -o locales/vi/LC_MESSAGES/messages.mo
-#msgfmt locales/en/LC_MESSAGES/messages.po -o locales/en/LC_MESSAGES/messages.mo
+#msgfmt configs/locales/vi/LC_MESSAGES/messages.po -o configs/locales/vi/LC_MESSAGES/messages.mo
+#msgfmt configs/locales/en/LC_MESSAGES/messages.po -o configs/locales/en/LC_MESSAGES/messages.mo
 
 
 class AppMessages:

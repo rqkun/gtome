@@ -1,8 +1,8 @@
 import streamlit as st
-from classes.messages import AppMessages
-import lib.utils as utils
+from configs.messages import AppMessages
+import components.custom_components as utils
 
-utils.add_error_header()
+utils.error_page_header()
 app_lang = AppMessages(st.session_state.language)
 if st.session_state.language == "vi":
     if st.session_state.connection_error["GSheet"]["connected"] is False:

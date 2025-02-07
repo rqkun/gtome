@@ -4,11 +4,11 @@ import gspread
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 import pandas as pd
-from classes.icons import AppIcons
-from classes.structure import DataStructure
-from classes.messages import AppMessages
+from configs.icons import AppIcons
+from configs.structure import DataStructure
+from configs.messages import AppMessages
 
-from lib.utils import clean
+from configs.utils import clean
 def set_up_data():
     """ Set up data for initialization of a spreadsheet.
 

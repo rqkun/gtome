@@ -2,47 +2,13 @@
 
 from io import BytesIO
 import numpy as np
-from datetime import datetime, timedelta
+from datetime import datetime
 import pandas as pd
 import streamlit as st
-from classes.messages import AppMessages
-from classes.structure import DataStructure
-from classes.icons import AppIcons
+from configs.structure import DataStructure
 from PIL import Image
 import requests
 from dateutil.relativedelta import relativedelta
-
-def change_lang():
-    """ Swap language. """
-    previous_lang = st.session_state.language
-    if previous_lang == "en":
-        st.session_state.language = "vi"
-    elif previous_lang == "vi":
-        st.session_state.language = "en"
-
-def add_change_lang():
-    """ Add language button. """
-    btn_face = " EN" \
-        if st.session_state.language == "en" \
-            else " VI"
-    if st.button(AppIcons.LANGUAGE+btn_face,on_click=change_lang,use_container_width=True,type="secondary"):
-        st.rerun()
-  
-def add_error_header():
-    """ Add setup header function. """
-    with st.header(""):
-        col1, _,_,_,col4 = st.columns([1,1,4,1,1])
-        with col1:
-            add_change_lang()
-        if col4.button(AppIcons.SYNC,
-                    type="secondary",
-                    use_container_width=True,help=AppMessages(st.session_state.language).RELOAD_APP_TOOLTIP
-                    ):
-            st.cache_data.clear()
-            st.cache_resource.clear()
-            st.session_state.clear()
-            st.rerun()
-
 
 def clean(input_df):
     """ Clean dataframe.
@@ -230,13 +196,6 @@ def get_image(user_url):
         return None
 
 
-def sign_out() -> None:
-    """ Clear everything and signout. """
-    st.session_state.clear()
-    st.cache_data.clear()
-    st.cache_resource.clear()
-    st.logout()
-
 def get_start_and_end(time):
     """ Get start and end date of a month.
 
@@ -260,11 +219,18 @@ def get_endtime_of_today():
     end = today.replace(hour=23, minute=59, second=59, microsecond=999)
     return end
 
-def hide_streamlit_header():
-    """Hide the Streamlit header. """
-    return """
-            <style>
-                /* Hide the Streamlit header and menu */
-                header {visibility: hidden;}
-            </style>
-        """
+def get_inital_date_values(sheet:pd.DataFrame)-> tuple: 
+    """ Return the datetime values for widget uses. 
+
+    Args:
+        sheet (pd.DataFrame): Dataframe
+
+    Returns:
+        tuple: (today:Datetime, latest_date_of_the_dataset:Datetime)
+    """
+    if len(sheet) >0:
+        test = sheet.copy()
+        test["Date"] = pd.to_datetime(test["Date"],format="%d/%m/%Y")
+        return datetime.now(), test["Date"].max()
+    else:
+        return datetime.now(), datetime.now()
