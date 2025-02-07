@@ -14,6 +14,7 @@ import plotly.graph_objects as go
 import pandas as pd 
 import numpy as np
 import calendar
+
 app_lang = AppMessages(st.session_state.language)
 
 @st.dialog(app_lang.INSERT_FORM)
@@ -205,7 +206,22 @@ def plotly_calendar_process(df):
     )
 
     return fig
+
+try:
+    sheet = Datasource.get_detail_sheets()
+except ConnectionError as err:
+    st.error(app_lang.get_connection_errors(err.args),icon=AppIcons.ERROR)
+
+
 with st.spinner(app_lang.LOADING_TOOLTIP, show_time=True):
+    
+    if len(sheet) >0:
+        test = sheet.copy()
+        test["Date"] = pd.to_datetime(test["Date"],format="%d/%m/%Y")
+        latest_date = test["Date"].max()
+    else:
+        latest_date = datetime.now()
+    
     today = datetime.now()
     start_date = today.replace(day=1)
     last_day = calendar.monthrange(today.year, today.month)[1]
@@ -217,8 +233,8 @@ with st.spinner(app_lang.LOADING_TOOLTIP, show_time=True):
     col1.image(utils.get_image(st.experimental_user.picture),use_container_width=True)
 
 
-    selected_month = col2_2.selectbox(app_lang.MONTH_TOOLTIP, range(1, 13),format_func= lambda option: f"{option:02d}",index=today.month-1)
-    selected_year = col2_3.selectbox(app_lang.YEAR_TOOLTIP, range(2024, today.year+1),index=today.year-2024)
+    selected_month = col2_2.selectbox(app_lang.MONTH_TOOLTIP, range(1, 13),format_func= lambda option: f"{option:02d}",index=latest_date.month-1)
+    selected_year = col2_3.selectbox(app_lang.YEAR_TOOLTIP, range(2024, today.year+1),index=latest_date.year-2024)
 
     refresh_button = col3.button(AppIcons.SYNC,use_container_width=True, type="primary")
 
@@ -231,7 +247,7 @@ with st.spinner(app_lang.LOADING_TOOLTIP, show_time=True):
         export_bttn =  st.button(app_lang.EXPORT_BUTTON,use_container_width=True, icon=AppIcons.EXPORT_PAGE,type="secondary")
         st.link_button("Github","https://github.com/rqkun/gtome",icon=AppIcons.BUG_REPORT_PAGE,use_container_width=True)
         st.button(app_lang.LOGOUT_BUTTON,use_container_width=True, icon=AppIcons.LOG_OUT,type="secondary",on_click=utils.sign_out)
-
+    
     metrics,calendar_chart,line_chart,bar_plot,pie_plot,dataframe_tab = st.tabs(
         [f"{AppIcons.METRICS} {app_lang.METRICS}",
         f"{AppIcons.HEAT_MAP} {app_lang.HEAT_MAP}",
@@ -240,11 +256,6 @@ with st.spinner(app_lang.LOADING_TOOLTIP, show_time=True):
         f"{AppIcons.PIE_CHART} {app_lang.PIE_CHART}",
         f"{AppIcons.DATA_FRAME} {app_lang.DATA_FRAME}"]
     )
-
-try:
-    sheet = Datasource.get_detail_sheets()
-except ConnectionError as err:
-    st.error(app_lang.get_connection_errors(err.args),icon=AppIcons.ERROR)
 
 start_date,end_date = utils.get_start_and_end(datetime.strptime(f"01/{selected_month}/{selected_year}","%d/%m/%Y"))
 

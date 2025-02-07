@@ -35,7 +35,7 @@ def update_from(df):
     conn = connect_to_gsheet()
     try:
         conn.update(
-            worksheet=st.experimental_user.email,
+            worksheet=st.experimental_user.sub,
             data=df
         )
     except ConnectionError as err:
@@ -53,7 +53,7 @@ def create_from(df):
     conn = connect_to_gsheet()
     try:
         return conn.create(
-            worksheet=st.experimental_user.email,
+            worksheet=st.experimental_user.sub,
             data=df
         )
     except ConnectionError as err:
@@ -96,7 +96,7 @@ def get_detail_sheets():
     conn = connect_to_gsheet()
     try:
         return clean(conn.read(
-            worksheet=st.experimental_user.email,
+            worksheet=st.experimental_user.sub,
         ))
     except gspread.exceptions.WorksheetNotFound:
         df = init_sheet()
